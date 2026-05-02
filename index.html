@@ -736,6 +736,9 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 /* Avatar img when photo uploaded */
 .avatar-inner.has-photo{
   padding:0;overflow:hidden;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
 }
 .avatar-inner.has-photo img{
   width:100%;height:100%;object-fit:cover;border-radius:50%;
@@ -2582,7 +2585,7 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
               <span>Change Photo</span>
             </div>
           </div>
-          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)">
+          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleDPUpload(event)">
           <div>
             <div class="profile-name" id="profileName">User</div>
             <div class="profile-email" id="profileEmail">—</div>
@@ -3498,11 +3501,15 @@ function initProfile(){
     document.getElementById('profileEmail').textContent = user.email||'';
     // Restore saved photo or show initial
     const avatarEl = document.getElementById('avatarEl');
-    if(user.photo){
-      avatarEl.innerHTML = `<img src="${user.photo}" alt="Profile Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    const savedDP = localStorage.getItem('userDP');
+    const profilePhoto = user.photo || savedDP;
+    if(profilePhoto){
+      avatarEl.innerHTML = '';
+      avatarEl.style.backgroundImage = `url(${profilePhoto})`;
       avatarEl.classList.add('has-photo');
     } else {
       avatarEl.innerHTML = '';
+      avatarEl.style.backgroundImage = '';
       avatarEl.textContent = (user.name||'U').charAt(0).toUpperCase();
       avatarEl.classList.remove('has-photo');
     }
@@ -3513,37 +3520,28 @@ function initProfile(){
 }
 
 // Avatar photo upload — click → preview → save to localStorage
-function handleAvatarUpload(event){
+function handleDPUpload(event) {
   const file = event.target.files[0];
-  if(!file) return;
-  if(!file.type.startsWith('image/')){
-    showToast('⚠️ Please select an image file'); return;
-  }
-  if(file.size > 3 * 1024 * 1024){
-    showToast('⚠️ Image must be under 3MB'); return;
-  }
   const reader = new FileReader();
-  reader.onload = function(e){
-    const dataUrl = e.target.result;
+
+  reader.onload = function () {
+    const imageData = reader.result;
     const avatarEl = document.getElementById('avatarEl');
-    // Animate in
-    avatarEl.style.opacity = '0';
-    avatarEl.style.transform = 'scale(.8)';
-    setTimeout(()=>{
-      avatarEl.innerHTML = `<img src="${dataUrl}" alt="Profile Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-      avatarEl.classList.add('has-photo');
-      avatarEl.style.transition = 'all .4s cubic-bezier(.34,1.56,.64,1)';
-      avatarEl.style.opacity = '1';
-      avatarEl.style.transform = 'scale(1)';
-    }, 150);
-    // Persist
+    avatarEl.innerHTML = '';
+    avatarEl.style.backgroundImage = `url(${imageData})`;
+    avatarEl.classList.add('has-photo');
+    localStorage.setItem('userDP', imageData);
+
     const user = JSON.parse(localStorage.getItem('bm_user')) || {};
-    user.photo = dataUrl;
+    user.photo = imageData;
     localStorage.setItem('bm_user', JSON.stringify(user));
-    showToast('🖼️ Profile photo updated!');
   };
-  reader.readAsDataURL(file);
-  // Reset input so same file can be re-selected
+
+  if (file) reader.readAsDataURL(file);
+}
+
+function handleAvatarUpload(event){
+  handleDPUpload(event);
   event.target.value = '';
 }
 
@@ -3731,6 +3729,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     const btn = document.getElementById('authNavBtn');
     btn.textContent='Logout'; btn.onclick=logout;
   }
+
+  const savedDP = localStorage.getItem('userDP');
+  if(savedDP){
+    const avatarEl = document.getElementById('avatarEl');
+    if(avatarEl){
+      avatarEl.style.backgroundImage = `url(${savedDP})`;
+      avatarEl.classList.add('has-photo');
+      avatarEl.innerHTML = '';
+    }
+  }
+
   initLibrary();
   setTimeout(startTerminalTyping, 3000);
   initCalorieScanner();
