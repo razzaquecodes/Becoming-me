@@ -1,0 +1,57 @@
+[
+{
+"name":"Bench Press",
+"muscle":"chest",
+"equipment":"barbell",
+"difficulty":"intermediate",
+"image":"benchpress.jpg"
+},
+
+{
+"name":"Incline Dumbbell Press",
+"muscle":"chest",
+"equipment":"dumbbell",
+"difficulty":"intermediate"
+},
+
+{
+"name":"Pull Ups",
+"muscle":"back",
+"equipment":"bodyweight"
+},
+
+{
+"name":"Deadlift",
+"muscle":"back"
+},
+
+{
+"name":"Squats",
+"muscle":"legs"
+},
+
+{
+"name":"Lunges",
+"muscle":"legs"
+},
+
+{
+"name":"Shoulder Press",
+"muscle":"shoulders"
+},
+
+{
+"name":"Bicep Curl",
+"muscle":"arms"
+},
+
+{
+"name":"Tricep Pushdown",
+"muscle":"arms"
+},
+
+{
+"name":"Plank",
+"muscle":"abs"
+}
+]
