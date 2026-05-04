@@ -2257,39 +2257,12 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 
         <!-- LEFT: CAMERA UI -->
         <div class="cal-camera-side">
-          <div class="cal-cam-viewport">
-
-  <video id="cameraFeed" autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>
-
-  <!-- ✅ YE HI MISSING THA -->
-  <div class="cal-cam-frame">
-    <div class="cal-frame-tr"></div>
-    <div class="cal-frame-bl"></div>
-  </div>
-
-  <div class="cal-scan-line"></div>
-
-  <canvas id="captureCanvas" style="display:none;"></canvas>
-
-</div>
-            <video id="cameraFeed" autoplay playsinline style="
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  position:absolute;
-  inset:0;
-  z-index:1;
-"></video>
-
-<div class="cal-cam-frame"></div>
-<div class="cal-frame-tr"></div>
-<div class="cal-frame-bl"></div>
-
-<div class="cal-scan-line" id="scanLine"></div>
+          <div class="cal-cam-viewport" id="calViewport">
             <!-- Corner frame brackets -->
-            <div class="cal-cam-frame"></div>
-            <div class="cal-frame-tr"></div>
-            <div class="cal-frame-bl"></div>
+            <div class="cal-cam-frame">
+              <div class="cal-frame-tr"></div>
+              <div class="cal-frame-bl"></div>
+            </div>
             <!-- Scan sweep line -->
             <div class="cal-scan-line" id="calScanLine"></div>
             <!-- Food display -->
@@ -2308,7 +2281,7 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
               <span class="cal-food-chip" data-food="Grilled Chicken" data-emoji="🍗" data-cal="240" data-prot="40" data-carb="0" data-fat="8" data-fib="0">Grilled Chicken</span>
               <span class="cal-food-chip" data-food="Banana" data-emoji="🍌" data-cal="89" data-prot="1" data-carb="23" data-fat="0" data-fib="3">Banana</span>
             </div>
-            <button class="cal-scan-btn" id="calScanBtn" onclick="startCalorieScan()">
+            <button class="cal-scan-btn" id="calScanBtn" onclick="startCalorieScan()" disabled>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
               Scan Food
             </button>
@@ -4436,6 +4409,73 @@ function resetCalScanner(){
 })();
 
 // Cursor removed
+
+// ══════ RENDER XP BAR (nav strip + badge) ══════
+function renderXPBar(ud){
+  const strip = document.getElementById('xpStripFill');
+  const badge = document.getElementById('xpBadge');
+  if(!ud){ if(strip) strip.style.width='0%'; if(badge) badge.classList.remove('visible'); return; }
+  const xp = ud.xp || 0;
+  const level = typeof window.xpToLevel === 'function' ? window.xpToLevel(xp) : Math.floor(xp/100);
+  const inLevel = typeof window.xpInLevel === 'function' ? window.xpInLevel(xp) : xp % 100;
+  const pct = Math.min(inLevel, 100);
+  if(strip) strip.style.width = pct + '%';
+  if(badge){ badge.classList.add('visible'); badge.textContent = 'Lv.' + level + '  ' + pct + '/100 XP'; }
+}
+
+// ══════ RENDER DAILY GOALS BAR (mobile) ══════
+function renderDailyGoals(ud){
+  const fill = document.getElementById('dgFill');
+  const pctEl = document.getElementById('dgPct');
+  if(!ud || !fill || !pctEl) return;
+  const done = ud.dailyGoalExercises || 0;
+  const goal = 5;
+  const pct = Math.min((done / goal) * 100, 100);
+  fill.style.width = pct + '%';
+  pctEl.textContent = Math.min(done, goal) + '/' + goal + ' exercises';
+}
+
+// ══════ LEVEL UP OVERLAY ══════
+function showLevelUp(level){
+  const overlay = document.getElementById('levelUpOverlay');
+  if(!overlay) return;
+  const numEl = document.getElementById('levelUpNum');
+  const xpEl = document.getElementById('levelUpXPText');
+  if(numEl) numEl.textContent = level;
+  if(xpEl) xpEl.textContent = '+' + (level * 100) + ' XP milestone';
+  overlay.classList.add('show');
+  setTimeout(()=> overlay.classList.remove('show'), 5000);
+}
+
+// ══════ ACHIEVEMENTS ══════
+const ACHIEVEMENTS = [
+  { id:'first_workout', icon:'🏋️', title:'First Rep', desc:'Complete your first workout session.', check: ud => (ud.sessions||0) >= 1 },
+  { id:'streak_3', icon:'🔥', title:'On Fire', desc:'Maintain a 3-day workout streak.', check: ud => (ud.streak||0) >= 3 },
+  { id:'streak_7', icon:'⚡', title:'Week Warrior', desc:'7-day streak. Unstoppable.', check: ud => (ud.streak||0) >= 7 },
+  { id:'sessions_10', icon:'💪', title:'Dedicated', desc:'Complete 10 workout sessions.', check: ud => (ud.sessions||0) >= 10 },
+  { id:'sessions_25', icon:'🏆', title:'Consistent', desc:'Complete 25 workout sessions.', check: ud => (ud.sessions||0) >= 25 },
+  { id:'xp_500', icon:'⭐', title:'XP Hunter', desc:'Earn 500 total XP.', check: ud => (ud.xp||0) >= 500 },
+];
+
+function checkAndFireAchievements(ud){
+  if(!ud || !window.userUID) return;
+  const unlocked = ud.achievements || {};
+  ACHIEVEMENTS.forEach(a => {
+    if(!unlocked[a.id] && a.check(ud)){
+      unlocked[a.id] = true;
+      if(typeof window.queueStatUpdate === 'function')
+        window.queueStatUpdate({ achievements: unlocked });
+      showToast('🏆 Achievement Unlocked: ' + a.title + '!');
+      // XP burst visual
+      const burst = document.createElement('div');
+      burst.className = 'xp-burst';
+      burst.textContent = '+50 XP';
+      burst.style.cssText = 'top:40%;left:50%;transform:translate(-50%,-50%)';
+      document.body.appendChild(burst);
+      setTimeout(()=> burst.remove(), 1000);
+    }
+  });
+}
 </script>
 
 
