@@ -209,3 +209,52 @@ function updateFoodUI(name, data) {
   if (foodName) foodName.innerText = name.toUpperCase();
   if (cal) cal.innerText = data.calories + " kcal";
 }
+// ================= CAMERA + CANVAS SETUP =================
+
+// 📸 Capture image from camera using canvas
+function captureImage() {
+  const canvas = document.getElementById("captureCanvas");
+  const ctx = canvas.getContext("2d");
+  const video = document.getElementById("cameraFeed");
+
+  if (!video || !canvas) {
+    console.error("Video or Canvas not found");
+    return null;
+  }
+
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  return canvas.toDataURL("image/jpeg");
+}
+
+// 🎥 Start camera
+window.startCamera = async () => {
+  const video = document.getElementById("cameraFeed");
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+
+    video.srcObject = stream;
+  } catch (err) {
+    console.error(err);
+    alert("Camera not working");
+  }
+};
+
+// 🔍 Scan function
+window.scanFood = () => {
+  const image = captureImage();
+
+  if (!image) return;
+
+  console.log("Captured Image:", image);
+
+  // demo result
+  document.getElementById("foodName").innerText = "RICE";
+  document.getElementById("foodCalories").innerText = "130 kcal";
+};

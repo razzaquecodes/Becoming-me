@@ -1204,6 +1204,7 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
    CALORIE SCANNER — PREMIUM CAMERA UI
    ═══════════════════════════════════════════════════ */
 .cal-scanner-section{
+  
   max-width:1100px;margin:0 auto 6rem;padding:0 2rem;
 }
 .cal-scanner-header{text-align:center;margin-bottom:2.5rem;}
@@ -1221,6 +1222,7 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
   display:grid;grid-template-columns:1fr 1fr;
   min-height:420px;
 }
+
 /* Camera side */
 
 .cal-camera-side{
@@ -2255,7 +2257,21 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 
         <!-- LEFT: CAMERA UI -->
         <div class="cal-camera-side">
-          <div class="cal-cam-viewport" id="calViewport">
+          <div class="cal-cam-viewport">
+
+  <video id="cameraFeed" autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+
+  <!-- ✅ YE HI MISSING THA -->
+  <div class="cal-cam-frame">
+    <div class="cal-frame-tr"></div>
+    <div class="cal-frame-bl"></div>
+  </div>
+
+  <div class="cal-scan-line"></div>
+
+  <canvas id="captureCanvas" style="display:none;"></canvas>
+
+</div>
             <video id="cameraFeed" autoplay playsinline style="
   width:100%;
   height:100%;
@@ -4421,6 +4437,8 @@ function resetCalScanner(){
 
 // Cursor removed
 </script>
+
+
 
 <!-- iOS-STYLE GLASS BOTTOM NAV -->
 <nav class="bottom-nav" id="bottomNav" aria-label="Main navigation">
