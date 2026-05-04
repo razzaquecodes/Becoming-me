@@ -43,25 +43,20 @@ a,button,[onclick]{
 
 /* Custom cursor removed */
 
-/* ── LOADER — base (overridden by enhanced styles below) ── */
-.loader-brand{display:flex;flex-direction:column;align-items:center;gap:.8rem;}
-.loader-logo-img{width:90px;height:90px;object-fit:contain;animation:logoPop 1.4s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0;filter:drop-shadow(0 0 30px rgba(139,92,246,.7));}
-@keyframes logoPop{
-  0%{opacity:0;transform:scale(.3) rotate(-15deg);filter:drop-shadow(0 0 0px rgba(139,92,246,0));}
-  40%{opacity:1;transform:scale(1.15) rotate(4deg);filter:drop-shadow(0 0 40px rgba(139,92,246,1)) drop-shadow(0 0 80px rgba(167,139,250,.7));}
-  55%{transform:scale(.95) rotate(-2deg);}
-  70%{transform:scale(1.05) rotate(1deg);}
-  85%{transform:scale(.98) rotate(0);}
-  100%{opacity:1;transform:scale(1) rotate(0);filter:drop-shadow(0 0 30px rgba(139,92,246,.7));}
-}
-.loader-text{font-family:'Bebas Neue';font-size:2rem;color:var(--white);letter-spacing:.4em;animation:loaderTextReveal .9s .75s cubic-bezier(.34,1.2,.64,1) forwards;opacity:0;}
+/* ── LOADER — minimal premium (Apple/Nike style) ── */
+.loader-brand{display:flex;flex-direction:column;align-items:center;gap:1.2rem;position:relative;z-index:2;}
+.loader-logo-img{width:72px;height:72px;object-fit:contain;opacity:0;transform:scale(.94);animation:loaderLogoIn .6s .15s cubic-bezier(.4,0,.2,1) forwards;}
+@keyframes loaderLogoIn{to{opacity:1;transform:scale(1);}}
+.loader-glow-ring{position:absolute;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.18) 0%,rgba(139,92,246,.06) 50%,transparent 70%);animation:loaderGlowPulse 2.2s ease-in-out infinite;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+@keyframes loaderGlowPulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(.9);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1);}}
+.loader-text{font-family:'Bebas Neue';font-size:1.6rem;color:var(--white);letter-spacing:.35em;opacity:0;animation:loaderTextIn .5s .5s ease forwards;}
 .loader-text span{color:var(--gold);}
-.loader-tagline{font-size:.6rem;letter-spacing:.5em;text-transform:uppercase;color:var(--muted2);animation:loaderTagReveal 1s 1.1s ease forwards;opacity:0;}
-.loader-bar{width:220px;height:2px;background:var(--surface3);border-radius:2px;overflow:hidden;}
-.loader-fill{width:0;height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));animation:loaderFill 1.8s .4s ease forwards;border-radius:2px;}
-.loader-pct{font-size:.65rem;color:var(--muted);letter-spacing:.2em;font-family:'DM Sans';animation:fadeIn 1s .5s forwards;opacity:0;}
-.loader-terminal{font-size:.65rem;color:rgba(139,92,246,.6);letter-spacing:.08em;font-family:'DM Sans';animation:fadeIn 1s 1.2s forwards;opacity:0;}
-.loader-terminal::before{content:'> ';color:var(--gold);}
+@keyframes loaderTextIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.loader-tagline{font-size:.58rem;letter-spacing:.4em;text-transform:uppercase;color:var(--muted);opacity:0;animation:loaderTextIn .5s .65s ease forwards;}
+.loader-bar{width:180px;height:1.5px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:.4rem;}
+.loader-fill{width:0;height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));animation:loaderFill 1.1s .3s cubic-bezier(.4,0,.2,1) forwards;border-radius:2px;}
+.loader-pct{display:none;}
+.loader-terminal{display:none;}
 @keyframes loaderFill{to{width:100%;}}
 @keyframes fadeIn{to{opacity:1;}}
 
@@ -217,6 +212,9 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 /* TOAST */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--gold);border-radius:100px;padding:.8rem 1.8rem;color:var(--white);font-size:.82rem;z-index:99000;opacity:0;transition:all .4s ease;white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+@media(max-width:768px){
+  .toast{bottom:calc(70px + env(safe-area-inset-bottom,0));}
+}
 
 /* ══════════ WORKOUT PAGE ══════════ */
 #page-workout{background:var(--black);padding-top:68px;}
@@ -694,10 +692,231 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 #avatarFileInput{
   display:none;
 }
-/* Avatar img when photo uploaded */
-.avatar-inner.has-photo{
-  padding:0;overflow:hidden;
+/* ══════════════════════════════════════════════
+   iOS-STYLE GLASS BOTTOM NAVBAR (mobile-first)
+══════════════════════════════════════════════ */
+.bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:10001;
+  background:rgba(10,9,14,0.82);
+  backdrop-filter:blur(28px) saturate(1.8);
+  -webkit-backdrop-filter:blur(28px) saturate(1.8);
+  border-top:1px solid rgba(139,92,246,.18);
+  padding:0 0 env(safe-area-inset-bottom,0);
+  box-shadow:0 -1px 0 rgba(255,255,255,.04),0 -12px 40px rgba(0,0,0,.5);
 }
+.bottom-nav-inner{
+  display:flex;align-items:stretch;
+  height:58px;
+}
+.bnav-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;
+  border:none;background:transparent;
+  color:var(--muted);cursor:pointer;
+  transition:color .22s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  position:relative;
+}
+.bnav-btn svg{
+  width:21px;height:21px;stroke:currentColor;fill:none;
+  stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  flex-shrink:0;
+}
+.bnav-btn span{
+  font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:600;line-height:1;
+}
+.bnav-btn.active{color:var(--gold);}
+.bnav-btn.active svg{transform:scale(1.12);}
+.bnav-btn::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:0;height:2px;background:var(--gold);border-radius:0 0 3px 3px;
+  transition:width .25s cubic-bezier(.34,1.56,.64,1);
+}
+.bnav-btn.active::before{width:28px;}
+
+@media(max-width:768px){
+  .bottom-nav{display:block;}
+  /* Push all page content above bottom nav */
+  .page{padding-bottom:calc(58px + env(safe-area-inset-bottom,0))!important;}
+  /* Hide top navbar links on mobile — bottom nav handles it */
+  nav{display:none!important;}
+}
+@media(min-width:769px){
+  .bottom-nav{display:none!important;}
+}
+
+/* ══════════════════════════════════════════════
+   XP BAR — persistent top strip
+══════════════════════════════════════════════ */
+#xpStrip{
+  position:fixed;top:0;left:0;right:0;z-index:10002;
+  height:3px;background:var(--surface2);
+  pointer-events:none;display:none;
+}
+#xpStripFill{
+  height:100%;
+  background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 10px rgba(139,92,246,.6);
+}
+/* XP floating badge (desktop nav) */
+#xpBadge{
+  display:none;align-items:center;gap:.4rem;
+  background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);
+  border-radius:100px;padding:.3rem .8rem;
+  font-size:.72rem;letter-spacing:.08em;color:var(--gold);
+  cursor:default;flex-shrink:0;
+}
+#xpBadge.visible{display:flex;}
+
+/* ══════════════════════════════════════════════
+   LEVEL-UP CELEBRATION OVERLAY
+══════════════════════════════════════════════ */
+#levelUpOverlay{
+  position:fixed;inset:0;z-index:200000;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0;
+  transition:opacity .3s;
+}
+#levelUpOverlay.show{opacity:1;pointer-events:auto;}
+.level-up-card{
+  background:linear-gradient(135deg,rgba(15,12,28,.97),rgba(20,15,35,.97));
+  border:1px solid rgba(139,92,246,.5);
+  border-radius:20px;padding:2.5rem 3rem;text-align:center;
+  box-shadow:0 0 60px rgba(139,92,246,.3),0 40px 80px rgba(0,0,0,.8);
+  animation:levelUpPop .5s cubic-bezier(.34,1.56,.64,1) forwards;
+  transform:scale(.8);opacity:0;
+}
+@keyframes levelUpPop{to{transform:scale(1);opacity:1;}}
+.level-up-emoji{font-size:3.5rem;display:block;margin-bottom:.8rem;animation:spin1 .6s ease forwards;}
+@keyframes spin1{from{transform:rotate(-20deg)scale(.5);}to{transform:rotate(0)scale(1);}}
+.level-up-title{font-family:'Bebas Neue';font-size:2.5rem;color:var(--gold);letter-spacing:.1em;}
+.level-up-sub{color:var(--muted2);font-size:.9rem;margin-top:.4rem;}
+.level-up-num{font-family:'Bebas Neue';font-size:5rem;color:var(--white);line-height:1;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.level-up-xp{font-size:.75rem;color:var(--gold);letter-spacing:.2em;text-transform:uppercase;margin-top:.5rem;}
+.level-up-close{
+  margin-top:1.5rem;padding:.7rem 2rem;background:var(--gold);color:var(--black);
+  border:none;border-radius:100px;font-weight:700;font-size:.85rem;
+  cursor:pointer;pointer-events:auto;
+  transition:all .25s;
+}
+.level-up-close:hover{background:var(--gold-light);transform:translateY(-2px);}
+
+/* ══════════════════════════════════════════════
+   DAILY GOALS BAR (floats above bottom nav on mobile)
+══════════════════════════════════════════════ */
+#dailyGoalsBar{
+  position:fixed;bottom:calc(58px + env(safe-area-inset-bottom,0));
+  left:0;right:0;z-index:10000;
+  background:rgba(10,9,14,.9);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid rgba(139,92,246,.12);
+  padding:.6rem 1.2rem;
+  display:none;
+  transition:transform .3s ease;
+}
+@media(max-width:768px){#dailyGoalsBar{display:block;}}
+.daily-goals-inner{
+  display:flex;align-items:center;gap:.8rem;max-width:480px;margin:0 auto;
+}
+.dg-label{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);white-space:nowrap;flex-shrink:0;}
+.dg-track{flex:1;height:4px;background:var(--surface3);border-radius:4px;overflow:hidden;}
+.dg-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.dg-pct{font-size:.65rem;color:var(--gold);font-weight:700;white-space:nowrap;flex-shrink:0;}
+
+/* ══════════════════════════════════════════════
+   LEADERBOARD PAGE
+══════════════════════════════════════════════ */
+#page-leaderboard{background:var(--black);padding-top:68px;}
+.lb-wrap{max-width:700px;margin:0 auto;padding:2rem 1.5rem 6rem;}
+.lb-header{text-align:center;padding:3rem 0 2rem;}
+.lb-header h1{font-family:'Bebas Neue';font-size:clamp(2.5rem,8vw,5rem);color:var(--white);}
+.lb-header h1 span{color:var(--gold);}
+.lb-list{display:flex;flex-direction:column;gap:.7rem;}
+.lb-row{
+  display:flex;align-items:center;gap:1rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  padding:.9rem 1.2rem;transition:all .3s cubic-bezier(.4,0,.2,1);
+  animation:fadeUp .4s ease both;
+}
+.lb-row:hover{border-color:var(--border2);transform:translateX(4px);}
+.lb-row.me{border-color:rgba(139,92,246,.5);background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(109,40,217,.05));}
+.lb-rank{font-family:'Bebas Neue';font-size:1.4rem;color:var(--muted);width:28px;text-align:center;flex-shrink:0;}
+.lb-rank.gold{color:#fbbf24;}.lb-rank.silver{color:#94a3b8;}.lb-rank.bronze{color:#c2763a;}
+.lb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dark),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:1rem;color:var(--black);flex-shrink:0;}
+.lb-info{flex:1;min-width:0;}
+.lb-name{font-weight:600;font-size:.88rem;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lb-sub{font-size:.7rem;color:var(--muted2);margin-top:.1rem;}
+.lb-xp{font-family:'Bebas Neue';font-size:1.3rem;color:var(--gold);flex-shrink:0;}
+.lb-loading{text-align:center;padding:3rem;color:var(--muted2);}
+.lb-empty{text-align:center;padding:3rem;color:var(--muted);}
+
+/* ══════════════════════════════════════════════
+   HISTORY / WEEKLY STATS
+══════════════════════════════════════════════ */
+.history-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem;margin-bottom:1.5rem;}
+.hist-day{
+  background:var(--surface2);border-radius:6px;padding:.5rem .2rem;
+  text-align:center;font-size:.55rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted);transition:all .3s;border:1px solid transparent;
+}
+.hist-day.active{background:rgba(139,92,246,.15);border-color:rgba(139,92,246,.3);color:var(--gold);}
+.hist-day.today{border-color:var(--gold);color:var(--white);}
+.hist-bar-wrap{height:40px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:.3rem;}
+.hist-bar{width:70%;background:linear-gradient(180deg,var(--gold),var(--gold-dark));border-radius:3px 3px 0 0;min-height:2px;transition:height .6s cubic-bezier(.4,0,.2,1);}
+.hist-label{font-size:.55rem;}
+.weekly-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:1.5rem;}
+.wstat{background:var(--surface2);border-radius:8px;padding:1rem;text-align:center;}
+.wstat-num{font-family:'Bebas Neue';font-size:1.8rem;color:var(--gold);}
+.wstat-label{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+
+/* ══════════════════════════════════════════════
+   XP CARD in profile
+══════════════════════════════════════════════ */
+.xp-card{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(109,40,217,.06));border:1px solid rgba(139,92,246,.25);border-radius:10px;padding:1.4rem;}
+.xp-level-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;}
+.xp-level-num{font-family:'Bebas Neue';font-size:2.8rem;color:var(--gold);line-height:1;}
+.xp-level-label{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.xp-title{font-size:.85rem;color:var(--white);font-weight:600;}
+.xp-bar-track{height:8px;background:var(--surface2);border-radius:8px;overflow:hidden;margin:.6rem 0;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));border-radius:8px;transition:width 1s cubic-bezier(.4,0,.2,1);position:relative;}
+.xp-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shimmer 1.8s ease infinite;background-size:200%;}
+.xp-progress-text{font-size:.7rem;color:var(--muted2);display:flex;justify-content:space-between;}
+
+/* ══════════════════════════════════════════════
+   ACHIEVEMENT XP BURST ANIMATION
+══════════════════════════════════════════════ */
+.xp-burst{
+  position:fixed;pointer-events:none;z-index:100000;
+  font-family:'Bebas Neue';font-size:1.4rem;color:var(--gold);
+  text-shadow:0 0 12px rgba(139,92,246,.8);
+  animation:xpBurst .9s ease forwards;
+}
+@keyframes xpBurst{
+  0%{opacity:1;transform:translateY(0) scale(1);}
+  60%{opacity:1;transform:translateY(-50px) scale(1.2);}
+  100%{opacity:0;transform:translateY(-80px) scale(.8);}
+}
+
+/* ══════════════════════════════════════════════
+   SWIPE INDICATOR
+══════════════════════════════════════════════ */
+.swipe-hint{
+  display:none;position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0));
+  left:50%;transform:translateX(-50%);
+  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);
+  opacity:0;animation:swipeHintFade 3s ease 2s forwards;
+  pointer-events:none;
+}
+@media(max-width:768px){.swipe-hint{display:block;}}
+@keyframes swipeHintFade{0%{opacity:0;}20%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+
 .avatar-inner.has-photo img{
   width:100%;height:100%;object-fit:cover;border-radius:50%;
 }
@@ -742,179 +961,27 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 }
 
 /* ═══════════════════════════════════════════════════
-   ENHANCED PREMIUM LOADER — ULTRA CINEMATIC REVEAL
+   LOADER — MINIMAL PREMIUM (Apple/Nike feel)
+   Max 1.2s, no heavy effects, just clean & confident
    ═══════════════════════════════════════════════════ */
 #loader{
   position:fixed;inset:0;background:var(--black);z-index:999999;
-  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;
-  transition:opacity 1s cubic-bezier(.4,0,.2,1);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;
+  transition:opacity .55s cubic-bezier(.4,0,.2,1);
   will-change:opacity;
-  overflow:hidden;
 }
 #loader.fade{opacity:0;pointer-events:none;}
-
-/* Cinematic scan lines overlay */
-#loader::before{
-  content:'';position:absolute;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(139,92,246,.018) 2px,rgba(139,92,246,.018) 4px);
-  pointer-events:none;z-index:1;
-  animation:scanlinesDrift 8s linear infinite;
-}
-@keyframes scanlinesDrift{0%{background-position:0 0;}100%{background-position:0 40px;}}
-
-/* Loader dual pulsing ambient glow */
-#loader::after{
-  content:'';position:absolute;
-  width:800px;height:800px;
-  background:conic-gradient(from 0deg,transparent 0%,rgba(139,92,246,.07) 20%,rgba(167,139,250,.12) 40%,transparent 60%,rgba(91,33,182,.08) 80%,transparent 100%);
-  border-radius:50%;
-  animation:loaderConeRotate 6s linear infinite;
-  pointer-events:none;
-}
-@keyframes loaderConeRotate{0%{transform:rotate(0deg) scale(1);}50%{transform:rotate(180deg) scale(1.1);}100%{transform:rotate(360deg) scale(1);}}
-
-/* Extra ambient orbs */
-.loader-orb1,.loader-orb2{position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);}
-.loader-orb1{
-  width:400px;height:400px;
-  background:radial-gradient(circle,rgba(139,92,246,.18) 0%,transparent 70%);
-  top:-100px;left:-80px;
-  animation:loaderOrbFloat1 4s ease-in-out infinite;
-}
-.loader-orb2{
-  width:300px;height:300px;
-  background:radial-gradient(circle,rgba(109,40,217,.15) 0%,transparent 70%);
-  bottom:-80px;right:-60px;
-  animation:loaderOrbFloat2 5s ease-in-out infinite;
-}
-@keyframes loaderOrbFloat1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,20px) scale(1.1);}}
-@keyframes loaderOrbFloat2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-20px,-30px) scale(1.08);}}
-
-.loader-brand{display:flex;flex-direction:column;align-items:center;gap:.8rem;position:relative;z-index:2;}
-
-/* CINEMATIC LINE SWEEPS — brighter, staggered */
-.loader-lines{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
-.loader-line-h{
-  position:absolute;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent 0%,rgba(139,92,246,.0) 10%,rgba(167,139,250,.7) 50%,rgba(139,92,246,.0) 90%,transparent 100%);
-  animation:loaderLineSweep 2.8s cubic-bezier(.4,0,.2,1) forwards;
-  opacity:0;
-  box-shadow:0 0 8px rgba(139,92,246,.4);
-}
-.loader-line-h:nth-child(1){animation-delay:.2s;}
-.loader-line-h:nth-child(2){animation-delay:.65s;background:linear-gradient(90deg,transparent,rgba(139,92,246,.5) 30%,rgba(196,181,253,.8) 50%,rgba(139,92,246,.5) 70%,transparent);}
-.loader-line-h:nth-child(3){animation-delay:1.1s;background:linear-gradient(90deg,transparent,rgba(91,33,182,.6) 40%,rgba(139,92,246,.9) 50%,rgba(91,33,182,.6) 60%,transparent);}
-@keyframes loaderLineSweep{0%{top:-2px;opacity:0;}4%{opacity:1;}92%{opacity:.4;}100%{top:100%;opacity:0;}}
-
-.loader-line-v{
-  position:absolute;top:0;bottom:0;width:1px;
-  background:linear-gradient(180deg,transparent,rgba(167,139,250,.5) 40%,rgba(139,92,246,.8) 50%,rgba(167,139,250,.5) 60%,transparent);
-  animation:loaderLineVSweep 2.2s cubic-bezier(.4,0,.2,1) .4s forwards;
-  opacity:0;left:50%;
-  box-shadow:0 0 6px rgba(139,92,246,.35);
-}
-@keyframes loaderLineVSweep{0%{opacity:0;transform:scaleY(0);transform-origin:top;}25%{opacity:1;}100%{opacity:0;transform:scaleY(1);}}
-
-/* Corner frame elements — 4 corners now */
-.loader-corners{position:absolute;inset:24px;pointer-events:none;z-index:2;}
-.loader-corners::before,.loader-corners::after{
-  content:'';position:absolute;width:48px;height:48px;
-  border-color:rgba(139,92,246,.6);border-style:solid;
-  animation:cornerReveal .6s .15s cubic-bezier(.34,1.56,.64,1) forwards;
-  opacity:0;
-  filter:drop-shadow(0 0 6px rgba(139,92,246,.5));
-}
-.loader-corners::before{top:0;left:0;border-width:2px 0 0 2px;border-radius:4px 0 0 0;}
-.loader-corners::after{bottom:0;right:0;border-width:0 2px 2px 0;border-radius:0 0 4px 0;}
-
-/* Extra two corners via pseudo on inner el */
-.loader-corners-extra{position:absolute;inset:24px;pointer-events:none;z-index:2;}
-.loader-corners-extra::before,.loader-corners-extra::after{
-  content:'';position:absolute;width:48px;height:48px;
-  border-color:rgba(139,92,246,.6);border-style:solid;
-  animation:cornerReveal .6s .35s cubic-bezier(.34,1.56,.64,1) forwards;
-  opacity:0;
-  filter:drop-shadow(0 0 6px rgba(139,92,246,.5));
-}
-.loader-corners-extra::before{top:0;right:0;border-width:2px 2px 0 0;border-radius:0 4px 0 0;}
-.loader-corners-extra::after{bottom:0;left:0;border-width:0 0 2px 2px;border-radius:0 0 0 4px;}
-
-@keyframes cornerReveal{
-  0%{opacity:0;transform:scale(.6);}
-  70%{opacity:1;transform:scale(1.08);}
-  100%{opacity:1;transform:scale(1);}
-}
-
-/* Glitch flash on logo pop */
-@keyframes logoPop{
-  0%{opacity:0;transform:scale(.3) rotate(-15deg);filter:drop-shadow(0 0 0px rgba(139,92,246,0));}
-  40%{opacity:1;transform:scale(1.15) rotate(4deg);filter:drop-shadow(0 0 40px rgba(139,92,246,1)) drop-shadow(0 0 80px rgba(167,139,250,.7));}
-  55%{transform:scale(.95) rotate(-2deg);filter:drop-shadow(0 0 20px rgba(139,92,246,.8));}
-  70%{transform:scale(1.05) rotate(1deg);}
-  85%{transform:scale(.98) rotate(0);}
-  100%{opacity:1;transform:scale(1) rotate(0);filter:drop-shadow(0 0 30px rgba(139,92,246,.7));}
-}
-
-/* Loader text shimmer */
-.loader-text{
-  font-family:'Bebas Neue';font-size:2rem;color:var(--white);letter-spacing:.4em;
-  animation:loaderTextReveal .9s .75s cubic-bezier(.34,1.2,.64,1) forwards;opacity:0;
-  position:relative;
-}
-.loader-text span{color:var(--gold);}
-@keyframes loaderTextReveal{
-  0%{opacity:0;transform:translateY(20px) scale(.9);letter-spacing:.2em;}
-  60%{opacity:1;transform:translateY(-3px) scale(1.02);letter-spacing:.5em;}
-  100%{opacity:1;transform:translateY(0) scale(1);letter-spacing:.4em;}
-}
-
-.loader-tagline{
-  font-size:.6rem;letter-spacing:.5em;text-transform:uppercase;color:var(--muted2);
-  animation:loaderTagReveal 1s 1.1s ease forwards;opacity:0;
-}
-@keyframes loaderTagReveal{
-  0%{opacity:0;letter-spacing:.2em;}
-  100%{opacity:1;letter-spacing:.5em;}
-}
-
-/* Progress bar glow pulse */
-.loader-bar{
-  width:220px;height:2px;background:var(--surface3);border-radius:2px;overflow:visible;
-  position:relative;box-shadow:0 0 12px rgba(139,92,246,.15);
-}
-.loader-fill{
-  width:0;height:100%;
-  background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light));
-  animation:loaderFill 1.8s .4s cubic-bezier(.4,0,.2,1) forwards;border-radius:2px;
-  box-shadow:0 0 10px rgba(167,139,250,.8),0 0 20px rgba(139,92,246,.5);
-  position:relative;
-}
-.loader-fill::after{
-  content:'';position:absolute;right:0;top:-3px;width:6px;height:8px;
-  background:var(--gold-light);border-radius:50%;
-  box-shadow:0 0 12px var(--gold),0 0 24px rgba(139,92,246,.8);
-  filter:blur(1px);
-}
-@keyframes loaderFill{to{width:100%;}}
-
-/* Percentage counter styled as premium */
-.loader-pct{
-  font-size:.65rem;color:var(--muted);letter-spacing:.3em;font-family:'DM Sans';
-  animation:fadeIn 1s .5s forwards;opacity:0;
-  position:relative;z-index:2;
-}
-#loaderPct{
-  font-family:'Bebas Neue';font-size:1.4rem;color:var(--gold);letter-spacing:.2em;
-  position:relative;z-index:2;
-  text-shadow:0 0 30px rgba(139,92,246,.8),0 0 60px rgba(139,92,246,.4);
-}
-
-/* Terminal line — refined */
-.loader-terminal{
-  font-size:.65rem;color:rgba(167,139,250,.7);letter-spacing:.1em;font-family:'DM Sans';
-  animation:loaderTagReveal 1s 1.3s forwards;opacity:0;
-}
-.loader-terminal::before{content:'> ';color:var(--gold);}
+.loader-brand{position:relative;display:flex;flex-direction:column;align-items:center;gap:1.1rem;}
+/* No heavy pseudo effects on loader */
+#loader::before,#loader::after{display:none;}
+/* No orbs */
+.loader-orb1,.loader-orb2{display:none;}
+/* No scan lines */
+.loader-lines,.loader-line-h,.loader-line-v{display:none;}
+/* No corners */
+.loader-corners,.loader-corners-extra{display:none;}
+/* loaderPct hidden */
+#loaderPct{display:none;}
 
 /* ═══════════════════════════════════════════════════
    HERO REVEAL ANIMATION (post-loader)
@@ -963,6 +1030,30 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 }
 .btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(139,92,246,.35);}
 .btn-outline:hover{transform:translateY(-2px);}
+
+/* ═══════════════════════════════════════════════════
+   SMOOTH PAGE TRANSITIONS + APPLE-FEEL POLISH
+   ═══════════════════════════════════════════════════ */
+.page{
+  animation:none;
+  transition:opacity .22s ease;
+}
+.page.active{
+  animation:pageIn .28s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes pageIn{
+  from{opacity:0;transform:translateY(6px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* Smoother card hovers on touch — disable scale on mobile */
+@media(hover:none){
+  .card:hover{transform:none;}
+  .card-glow:hover{box-shadow:none;}
+  .ach-item:hover{transform:none;}
+  .p-stat:hover{transform:none;}
+  .metric-box:hover{transform:none;}
+}
 
 /* ═══════════════════════════════════════════════════
    MOBILE RESPONSIVENESS — COMPREHENSIVE FIXES
@@ -1131,6 +1222,7 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
   min-height:420px;
 }
 /* Camera side */
+
 .cal-camera-side{
   position:relative;background:#050508;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:1.5rem;padding:2rem;
@@ -1732,27 +1824,16 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 <!-- HERO REVEAL OVERLAY -->
 <div class="hero-reveal-overlay" id="heroRevealOverlay"></div>
 
-<!-- ENHANCED CINEMATIC LOADER -->
+<!-- MINIMAL PREMIUM LOADER — Apple/Nike style -->
 <div id="loader">
-  <div class="loader-orb1"></div>
-  <div class="loader-orb2"></div>
-  <div class="loader-lines">
-    <div class="loader-line-h"></div>
-    <div class="loader-line-h"></div>
-    <div class="loader-line-h"></div>
-    <div class="loader-line-v"></div>
-  </div>
-  <div class="loader-corners"></div>
-  <div class="loader-corners-extra"></div>
   <div class="loader-brand">
-    <img src="assets/logo.png" alt="Becoming Me" class="loader-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-    <div style="display:none;font-family:'Bebas Neue';font-size:4.5rem;color:var(--gold);letter-spacing:.1em;filter:drop-shadow(0 0 30px rgba(139,92,246,.9));animation:logoPop 1.2s cubic-bezier(.34,1.56,.64,1) forwards;opacity:0">BM</div>
+    <div class="loader-glow-ring"></div>
+    <img src="assets/logo.png" alt="Becoming Me" class="loader-logo-img"
+      onerror="this.outerHTML='<div style=\'font-family:Bebas Neue;font-size:3rem;color:var(--gold);letter-spacing:.1em;opacity:0;animation:loaderLogoIn .6s .15s ease forwards\'>BM</div>'">
     <div class="loader-text">BECOMING<span>ME</span></div>
     <div class="loader-tagline">Stronger. Better. You.</div>
+    <div class="loader-bar"><div class="loader-fill"></div></div>
   </div>
-  <div class="loader-bar"><div class="loader-fill"></div></div>
-  <div class="loader-pct"><span id="loaderPct">0%</span></div>
-  <div class="loader-terminal">booting your fitness era_</div>
 </div>
 
 
@@ -1788,6 +1869,10 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
       <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
       Nutrition
     </button>
+    <button class="nav-link" data-page="leaderboard" onclick="showPage('leaderboard')">
+      <svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+      Ranks
+    </button>
     <button class="nav-link" data-page="profile" onclick="showPage('profile')">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Profile
@@ -1818,12 +1903,37 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
   <button class="drawer-link" onclick="showPage('diet');toggleDrawer()">
     <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>Nutrition
   </button>
+  <button class="drawer-link" onclick="showPage('leaderboard');toggleDrawer()">
+    <svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>Leaderboard
+  </button>
   <button class="drawer-link" onclick="showPage('profile');toggleDrawer()">
     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
   </button>
 </div>
 
-<!-- ═══════════════ HOME PAGE ═══════════════ -->
+<!-- XP Progress Strip -->
+<div id="xpStrip"><div id="xpStripFill" style="width:0%"></div></div>
+
+<!-- Level-Up Overlay -->
+<div id="levelUpOverlay">
+  <div class="level-up-card">
+    <span class="level-up-emoji">⚡</span>
+    <div class="level-up-title">Level Up!</div>
+    <div class="level-up-num" id="levelUpNum">2</div>
+    <div class="level-up-sub">You've reached a new level</div>
+    <div class="level-up-xp" id="levelUpXPText">+100 XP milestone</div>
+    <button class="level-up-close" onclick="document.getElementById('levelUpOverlay').classList.remove('show')">Keep Going 🔥</button>
+  </div>
+</div>
+
+<!-- Daily Goals Bar (mobile) -->
+<div id="dailyGoalsBar">
+  <div class="daily-goals-inner">
+    <div class="dg-label">Today</div>
+    <div class="dg-track"><div class="dg-fill" id="dgFill" style="width:0%"></div></div>
+    <div class="dg-pct" id="dgPct">0/5 exercises</div>
+  </div>
+</div>
 <div class="page active" id="page-home">
   <section id="hero">
     <div class="hero-bg">
@@ -1851,11 +1961,11 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
     <div class="hero-stats">
       <div class="stat"><div class="stat-num" data-count="50">0</div><div class="stat-label">Expert Plans</div></div>
       <div class="hero-stat-divider"></div>
-      <div class="stat"><div class="stat-num" data-count="12000">0</div><div class="stat-label">Members</div></div>
-      <div class="hero-stat-divider"></div>
-      <div class="stat"><div class="stat-num" data-count="98">0</div><div class="stat-label">% Satisfaction</div></div>
-      <div class="hero-stat-divider"></div>
       <div class="stat"><div class="stat-num" data-count="500">0</div><div class="stat-label">Exercises</div></div>
+      <div class="hero-stat-divider"></div>
+      <div class="stat"><div class="stat-num" data-count="7">0</div><div class="stat-label">Muscle Groups</div></div>
+      <div class="hero-stat-divider"></div>
+      <div class="stat"><div class="stat-num" data-count="0">0</div><div class="stat-label" id="memberCountLabel">Members Growing</div></div>
     </div>
     <div class="scroll-ind"><div class="scroll-line"></div>Scroll</div>
   </section>
@@ -2146,6 +2256,20 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
         <!-- LEFT: CAMERA UI -->
         <div class="cal-camera-side">
           <div class="cal-cam-viewport" id="calViewport">
+            <video id="cameraFeed" autoplay playsinline style="
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  position:absolute;
+  inset:0;
+  z-index:1;
+"></video>
+
+<div class="cal-cam-frame"></div>
+<div class="cal-frame-tr"></div>
+<div class="cal-frame-bl"></div>
+
+<div class="cal-scan-line" id="scanLine"></div>
             <!-- Corner frame brackets -->
             <div class="cal-cam-frame"></div>
             <div class="cal-frame-tr"></div>
@@ -2645,24 +2769,29 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
           <div class="profile-badge">🔥 Becoming Elite</div>
         </div>
         <div class="profile-stats-row">
-          <div class="p-stat"><div class="p-stat-num">42</div><div class="p-stat-label">Streak</div></div>
-          <div class="p-stat"><div class="p-stat-num">128</div><div class="p-stat-label">Sessions</div></div>
-          <div class="p-stat"><div class="p-stat-num">12kg</div><div class="p-stat-label">Progress</div></div>
+          <div class="p-stat"><div class="p-stat-num" id="statStreak">0</div><div class="p-stat-label">Streak</div></div>
+          <div class="p-stat"><div class="p-stat-num" id="statSessions">0</div><div class="p-stat-label">Sessions</div></div>
+          <div class="p-stat"><div class="p-stat-num" id="statExercises">0</div><div class="p-stat-label">Exercises Done</div></div>
         </div>
       </div>
 
       <!-- METRICS -->
       <div class="profile-card">
         <div class="label-tag" style="margin-bottom:1rem">Body Metrics</div>
-        <div class="metrics-row">
-          <div class="metric-box"><div class="metric-val">72</div><div class="metric-unit">kg</div><div class="metric-change">↓ 8kg</div></div>
-          <div class="metric-box"><div class="metric-val">18</div><div class="metric-unit">% fat</div><div class="metric-change">↓ 4%</div></div>
-          <div class="metric-box"><div class="metric-val">BMI</div><div class="metric-unit">22.4</div><div class="metric-change">Normal</div></div>
+        <div id="metricsBlock">
+          <div class="metrics-row">
+            <div class="metric-box"><div class="metric-val" id="metricWeight">—</div><div class="metric-unit">kg</div><div class="metric-change" id="metricWeightLabel">Log below</div></div>
+            <div class="metric-box"><div class="metric-val" id="metricFat">—</div><div class="metric-unit">% fat</div><div class="metric-change" id="metricFatLabel">Log below</div></div>
+            <div class="metric-box"><div class="metric-val" id="metricBMI">—</div><div class="metric-unit">BMI</div><div class="metric-change" id="metricBMILabel">Calculate</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.8rem">
+            <div class="setup-field"><label>Weight (kg)</label><input type="number" id="logWeight" placeholder="72" min="30" max="250" oninput="updateMetrics()"></div>
+            <div class="setup-field"><label>Height (cm)</label><input type="number" id="logHeight" placeholder="175" min="100" max="250" oninput="updateMetrics()"></div>
+          </div>
         </div>
-        <div class="progress-wrap"><div class="progress-label"><span>Weight Goal</span><span style="color:var(--gold)">78%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%" data-width="78%"></div></div></div>
-        <div class="progress-wrap"><div class="progress-label"><span>Muscle Mass</span><span style="color:var(--gold)">65%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%" data-width="65%"></div></div></div>
-        <div class="progress-wrap"><div class="progress-label"><span>Endurance</span><span style="color:var(--gold)">82%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%" data-width="82%"></div></div></div>
-        <div class="progress-wrap"><div class="progress-label"><span>Flexibility</span><span style="color:var(--gold)">55%</span></div><div class="progress-bar"><div class="progress-fill" style="width:0%" data-width="55%"></div></div></div>
+        <div class="progress-wrap" style="margin-top:1rem"><div class="progress-label"><span>Workouts This Week</span><span style="color:var(--gold)" id="progWeekPct">0/5 days</span></div><div class="progress-bar"><div class="progress-fill" id="progWeekBar" style="width:0%"></div></div></div>
+        <div class="progress-wrap"><div class="progress-label"><span>Monthly Sessions</span><span style="color:var(--gold)" id="progMonthPct">0/20 sessions</span></div><div class="progress-bar"><div class="progress-fill" id="progMonthBar" style="width:0%"></div></div></div>
+        <div class="progress-wrap"><div class="progress-label"><span>Total Exercises Done</span><span style="color:var(--gold)" id="progExPct">0 done</span></div><div class="progress-bar"><div class="progress-fill" id="progExBar" style="width:0%"></div></div></div>
       </div>
 
       <!-- SETTINGS -->
@@ -2700,6 +2829,32 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
           <button class="btn-outline">View History</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ LEADERBOARD PAGE ═══════════════ -->
+<div class="page" id="page-leaderboard">
+  <div class="lb-wrap">
+    <div class="lb-header">
+      <div class="label-tag" style="justify-content:center;margin-bottom:.8rem">Global Rankings</div>
+      <h1 class="reveal">TOP <span>ATHLETES</span></h1>
+      <p style="color:var(--muted2);font-size:.88rem;margin-top:.5rem">Ranked by total XP earned. Train more, climb higher.</p>
+    </div>
+    <!-- My Rank Card -->
+    <div id="myRankCard" style="background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(109,40,217,.06));border:1px solid rgba(139,92,246,.3);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.5rem;display:none;">
+      <div style="font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">Your Standing</div>
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <div style="font-family:'Bebas Neue';font-size:2rem;color:var(--gold)" id="myRankNum">#—</div>
+        <div style="flex:1"><div style="font-weight:600;color:var(--white)" id="myRankName">You</div><div style="font-size:.72rem;color:var(--muted2)" id="myRankXP">0 XP · Level 0</div></div>
+        <div style="font-family:'Bebas Neue';font-size:1.5rem;color:var(--gold-light)" id="myRankLevel">Lv.0</div>
+      </div>
+    </div>
+    <div id="lbList" class="lb-list">
+      <div class="lb-loading">⚡ Loading champions...</div>
+    </div>
+    <div style="text-align:center;margin-top:1.5rem">
+      <button class="btn-outline" onclick="initLeaderboardPage()" style="font-size:.78rem;padding:.7rem 1.5rem">↻ Refresh</button>
     </div>
   </div>
 </div>
@@ -2830,20 +2985,19 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
   </div>
 </div>
 
-<!-- ═══════════════ FIREBASE (UNCHANGED) ═══════════════ -->
+<!-- ═══════════════ FIREBASE + FIRESTORE — FULL SYSTEM ═══════════════ -->
 <script type="module">
- import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
- import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-  GoogleAuthProvider,
-  signInWithPopup,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup,
+    setPersistence, browserLocalPersistence
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot,
+    collection, query, orderBy, limit, serverTimestamp, getDocs, increment, addDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
   const firebaseConfig = {
     apiKey: "AIzaSyD8nNo-gclDL5-1Ck128I998Di0hWb6qa4",
     authDomain: "becoming-me-e96f1.firebaseapp.com",
@@ -2852,101 +3006,244 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
     messagingSenderId: "4596861260",
     appId: "1:4596861260:web:148f77de4e46b058dc67e9"
   };
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db   = getFirestore(app);
   setPersistence(auth, browserLocalPersistence);
-  const provider = new GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-  window.googleProvider = provider;
-  window.signInWithPopup = signInWithPopup;
-  window.auth = auth;
+
+  // ── Expose essentials globally ──
+  window.auth = auth; window.db = db;
   window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
   window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-  window.onAuthStateChanged = onAuthStateChanged;
   window.signOutUser = signOut;
 
-  onAuthStateChanged(auth, (user) => {
+  // ── XP helpers ──
+  const XP_PER_EXERCISE = 10;
+  const XP_PER_SESSION  = 50;
+  const XP_PER_LEVEL    = 100;
+  window.xpToLevel = xp => Math.floor((xp||0) / XP_PER_LEVEL);
+  window.xpInLevel  = xp => (xp||0) % XP_PER_LEVEL;
+
+  // ── Default user document (all zeros) ──
+  const defaultUser = (authUser) => ({
+    name: authUser.displayName || 'User',
+    email: authUser.email || '',
+    photo: null,
+    xp: 0, level: 0,
+    streak: 0, bestStreak: 0,
+    sessions: 0,
+    exercisesCompleted: 0,
+    caloriesBurned: 0,
+    weekWorkouts: 0, monthSessions: 0,
+    lastWorkoutDate: null,
+    dailyGoalExercises: 0,
+    history: [],          // [{date,exercises,xp,calories}]
+    createdAt: serverTimestamp(),
+    lastLogin: serverTimestamp(),
+  });
+
+  // ── Today's date key (YYYY-MM-DD) ──
+  window.todayKey = () => new Date().toISOString().slice(0,10);
+
+  // ── Streak logic (call after completing a workout) ──
+  function calcStreak(ud) {
+    const today = todayKey();
+    const last = ud.lastWorkoutDate;
+    if (!last) return { streak: 1, lastWorkoutDate: today };
+    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today }; // same day
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    const yKey = yesterday.toISOString().slice(0,10);
+    if (last === yKey) {
+      return { streak: (ud.streak||0) + 1, lastWorkoutDate: today };
+    }
+    // Missed a day — reset
+    return { streak: 1, lastWorkoutDate: today };
+  }
+
+  // ── Load or create Firestore user doc ──
+  async function loadUserData(authUser) {
+    const ref = doc(db, 'users', authUser.uid);
+    try {
+      const snap = await getDoc(ref);
+      let data;
+      if (snap.exists()) {
+        data = snap.data();
+        await updateDoc(ref, { lastLogin: serverTimestamp() });
+      } else {
+        data = defaultUser(authUser);
+        await setDoc(ref, data);
+      }
+      data.name  = data.name  || authUser.displayName || 'User';
+      data.email = data.email || authUser.email || '';
+      window.userData = data;
+      window.userUID  = authUser.uid;
+      localStorage.setItem('bm_user', JSON.stringify({ name:data.name, email:data.email, photo:data.photo||null }));
+      return data;
+    } catch(e) {
+      console.error('Firestore load error:', e);
+      const cached = JSON.parse(localStorage.getItem('bm_user')||'{}');
+      window.userData = { ...defaultUser(authUser), ...cached };
+      window.userUID  = authUser.uid;
+      return window.userData;
+    }
+  }
+
+  // ── Real-time listener (onSnapshot) ──
+  let _unsubSnap = null;
+  function attachRealtimeListener(uid) {
+    if (_unsubSnap) _unsubSnap();
+    _unsubSnap = onSnapshot(doc(db,'users',uid), snap => {
+      if (!snap.exists()) return;
+      window.userData = snap.data();
+      window.userData.name  = window.userData.name  || 'User';
+      window.userData.email = window.userData.email || '';
+      // Live-update profile if open
+      const active = document.querySelector('.page.active');
+      if (active?.id === 'page-profile') initProfile();
+      // Live-update daily goals bar
+      renderDailyGoals(window.userData);
+      // Live-update XP bar in nav
+      renderXPBar(window.userData);
+    });
+  }
+
+  // ── Core stat updater (idempotent-safe with debounce) ──
+  let _pendingUpdates = {};
+  let _updateTimer = null;
+  window.queueStatUpdate = function(updates) {
+    Object.assign(_pendingUpdates, updates);
+    clearTimeout(_updateTimer);
+    _updateTimer = setTimeout(async () => {
+      if (!window.userUID) { _pendingUpdates={}; return; }
+      const batch = { ..._pendingUpdates };
+      _pendingUpdates = {};
+      try {
+        window.userData = { ...(window.userData||{}), ...batch };
+        await updateDoc(doc(db,'users',window.userUID), batch);
+      } catch(e) { console.error('stat update error:', e); }
+    }, 300);
+  };
+
+  // ── Award XP (with level-up celebration) ──
+  window.awardXP = function(amount) {
+    if (!window.userUID) return;
+    const ud = window.userData || {};
+    const prevLevel = xpToLevel(ud.xp||0);
+    const newXP = (ud.xp||0) + amount;
+    const newLevel = xpToLevel(newXP);
+    window.queueStatUpdate({ xp: newXP, level: newLevel });
+    if (newLevel > prevLevel) {
+      setTimeout(() => showLevelUp(newLevel), 400);
+    }
+    renderXPBar({ ...(window.userData||{}), xp: newXP, level: newLevel });
+  };
+
+  // ── Complete a workout session (streak + XP + history) ──
+  window.completeWorkoutSession = function(exercisesDone, estimatedCals) {
+    if (!window.userUID) return;
+    const ud = window.userData || {};
+    const streakData = calcStreak(ud);
+    const bestStreak = Math.max(streakData.streak, ud.bestStreak||0);
+    const history = (ud.history||[]).slice(-29); // keep 30 entries
+    history.push({ date: todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals||0 });
+    window.queueStatUpdate({
+      sessions: (ud.sessions||0)+1,
+      exercisesCompleted: (ud.exercisesCompleted||0) + exercisesDone,
+      caloriesBurned: (ud.caloriesBurned||0) + (estimatedCals||0),
+      weekWorkouts: (ud.weekWorkouts||0)+1,
+      monthSessions: (ud.monthSessions||0)+1,
+      dailyGoalExercises: (ud.dailyGoalExercises||0) + exercisesDone,
+      streak: streakData.streak,
+      bestStreak,
+      lastWorkoutDate: streakData.lastWorkoutDate,
+      history,
+    });
+    window.awardXP(XP_PER_SESSION + exercisesDone * XP_PER_EXERCISE);
+    checkAndFireAchievements({ ...(ud), sessions:(ud.sessions||0)+1, streak:streakData.streak, exercisesCompleted:(ud.exercisesCompleted||0)+exercisesDone });
+  };
+
+  window.saveUserField = async function(field, value) {
+    if (!window.userUID) return;
+    window.userData = window.userData||{};
+    window.userData[field] = value;
+    try { await updateDoc(doc(db,'users',window.userUID), { [field]:value }); }
+    catch(e) { console.error('saveUserField:',e); }
+  };
+
+  // ── Leaderboard — top 10 by XP ──
+  window.loadLeaderboard = async function() {
+    try {
+      const q = query(collection(db,'users'), orderBy('xp','desc'), limit(10));
+      const snaps = await getDocs(q);
+      return snaps.docs.map((d,i) => ({ rank:i+1, ...d.data(), uid:d.id }));
+    } catch(e) { console.error('leaderboard error:',e); return []; }
+  };
+
+  // ── Auth state ──
+  let _firstAuthCheck = true;
+  onAuthStateChanged(auth, async (user) => {
     const btn = document.getElementById('authNavBtn');
-    if(user){
-      localStorage.setItem("bm_user", JSON.stringify({ name: user.displayName || "User", email: user.email }));
-      btn.textContent = "Logout";
-      btn.onclick = logout;
-      showPage('profile');
+    if (user) {
+      await loadUserData(user);
+      attachRealtimeListener(user.uid);
+      if (btn) { btn.textContent='Logout'; btn.onclick=logout; }
+      const active = document.querySelector('.page.active');
+      // Only auto-redirect on first load if on login page (or no page active)
+      if (_firstAuthCheck) {
+        if (!active || active.id==='page-login') showPage('home');
+        else if (active.id==='page-profile') initProfile();
+      } else {
+        // Mid-session: was on login page, redirect to profile
+        if (active && active.id==='page-login') showPage('profile');
+        else if (active && active.id==='page-profile') initProfile();
+      }
+      _firstAuthCheck = false;
+      renderXPBar(window.userData);
+      renderDailyGoals(window.userData);
     } else {
-      btn.textContent = "Get Started →";
-      btn.onclick = () => showPage('login');
+      _firstAuthCheck = false;
+      if (_unsubSnap) { _unsubSnap(); _unsubSnap=null; }
+      window.userData=null; window.userUID=null;
+      if (btn) { btn.textContent='Get Started →'; btn.onclick=()=>showPage('login'); }
+      renderXPBar(null);
     }
   });
 
-  window.googleLogin = function(){
-    const p = new GoogleAuthProvider();
-    p.setCustomParameters({ prompt: "select_account" });
-    signInWithPopup(auth, p)
-      .then((result) => {
-        const user = result.user;
-        localStorage.setItem("bm_user", JSON.stringify({ name: user.displayName || "User", email: user.email }));
-        showToast("🚀 Google Sign-In successful!");
-        setTimeout(() => showPage('profile'), 1000);
-      })
-      .catch((error) => { console.error(error); showToast("Google Sign-In failed ❌"); });
-  }
+  window.googleLogin = async function() {
+    try {
+      const p = new GoogleAuthProvider();
+      p.setCustomParameters({ prompt:'select_account' });
+      await signInWithPopup(auth, p);
+      showToast('🚀 Signed in with Google!');
+    } catch(e) { console.error(e); showToast('Google Sign-In failed ❌'); }
+  };
 </script>
 
 <script>
 // Cursor removed
 
-// Terminal typing effect in loader
-const terminalPhrases = [
-  'Booting your fitness era...',
-  'Loading 500+ exercises...',
-  'Preparing Indian diet plans...',
-  'Configuring personalized workouts...',
-  'Ready to transform_'
-];
-let tIdx = 0;
-function cycleTerminal(){
-  const el = document.querySelector('.loader-terminal');
-  if(!el) return;
-  el.style.opacity = '0';
-  setTimeout(()=>{
-    el.textContent = terminalPhrases[tIdx % terminalPhrases.length];
-    tIdx++;
-    el.style.opacity = '1';
-    el.style.transition = 'opacity .3s';
-    setTimeout(cycleTerminal, 600);
-  }, 300);
-}
-
-// ══════ CINEMATIC LOADER — ENHANCED ══════
-let pct=0;
-const pctEl = document.getElementById('loaderPct');
-const pctTimer = setInterval(() => {
-  pct = Math.min(pct + Math.random()*14 + 2, 97);
-  if(pctEl) pctEl.textContent = Math.round(pct) + '%';
-}, 120);
-
+// ══════ MINIMAL PREMIUM LOADER — 1.2s max ══════
+// No fake percentage, no text spam — just clean fade
 window.addEventListener('load', () => {
-  clearInterval(pctTimer);
-  if(pctEl) pctEl.textContent = '100%';
+  // Loader bar animation is pure CSS (1.1s). Wait for it to finish + tiny hold.
   setTimeout(() => {
     const loader = document.getElementById('loader');
     const overlay = document.getElementById('heroRevealOverlay');
 
-    // Step 1: fade the loader (pure opacity, no scale)
+    // Smooth fade out
     loader.classList.add('fade');
 
-    // Step 2: after loader is gone, fade out the hero overlay smoothly
     setTimeout(() => {
       if(overlay) overlay.classList.add('revealed');
-      // Step 3: remove overlay from DOM after its transition ends
       setTimeout(() => {
         if(overlay) overlay.style.display = 'none';
         loader.style.display = 'none';
-      }, 950);
-    }, 600); // wait for loader fade to complete first
+      }, 500);
+    }, 400);
 
     startCounters();
-  }, 2000); // slightly shorter hold — feels snappier
+  }, 1200); // Total loader visible: ~1.2s including CSS animation
 });
 
 // ══════ SCROLL PROGRESS BAR ══════
@@ -2970,20 +3267,53 @@ document.addEventListener('click', e => {
 
 // ══════ PAGE NAV ══════
 function showPage(name){
+  // Auth guard — only redirect non-auth pages if not logged in
   const user = window.auth ? window.auth.currentUser : null;
-  if(!user && name !== 'login' && name !== 'home'){
-    showToast('🔐 Please sign in first!'); name = 'login';
+  const protectedPages = ['profile'];
+  if(!user && protectedPages.includes(name)){
+    showToast('🔐 Please sign in first!');
+    name = 'login';
   }
+  // If logged in and trying login page, go to profile
   if(user && name === 'login') name = 'profile';
+
+  // Update top nav button
   const btn = document.getElementById('authNavBtn');
-  if(user){ btn.textContent='Logout'; btn.onclick=logout; } else { btn.textContent='Get Started →'; btn.onclick=()=>showPage('login'); }
+  if(btn){
+    if(user){ btn.textContent='Logout'; btn.onclick=logout; }
+    else { btn.textContent='Get Started →'; btn.onclick=()=>showPage('login'); }
+  }
+
+  // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(a => { a.classList.remove('active'); if(a.dataset.page===name) a.classList.add('active'); });
+
+  // Update top nav link active states
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.classList.remove('active');
+    if(a.dataset.page === name) a.classList.add('active');
+  });
+
+  // Update bottom nav active states
+  document.querySelectorAll('.bnav-btn').forEach(b => {
+    b.classList.remove('active');
+    if(b.dataset.page === name) b.classList.add('active');
+  });
+
+  // Show target page
   const pg = document.getElementById('page-'+name);
-  if(pg){ pg.classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+  if(pg){
+    pg.classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  // Init page-specific logic
   if(name==='diet') initDiet();
   if(name==='profile') initProfile();
   if(name==='workout') initLibrary();
+  if(name==='leaderboard') initLeaderboardPage();
+  if(name==='home') {
+    // Nothing extra — hero is always visible
+  }
 }
 
 // ══════ TOAST ══════
@@ -3017,10 +3347,84 @@ function startCounters(){
   });
 }
 
-// ══════ PROGRESS BARS ANIMATE ══════
-function animateProgressBars(){
-  document.querySelectorAll('.progress-fill[data-width]').forEach(el => {
-    setTimeout(() => { el.style.width = el.dataset.width; }, 200);
+// ══════ BODY METRICS ══════
+function updateMetrics(){
+  const w = parseFloat(document.getElementById('logWeight')?.value)||0;
+  const h = parseFloat(document.getElementById('logHeight')?.value)||0;
+  const wEl = document.getElementById('metricWeight');
+  const bmiEl = document.getElementById('metricBMI');
+  const bmiLabel = document.getElementById('metricBMILabel');
+  if(wEl && w>0) wEl.textContent = w;
+  if(bmiEl && h>0 && w>0){
+    const bmi = (w/((h/100)**2)).toFixed(1);
+    bmiEl.textContent = bmi;
+    if(bmiLabel) bmiLabel.textContent = bmi<18.5?'Underweight':bmi<25?'Normal':bmi<30?'Overweight':'Obese';
+  }
+  if(window.userUID && w>0 && h>0 && typeof window.queueStatUpdate==='function')
+    window.queueStatUpdate({ weight:w, height:h });
+}
+function loadMetricsFromData(ud){
+  if(!ud) return;
+  const logW = document.getElementById('logWeight');
+  const logH = document.getElementById('logHeight');
+  if(logW && ud.weight) logW.value = ud.weight;
+  if(logH && ud.height) logH.value = ud.height;
+  if(ud.weight && ud.height) updateMetrics();
+}
+
+// ══════ LEADERBOARD PAGE INIT ══════
+function initLeaderboardPage(){
+  const list = document.getElementById('lbList');
+  if(!list) return;
+  list.innerHTML = '<div class="lb-loading">Loading rankings...</div>';
+
+  if(typeof window.loadLeaderboard !== 'function'){
+    list.innerHTML = '<div class="lb-empty">Sign in to view the leaderboard.</div>';
+    return;
+  }
+
+  window.loadLeaderboard().then(rows => {
+    if(!rows.length){
+      list.innerHTML = '<div class="lb-empty">No athletes yet. Be the first! 🏆</div>';
+      return;
+    }
+    const myUID = window.userUID;
+    // Populate My Rank card
+    const myRankCard = document.getElementById('myRankCard');
+    if(myUID && myRankCard){
+      const myIdx = rows.findIndex(r => r.uid === myUID);
+      if(myIdx >= 0){
+        const me = rows[myIdx];
+        document.getElementById('myRankNum').textContent = '#' + (myIdx+1);
+        document.getElementById('myRankName').textContent = me.name || 'You';
+        document.getElementById('myRankXP').textContent = (me.xp||0).toLocaleString() + ' XP · Level ' + (me.level||0);
+        document.getElementById('myRankLevel').textContent = 'Lv.' + (me.level||0);
+        myRankCard.style.display = 'block';
+      }
+    }
+    list.innerHTML = '';
+    rows.forEach((r, i) => {
+      const rankLabel = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
+      const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+      const initial = (r.name||'U').charAt(0).toUpperCase();
+      const isMe = r.uid === myUID;
+      const div = document.createElement('div');
+      div.className = 'lb-row' + (isMe?' me':'');
+      div.style.animationDelay = (i * 0.06) + 's';
+      div.innerHTML = `
+        <div class="lb-rank ${rankClass}">${rankLabel}</div>
+        <div class="lb-avatar">${initial}</div>
+        <div class="lb-info">
+          <div class="lb-name">${r.name||'Anonymous'}${isMe?' <span style="font-size:.65rem;color:var(--gold);margin-left:.4rem">(You)</span>':''}</div>
+          <div class="lb-sub">Lvl ${r.level||0} · ${r.streak||0} day streak</div>
+        </div>
+        <div class="lb-xp">${(r.xp||0).toLocaleString()} XP</div>
+      `;
+      list.appendChild(div);
+    });
+  }).catch(e => {
+    console.error('Leaderboard render error:', e);
+    list.innerHTML = '<div class="lb-empty">Could not load leaderboard. Check connection.</div>';
   });
 }
 
@@ -3357,11 +3761,27 @@ function generatePlan(){
   document.getElementById('workoutPlan').classList.add('visible');
   showToast('⚡ Your personalized plan is ready!');
   setTimeout(() => document.getElementById('workoutPlan').scrollIntoView({behavior:'smooth'}), 300);
+  // Track session generation in Firestore
+  if(window.updateUserStat && window.auth?.currentUser) {
+    window.updateUserStat('sessions', 1);
+    window.updateUserStat('weekWorkouts', 1);
+  }
 }
 
 function toggleCheck(el){
+  const wasDone = el.classList.contains('done');
   el.classList.toggle('done');
-  if(el.classList.contains('done')) showToast('✅ Exercise complete! Keep going!');
+  const isDone = el.classList.contains('done');
+
+  if(isDone && !wasDone){
+    // Exercise just completed — update Firestore
+    showToast('✅ Exercise complete! Keep going!');
+    if(window.updateUserStat) {
+      window.updateUserStat('exercisesCompleted', 1);
+    }
+    // Haptic feedback
+    if(navigator.vibrate) navigator.vibrate(40);
+  }
 }
 
 // ══════════════════════════════════
@@ -3515,27 +3935,76 @@ function checkHydration(goal){
 }
 
 // ══════════════════════════════════
-// PROFILE
+// PROFILE — Real Firestore data
 // ══════════════════════════════════
 function initProfile(){
-  const user = JSON.parse(localStorage.getItem('bm_user'));
-  if(user){
-    document.getElementById('profileName').textContent = user.name||'User';
-    document.getElementById('profileEmail').textContent = user.email||'';
-    // Restore saved photo or show initial
-    const avatarEl = document.getElementById('avatarEl');
-    if(user.photo){
-      avatarEl.innerHTML = `<img src="${user.photo}" alt="Profile Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  // Use window.userData (loaded from Firestore) or fall back to localStorage
+  const ud = window.userData || JSON.parse(localStorage.getItem('bm_user') || '{}');
+  const user = window.auth ? window.auth.currentUser : null;
+
+  if(!user && !ud.name){
+    // Not logged in — show empty state
+    const el = document.getElementById('profileName');
+    if(el) el.textContent = 'Guest';
+    return;
+  }
+
+  // Name & email
+  const nameEl = document.getElementById('profileName');
+  const emailEl = document.getElementById('profileEmail');
+  if(nameEl) nameEl.textContent = ud.name || user?.displayName || 'User';
+  if(emailEl) emailEl.textContent = ud.email || user?.email || '';
+
+  // Avatar
+  const avatarEl = document.getElementById('avatarEl');
+  if(avatarEl){
+    const photo = ud.photo || null;
+    if(photo){
+      avatarEl.innerHTML = `<img src="${photo}" alt="Profile Photo" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
       avatarEl.classList.add('has-photo');
     } else {
       avatarEl.innerHTML = '';
-      avatarEl.textContent = (user.name||'U').charAt(0).toUpperCase();
+      avatarEl.textContent = (ud.name || 'U').charAt(0).toUpperCase();
       avatarEl.classList.remove('has-photo');
     }
   }
-  buildStreak();
-  buildAchievements();
-  animateProgressBars();
+
+  // Real stats — all start at 0 for new users
+  const streak = ud.streak || 0;
+  const sessions = ud.sessions || 0;
+  const exercises = ud.exercisesCompleted || 0;
+
+  const statStreakEl = document.getElementById('statStreak');
+  const statSessionsEl = document.getElementById('statSessions');
+  const statExercisesEl = document.getElementById('statExercises');
+  if(statStreakEl) animNum('statStreak', streak);
+  if(statSessionsEl) animNum('statSessions', sessions);
+  if(statExercisesEl) animNum('statExercises', exercises);
+
+  // Progress bars — real percentages based on goals
+  const weekWorkouts = Math.min(ud.weekWorkouts || 0, 7);
+  const weekPct = Math.round((weekWorkouts / 5) * 100); // goal: 5/week
+  const monthPct = Math.round(Math.min((sessions / 20) * 100, 100)); // goal: 20/month
+  const exPct = Math.round(Math.min((exercises / 50) * 100, 100)); // goal: 50 exercises milestone
+
+  setTimeout(() => {
+    const wb = document.getElementById('progWeekBar');
+    const mb = document.getElementById('progMonthBar');
+    const eb = document.getElementById('progExBar');
+    const wp = document.getElementById('progWeekPct');
+    const mp = document.getElementById('progMonthPct');
+    const ep = document.getElementById('progExPct');
+    if(wb) wb.style.width = weekPct + '%';
+    if(mb) mb.style.width = monthPct + '%';
+    if(eb) eb.style.width = exPct + '%';
+    if(wp) wp.textContent = weekWorkouts + '/5 days';
+    if(mp) mp.textContent = sessions + '/20 sessions';
+    if(ep) ep.textContent = exercises + ' done';
+  }, 200);
+
+  buildStreak(ud);
+  buildAchievements(ud);
+  loadMetricsFromData(ud);
 }
 
 // Avatar photo upload — click → preview → save to localStorage
@@ -3562,10 +4031,11 @@ function handleAvatarUpload(event){
       avatarEl.style.opacity = '1';
       avatarEl.style.transform = 'scale(1)';
     }, 150);
-    // Persist
-    const user = JSON.parse(localStorage.getItem('bm_user')) || {};
-    user.photo = dataUrl;
-    localStorage.setItem('bm_user', JSON.stringify(user));
+    // Persist to Firestore and localStorage
+    if(window.saveUserField) window.saveUserField('photo', dataUrl);
+    const cachedUser = JSON.parse(localStorage.getItem('bm_user') || '{}');
+    cachedUser.photo = dataUrl;
+    localStorage.setItem('bm_user', JSON.stringify(cachedUser));
     showToast('🖼️ Profile photo updated!');
   };
   reader.readAsDataURL(file);
@@ -3573,42 +4043,51 @@ function handleAvatarUpload(event){
   event.target.value = '';
 }
 
-function buildStreak(){
+function buildStreak(ud){
   const c = document.getElementById('streakRow');
-  if(!c||c.children.length) return;
-  const pattern = [true,true,true,false,true,true,true,true,true,false,true,true,true,'today'];
+  if(!c) return;
+  c.innerHTML = ''; // Always rebuild with fresh data
+  const streak = (ud && ud.streak) || 0;
+  // Build 14-day view based on real streak count
   const labels = ['M','T','W','T','F','S','S','M','T','W','T','F','S','T'];
-  pattern.forEach((done,i) => {
+  const today = 13; // last slot = today
+  for(let i = 0; i < 14; i++){
     const d = document.createElement('div');
-    d.className = 'streak-day '+(done===true?'done':done==='today'?'today':'');
-    d.innerHTML = `<span style="font-size:.85rem">${done===true?'✦':done==='today'?'●':'○'}</span><span>${labels[i]}</span>`;
+    const daysAgo = today - i;
+    const done = streak > 0 && daysAgo < streak;
+    const isToday = i === today;
+    d.className = 'streak-day '+(isToday ? 'today' : done ? 'done' : '');
+    d.innerHTML = `<span style="font-size:.85rem">${isToday ? '●' : done ? '✦' : '○'}</span><span>${labels[i]}</span>`;
     c.appendChild(d);
-  });
+  }
 }
 
-const achievements = [
-  {icon:'🔥',title:'7-Day Streak',desc:'7 consecutive workout days',unlocked:true},
-  {icon:'💪',title:'First 10kg Lost',desc:'Major body transformation milestone',unlocked:true},
-  {icon:'⚡',title:'Speed Demon',desc:'Completed workout under 30 min',unlocked:true},
-  {icon:'🏆',title:'Century Club',desc:'100 total sessions completed',unlocked:false},
-  {icon:'🧘',title:'Mind & Body',desc:'10 recovery sessions logged',unlocked:false},
-  {icon:'🌅',title:'Early Bird',desc:'5 AM workouts — 5 times',unlocked:false},
-  {icon:'🍛',title:'Clean Eater',desc:'7 days of Indian diet logged',unlocked:false},
-  {icon:'🔱',title:'Elite Status',desc:'30-day unbroken streak',unlocked:false},
+const achievementDefs = [
+  {icon:'🔥',title:'7-Day Streak',desc:'7 consecutive workout days',key:'streak',threshold:7},
+  {icon:'⚡',title:'First Session',desc:'Completed your first workout',key:'sessions',threshold:1},
+  {icon:'💪',title:'10 Sessions',desc:'10 total sessions completed',key:'sessions',threshold:10},
+  {icon:'🏆',title:'Century Club',desc:'100 total sessions completed',key:'sessions',threshold:100},
+  {icon:'🎯',title:'Exercise Machine',desc:'Complete 50 exercises',key:'exercisesCompleted',threshold:50},
+  {icon:'🌅',title:'Dedicated',desc:'25 exercises done',key:'exercisesCompleted',threshold:25},
+  {icon:'🔱',title:'Elite Status',desc:'30-day unbroken streak',key:'streak',threshold:30},
+  {icon:'🧘',title:'Consistent',desc:'5 sessions completed',key:'sessions',threshold:5},
 ];
 
-function buildAchievements(){
+function buildAchievements(ud){
   const grid = document.getElementById('achievementGrid');
-  if(!grid||grid.children.length) return;
-  achievements.forEach(a => {
+  if(!grid) return;
+  grid.innerHTML = ''; // Always rebuild
+  achievementDefs.forEach(a => {
+    const val = (ud && ud[a.key]) || 0;
+    const unlocked = val >= a.threshold;
     const el = document.createElement('div');
-    el.className = 'ach-item'+(a.unlocked?' unlocked':'');
+    el.className = 'ach-item'+(unlocked?' unlocked':'');
     el.innerHTML = `
       <div class="ach-icon-wrap">${a.icon}</div>
       <div>
-        <div class="ach-title" style="${!a.unlocked?'color:var(--muted)':''}">${a.title}</div>
+        <div class="ach-title" style="${!unlocked?'color:var(--muted)':''}">${a.title}</div>
         <div class="ach-desc">${a.desc}</div>
-        <div class="ach-status">${a.unlocked?'✦ Unlocked':'🔒 Locked'}</div>
+        <div class="ach-status">${unlocked?'✦ Unlocked':'🔒 Locked — '+val+'/'+a.threshold}</div>
       </div>
     `;
     grid.appendChild(el);
@@ -3626,40 +4105,47 @@ function switchAuth(type){
 
 function handleAuth(type){
   if(type==='signup'){
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
+    const name = document.getElementById('signupName').value.trim();
+    const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirm = document.getElementById('confirmPassword').value;
     if(!name||!email||!password){ showToast('Please fill all fields'); return; }
     if(password!==confirm){ showToast('Passwords do not match ❌'); return; }
-    createUserWithEmailAndPassword(window.auth, email, password)
-      .then(cred => {
-        localStorage.setItem('bm_user', JSON.stringify({name:name||'User',email}));
+    if(!window.createUserWithEmailAndPassword){ showToast('Auth not ready yet, try again'); return; }
+    window.createUserWithEmailAndPassword(window.auth, email, password)
+      .then(() => {
         showToast('🎉 Welcome to Becoming Me!');
-        setTimeout(()=>showPage('profile'),1000);
+        // onAuthStateChanged handles the rest
       }).catch(err=>showToast(err.message));
   }
   if(type==='login'){
-    const email = document.getElementById('loginEmail').value;
+    const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     if(!email||!password){ showToast('Please enter email and password'); return; }
-    signInWithEmailAndPassword(window.auth, email, password)
-      .then(cred => {
-        localStorage.setItem('bm_user', JSON.stringify({name:cred.user.displayName||'User',email:cred.user.email}));
+    if(!window.signInWithEmailAndPassword){ showToast('Auth not ready yet, try again'); return; }
+    window.signInWithEmailAndPassword(window.auth, email, password)
+      .then(() => {
         showToast('🔥 Welcome back!');
-        setTimeout(()=>showPage('profile'),1000);
+        // onAuthStateChanged handles navigation
       }).catch(()=>showToast('Invalid credentials ❌'));
   }
 }
 
 function logout(){
+  if(!window.signOutUser || !window.auth) { showToast('Auth not ready'); return; }
   window.signOutUser(window.auth).then(()=>{
+    window.userData = null;
+    window.userUID = null;
     localStorage.removeItem('bm_user');
     const btn = document.getElementById('authNavBtn');
-    btn.textContent = 'Get Started →'; btn.onclick=()=>showPage('login');
+    if(btn){ btn.textContent = 'Get Started →'; btn.onclick=()=>showPage('login'); }
+    // Update bottom nav
+    document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+    const homeBtn = document.querySelector('.bnav-btn[data-page="home"]');
+    if(homeBtn) homeBtn.classList.add('active');
     showToast('Logged out successfully');
     showPage('home');
-  });
+  }).catch(e => showToast('Logout failed: ' + e.message));
 }
 
 function togglePass(id, eye){
@@ -3684,8 +4170,9 @@ function checkStrength(val){
 
 // ══════ EDIT PROFILE MODAL ══════
 function openEditModal(){
-  const user = JSON.parse(localStorage.getItem('bm_user'));
-  if(user) document.getElementById('editName').value = user.name||'';
+  const ud = window.userData || JSON.parse(localStorage.getItem('bm_user') || '{}');
+  const nameInput = document.getElementById('editName');
+  if(nameInput) nameInput.value = ud.name || '';
   document.getElementById('editModal').classList.add('open');
 }
 function closeEditModal(){
@@ -3694,13 +4181,20 @@ function closeEditModal(){
 function saveProfile(){
   const name = document.getElementById('editName').value.trim();
   if(!name){ showToast('Please enter a name'); return; }
-  const user = JSON.parse(localStorage.getItem('bm_user'))||{};
-  user.name = name;
-  localStorage.setItem('bm_user',JSON.stringify(user));
-  document.getElementById('profileName').textContent = name;
-  // Only update avatar initial if no photo
-  if(!user.photo){
-    document.getElementById('avatarEl').textContent = name.charAt(0).toUpperCase();
+  // Update in-memory
+  if(window.userData) window.userData.name = name;
+  // Sync to Firestore
+  if(window.saveUserField) window.saveUserField('name', name);
+  // Update localStorage cache
+  const cached = JSON.parse(localStorage.getItem('bm_user') || '{}');
+  cached.name = name;
+  localStorage.setItem('bm_user', JSON.stringify(cached));
+  // Update UI
+  const nameEl = document.getElementById('profileName');
+  if(nameEl) nameEl.textContent = name;
+  const avatarEl = document.getElementById('avatarEl');
+  if(avatarEl && !window.userData?.photo && !cached.photo){
+    avatarEl.textContent = name.charAt(0).toUpperCase();
   }
   closeEditModal();
   showToast('Profile updated ✨');
@@ -3750,17 +4244,16 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('service-worker.js').then(r=>console.log('SW:',r.scope)).catch(e=>console.log('SW fail:',e)); });
 }
 
-// AUTH STATE CHECK ON LOAD
+// AUTH STATE CHECK ON LOAD — handled by onAuthStateChanged in Firebase module
 document.addEventListener('DOMContentLoaded',()=>{
-  const saved = JSON.parse(localStorage.getItem('bm_user'));
-  if(saved){
-    const btn = document.getElementById('authNavBtn');
-    btn.textContent='Logout'; btn.onclick=logout;
-  }
   initLibrary();
   setTimeout(startTerminalTyping, 3000);
   initCalorieScanner();
   cycleTerminal();
+  // Restore bottom nav state for home page on fresh load
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  const homeBtn = document.querySelector('.bnav-btn[data-page="home"]');
+  if(homeBtn) homeBtn.classList.add('active');
 });
 
 // ═══════════════════════════════════════════════════
@@ -3928,5 +4421,32 @@ function resetCalScanner(){
 
 // Cursor removed
 </script>
+
+<!-- iOS-STYLE GLASS BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav" aria-label="Main navigation">
+  <div class="bottom-nav-inner">
+    <button class="bnav-btn active" data-page="home" onclick="showPage('home')" aria-label="Home">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="bnav-btn" data-page="workout" onclick="showPage('workout')" aria-label="Workout">
+      <svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>
+      <span>Train</span>
+    </button>
+    <button class="bnav-btn" data-page="diet" onclick="showPage('diet')" aria-label="Nutrition">
+      <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      <span>Fuel</span>
+    </button>
+    <button class="bnav-btn" data-page="leaderboard" onclick="showPage('leaderboard')" aria-label="Leaderboard">
+      <svg viewBox="0 0 24 24"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+      <span>Ranks</span>
+    </button>
+    <button class="bnav-btn" data-page="profile" onclick="showPage('profile')" aria-label="Profile">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Me</span>
+    </button>
+  </div>
+</nav>
+<div class="swipe-hint">← Swipe to navigate →</div>
 </body>
 </html>
