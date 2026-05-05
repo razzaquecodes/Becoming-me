@@ -41,6 +41,77 @@ a,button,[onclick]{
 ::-webkit-scrollbar-track{background:var(--black);}
 ::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),var(--gold-dark));border-radius:2px;}
 
+/* ═══════════════════════════════════════════════
+   MOBILE ENHANCEMENT PATCH — tap states & perf
+   ═══════════════════════════════════════════════ */
+
+/* Global tap feedback (replaces hover-only) */
+.btn-primary:active,.gen-btn:active,.form-submit:active{transform:scale(.97)!important;opacity:.88;}
+.btn-outline:active{border-color:var(--gold);color:var(--gold);opacity:.85;}
+.card:active,.about-card:active,.lib-card:active,.meal-card:active{transform:scale(.985);opacity:.92;}
+.bnav-btn:active{transform:scale(.88);opacity:.75;}
+.nav-link:active,.drawer-link:active{background:rgba(255,255,255,.07)!important;color:var(--white)!important;}
+
+/* Minimum tap targets (44px iOS) */
+.bnav-btn{min-height:44px;padding:6px 4px;}
+.nav-link{min-height:44px;}
+.drawer-link{min-height:48px;}
+.btn-primary,.btn-outline,.gen-btn,.form-submit{min-height:48px;}
+.plan-btn{min-height:48px;}
+.diet-tab{min-height:44px;}
+.lib-filter-btn{min-height:40px;}
+.glass{min-width:40px;min-height:40px;}
+.ex-check{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center;}
+.auth-tab{min-height:44px;}
+.setup-field select,.setup-field input{min-height:44px;}
+
+/* Remove hover-only effects on touch devices */
+@media(hover:none){
+  .btn-primary:hover,.btn-outline:hover,.gen-btn:hover,.nav-pill-filled:hover{transform:none!important;box-shadow:none!important;}
+  .avatar-upload-overlay{opacity:1;background:rgba(0,0,0,.45);}
+  .card::before{opacity:0!important;}
+  .nav-logo-img-wrap:hover .nav-logo-img{transform:none;filter:none;}
+  .nav-logo-img-wrap:hover::after{opacity:0;}
+  .dev-card,.cal-scanner-wrap{animation:none!important;}
+}
+
+/* 375px and below */
+@media(max-width:375px){
+  .hero-title{font-size:clamp(2.8rem,15vw,4.5rem)!important;}
+  .bnav-btn span{font-size:.5rem;}
+  .bnav-btn svg{width:19px;height:19px;}
+  .macro-display{grid-template-columns:1fr 1fr;}
+  .extra-filters{grid-template-columns:1fr;}
+  .lib-grid{grid-template-columns:1fr;}
+  .plan-banner h2{font-size:1.5rem;}
+  .page-hero h1{font-size:clamp(2rem,10vw,3.5rem)!important;}
+  .about-card{padding:1rem;}
+  .modal-box{padding:1.5rem 1rem;width:95%;}
+}
+
+/* Mobile performance — reduce GPU cost */
+@media(max-width:768px){
+  .orb{filter:blur(50px)!important;}
+  .bottom-nav{backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;}
+  nav.scrolled{backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;}
+  .dev-card{animation-duration:6s!important;}
+  .page.active{will-change:opacity;}
+  .bnav-btn{will-change:color;}
+  .bottom-nav-inner{height:56px;}
+  .bnav-btn::before{height:2.5px;}
+  .bnav-btn.active::before{width:32px;}
+  .bnav-btn span{font-size:.58rem;letter-spacing:.08em;}
+  .bnav-btn svg{width:22px;height:22px;}
+  /* Overflow guards */
+  .hero-title{overflow-wrap:break-word;word-break:break-word;}
+  .about-section{overflow:hidden;}
+  .dev-card-inner{overflow:hidden;}
+  /* Meal grid single column */
+  .meal-grid{grid-template-columns:1fr!important;}
+  /* Section heads tighter */
+  .sec-head{padding:2.5rem 1.2rem 1.5rem;}
+}
+
 /* Custom cursor removed */
 
 /* ── LOADER — minimal premium (Apple/Nike style) ── */
@@ -1061,8 +1132,8 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 @media(max-width:768px){
   /* Cursor: n/a (removed) */
 
-  /* Hero */
-  #hero{padding-top:58px;min-height:100svh;}
+  /* Hero — no top nav on mobile so no padding needed */
+  #hero{padding-top:0!important;min-height:100svh;}
   .hero-content{padding:0 1.2rem;max-width:100%;}
   .hero-title{font-size:clamp(3.8rem,18vw,7rem)!important;}
   .hero-subtitle{font-size:.88rem;margin:1.2rem 0 2rem;}
@@ -1118,11 +1189,11 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
     gap:2rem!important;
   }
 
-  /* Workout page */
-  #page-workout{padding-top:58px;}
+  /* Workout page — nav hidden on mobile, minimal top padding */
+  #page-workout{padding-top:16px;}
   .plan-selector{padding:0 1.2rem;}
   .extra-filters{grid-template-columns:1fr 1fr;}
-  .week-grid{grid-template-columns:1fr;}
+  .week-grid{grid-template-columns:1fr!important;gap:.75rem;}
   .plan-banner{padding:1.5rem;}
   .ex-library{padding:0 1.2rem;}
   .lib-grid{grid-template-columns:1fr 1fr;}
@@ -1130,15 +1201,15 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
   .lib-search{width:100%;}
 
   /* Diet page */
-  #page-diet{padding-top:58px;}
+  #page-diet{padding-top:16px;}
   .macro-section{padding:0 1.2rem 3rem;}
   .macro-display{grid-template-columns:1fr 1fr;}
   .macro-inputs{grid-template-columns:1fr 1fr;}
   .diet-tabs{flex-wrap:wrap;}
-  .diet-tab{font-size:.7rem;padding:.7rem .5rem;}
+  .diet-tab{font-size:.7rem;padding:.7rem .5rem;min-height:44px;}
 
   /* Profile page */
-  #page-profile{padding-top:58px;}
+  #page-profile{padding-top:16px;}
   .profile-layout{padding:0 1.2rem 3rem;}
   .profile-stats-row{grid-template-columns:1fr 1fr 1fr;}
   .metrics-row{grid-template-columns:1fr 1fr 1fr;}
@@ -1147,7 +1218,7 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
   }
 
   /* Page hero */
-  .page-hero{padding:3rem 1.2rem 2rem;}
+  .page-hero{padding:2.5rem 1.2rem 1.8rem;}
   .page-hero h1{font-size:clamp(2.5rem,10vw,4.5rem)!important;}
 
   /* Macro cards */
@@ -1156,6 +1227,9 @@ nav.scrolled{background:rgba(8,8,8,.96);backdrop-filter:blur(24px);-webkit-backd
 
   /* Nav */
   nav{height:58px;padding:0 1rem;}
+
+  /* Login page top pad — nav hidden on mobile */
+  #page-login{padding-top:0;}
 }
 
 @media(max-width:480px){
@@ -3256,7 +3330,7 @@ document.addEventListener('click', e => {
 
 // ══════ PAGE NAV ══════
 function showPage(name){
-  // Auth guard — only redirect non-auth pages if not logged in
+  // Auth guard
   const user = window.auth ? window.auth.currentUser : null;
   const protectedPages = ['profile'];
   if(!user && protectedPages.includes(name)){
@@ -3266,7 +3340,7 @@ function showPage(name){
   // If logged in and trying login page, go to profile
   if(user && name === 'login') name = 'profile';
 
-  // Update top nav button
+  // Update top nav auth button
   const btn = document.getElementById('authNavBtn');
   if(btn){
     if(user){ btn.textContent='Logout'; btn.onclick=logout; }
@@ -3276,33 +3350,30 @@ function showPage(name){
   // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
-  // Update top nav link active states
+  // Sync top nav links — single source of truth
   document.querySelectorAll('.nav-link').forEach(a => {
-    a.classList.remove('active');
-    if(a.dataset.page === name) a.classList.add('active');
+    a.classList.toggle('active', a.dataset.page === name);
   });
 
-  // Update bottom nav active states
+  // Sync bottom nav buttons — same single source of truth
   document.querySelectorAll('.bnav-btn').forEach(b => {
-    b.classList.remove('active');
-    if(b.dataset.page === name) b.classList.add('active');
+    b.classList.toggle('active', b.dataset.page === name);
   });
 
   // Show target page
   const pg = document.getElementById('page-'+name);
   if(pg){
     pg.classList.add('active');
-    window.scrollTo({top:0, behavior:'smooth'});
+    // Instant on mobile (smooth causes jank on older Android/iOS)
+    const isMobile = window.innerWidth <= 768;
+    window.scrollTo({top:0, behavior: isMobile ? 'instant' : 'smooth'});
   }
 
-  // Init page-specific logic
-  if(name==='diet') initDiet();
-  if(name==='profile') initProfile();
-  if(name==='workout') initLibrary();
+  // Page-specific init
+  if(name==='diet')        initDiet();
+  if(name==='profile')     initProfile();
+  if(name==='workout')     initLibrary();
   if(name==='leaderboard') initLeaderboardPage();
-  if(name==='home') {
-    // Nothing extra — hero is always visible
-  }
 }
 
 // ══════ TOAST ══════
@@ -4476,6 +4547,40 @@ function checkAndFireAchievements(ud){
     }
   });
 }
+
+// ═══ MOBILE PERFORMANCE PATCHES ═══
+
+// 1. Disable orb animations on mobile (saves GPU frames)
+(function(){
+  if(window.innerWidth > 768) return;
+  document.querySelectorAll('.orb').forEach(function(o){
+    o.style.animation = 'none';
+    o.style.willChange = 'auto';
+  });
+})();
+
+// 2. Passive event listeners for scroll performance
+document.addEventListener('touchstart', function(){}, {passive:true});
+document.addEventListener('touchmove',  function(){}, {passive:true});
+
+// 3. Avatar upload overlay visible on touch devices (no hover)
+(function(){
+  if(!window.matchMedia('(hover:none)').matches) return;
+  var overlay = document.querySelector('.avatar-upload-overlay');
+  if(overlay){ overlay.style.opacity='1'; overlay.style.background='rgba(0,0,0,.45)'; }
+})();
+
+// 4. Resize handler: toggle bottom nav visibility correctly
+var _bnavResizeTimer;
+window.addEventListener('resize', function(){
+  clearTimeout(_bnavResizeTimer);
+  _bnavResizeTimer = setTimeout(function(){
+    var bottomNav = document.getElementById('bottomNav');
+    if(!bottomNav) return;
+    bottomNav.style.display = window.innerWidth <= 768 ? 'block' : 'none';
+  }, 150);
+}, {passive:true});
+
 </script>
 
 
