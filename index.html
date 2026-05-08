@@ -97,10 +97,8 @@ a,button,[onclick]{
   nav.scrolled{backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important;}
   .dev-card{animation-duration:6s!important;}
   .page.active{will-change:opacity;}
-  .bnav-btn{will-change:color;}
+  .bnav-btn{will-change:transform,color;}
   .bottom-nav-inner{height:56px;}
-  .bnav-btn::before{height:2.5px;}
-  .bnav-btn.active::before{width:32px;}
   .bnav-btn span{font-size:.58rem;letter-spacing:.08em;}
   .bnav-btn svg{width:22px;height:22px;}
   /* Overflow guards */
@@ -818,6 +816,43 @@ nav.scrolled{background:rgba(10,9,14,0.94);backdrop-filter:blur(32px) saturate(2
   display:flex;align-items:stretch;
   height:58px;
 }
+.bottom-nav-inner{position:relative;}
+
+/* ── GLASS SLIDER PILL ── */
+.bnav-slider{
+  position:absolute;
+  top:50%;transform:translateY(-50%);
+  height:42px;
+  border-radius:14px;
+  background:rgba(139,92,246,.13);
+  backdrop-filter:blur(12px) saturate(1.6);
+  -webkit-backdrop-filter:blur(12px) saturate(1.6);
+  border:1px solid rgba(139,92,246,.28);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06) inset,
+    0 2px 12px rgba(139,92,246,.18),
+    0 0 24px rgba(139,92,246,.10);
+  pointer-events:none;
+  z-index:0;
+  transition:
+    left .38s cubic-bezier(.34,1.2,.64,1),
+    width .38s cubic-bezier(.34,1.2,.64,1),
+    opacity .22s ease;
+  will-change:left,width;
+  /* subtle shimmer line on top */
+}
+.bnav-slider::before{
+  content:'';
+  position:absolute;top:0;left:15%;right:15%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(167,139,250,.55),transparent);
+  border-radius:1px;
+}
+.bnav-slider::after{
+  content:'';
+  position:absolute;inset:0;border-radius:14px;
+  background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(139,92,246,.18),transparent 70%);
+}
+
 .bnav-btn{
   flex:1;display:flex;flex-direction:column;align-items:center;
   justify-content:center;gap:3px;
@@ -827,25 +862,50 @@ nav.scrolled{background:rgba(10,9,14,0.94);backdrop-filter:blur(32px) saturate(2
   -webkit-tap-highlight-color:transparent;
   touch-action:manipulation;
   position:relative;
+  z-index:1;
 }
 .bnav-btn svg{
   width:21px;height:21px;stroke:currentColor;fill:none;
   stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  transition:
+    transform .32s cubic-bezier(.34,1.56,.64,1),
+    filter .28s ease,
+    stroke .22s ease;
   flex-shrink:0;
 }
 .bnav-btn span{
   font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;
   font-weight:600;line-height:1;
+  transition:
+    color .22s ease,
+    letter-spacing .28s cubic-bezier(.34,1.56,.64,1);
 }
-.bnav-btn.active{color:var(--gold);}
-.bnav-btn.active svg{transform:scale(1.12);}
-.bnav-btn::before{
-  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:0;height:2px;background:var(--gold);border-radius:0 0 3px 3px;
-  transition:width .25s cubic-bezier(.34,1.56,.64,1);
+/* Active state */
+.bnav-btn.active{color:var(--gold-light);}
+.bnav-btn.active svg{
+  transform:scale(1.18) translateY(-1px);
+  filter:drop-shadow(0 0 6px rgba(167,139,250,.65));
 }
-.bnav-btn.active::before{width:28px;}
+.bnav-btn.active span{
+  color:var(--gold-light);
+  letter-spacing:.13em;
+}
+/* Remove old bar indicator */
+.bnav-btn::before{display:none;}
+
+/* Tap press micro-interaction */
+.bnav-btn:active svg{
+  transform:scale(.88) translateY(1px);
+  transition:transform .08s ease;
+}
+/* Hover (non-touch) */
+@media(hover:hover){
+  .bnav-btn:not(.active):hover{color:var(--muted2);}
+  .bnav-btn:not(.active):hover svg{
+    transform:scale(1.06);
+    filter:drop-shadow(0 0 4px rgba(139,92,246,.3));
+  }
+}
 
 @media(max-width:768px){
   .bottom-nav{display:block;}
@@ -5674,7 +5734,99 @@ function checkAndFireAchievements(ud){
   });
 }
 
-// ═══ MOBILE PERFORMANCE PATCHES ═══
+// ══════ iOS GLASS SLIDER — real moving pill ══════
+(function(){
+  var slider, inner, btns, _raf, _resizeTimer;
+
+  function initSlider(){
+    slider = document.getElementById('bnavSlider');
+    inner  = document.getElementById('bnavInner');
+    if(!slider || !inner) return;
+    btns   = inner.querySelectorAll('.bnav-btn');
+    posSliderToActive(true);
+  }
+
+  function posSliderToActive(instant){
+    if(!slider || !inner) return;
+    var active = inner.querySelector('.bnav-btn.active');
+    if(!active){ slider.style.opacity='0'; return; }
+
+    var innerRect  = inner.getBoundingClientRect();
+    var btnRect    = active.getBoundingClientRect();
+    var padH       = 7;  // vertical inset
+    var padW       = 8;  // horizontal inset
+
+    var left   = (btnRect.left - innerRect.left) + padW;
+    var width  = btnRect.width - padW * 2;
+    var height = btnRect.height - padH * 2;
+    var top    = padH;
+
+    if(instant){
+      // teleport without animation on first render
+      slider.style.transition = 'none';
+      slider.style.opacity    = '0';
+    }
+
+    slider.style.left   = left   + 'px';
+    slider.style.width  = width  + 'px';
+    slider.style.height = height + 'px';
+    slider.style.top    = top    + 'px';
+    slider.style.transform = 'none';  // override the translateY(-50%) default
+
+    if(instant){
+      // force reflow then re-enable transitions
+      slider.offsetWidth; // eslint-disable-line
+      slider.style.transition = '';
+      // tiny delay so first paint is invisible, then fade in
+      setTimeout(function(){
+        slider.style.opacity = '1';
+      }, 60);
+    } else {
+      slider.style.opacity = '1';
+    }
+  }
+
+  // Hook into showPage
+  var _origShowPage = window.showPage;
+  window.showPage = function(name){
+    _origShowPage.apply(this, arguments);
+    // rAF so DOM .active class is already toggled
+    cancelAnimationFrame(_raf);
+    _raf = requestAnimationFrame(function(){
+      posSliderToActive(false);
+      // bounce the active button
+      var active = inner && inner.querySelector('.bnav-btn.active');
+      if(active){
+        active.style.transform = 'scale(1.12) translateY(-2px)';
+        active.style.transition = 'transform .15s cubic-bezier(.34,1.8,.64,1)';
+        setTimeout(function(){
+          active.style.transform = '';
+          active.style.transition = '';
+        }, 220);
+      }
+    });
+  };
+
+  // Resize: reposition instantly
+  window.addEventListener('resize', function(){
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(function(){
+      posSliderToActive(true);
+    }, 120);
+  }, {passive:true});
+
+  // Init on DOM ready
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initSlider);
+  } else {
+    // give layout a frame to settle
+    requestAnimationFrame(function(){
+      requestAnimationFrame(initSlider);
+    });
+  }
+})();
+
+
 
 // 1. Disable orb animations on mobile (saves GPU frames)
 (function(){
@@ -5720,7 +5872,8 @@ window.addEventListener('resize', function(){
 
 <!-- iOS-STYLE GLASS BOTTOM NAV -->
 <nav class="bottom-nav" id="bottomNav" aria-label="Main navigation">
-  <div class="bottom-nav-inner">
+  <div class="bottom-nav-inner" id="bnavInner">
+    <div class="bnav-slider" id="bnavSlider" aria-hidden="true"></div>
     <button class="bnav-btn active" data-page="home" onclick="showPage('home')" aria-label="Home">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       <span>Home</span>
