@@ -4886,7 +4886,7 @@ body::before {
                 <span style="color:var(--muted2)">Indian Diet DB</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● ONLINE</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:var(--surface2);border-radius:4px;">
-                <span style="color:var(--muted2)">Firebase Auth</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● LIVE</span>
+                <span style="color:var(--muted2)">Supabase Auth</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● LIVE</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:var(--surface2);border-radius:4px;">
                 <span style="color:var(--muted2)">Progress Tracker</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● ACTIVE</span>
@@ -4903,7 +4903,7 @@ body::before {
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">plans::</span> <span style="color:#c4b5fd">gym + home</span> × 3 levels × 4 goals</div>
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">diet::</span> <span style="color:#c4b5fd">Indian + Intl + Veg</span> meal systems</div>
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">macros::</span> <span style="color:#c4b5fd">auto-calculated</span> by body & goal</div>
-              <div style="color:var(--muted2)"><span style="color:var(--gold-light)">auth::</span> <span style="color:#c4b5fd">Firebase</span> + Google OAuth</div>
+              <div style="color:var(--muted2)"><span style="color:var(--gold-light)">auth::</span> <span style="color:#c4b5fd">Supabase</span> + Google OAuth</div>
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">version::</span> <span style="color:#4ade80">v2.0.0</span> — production</div>
             </div>
           </div>
@@ -4943,7 +4943,7 @@ body::before {
       <div class="card card-glow reveal" style="padding:2rem">
         <div style="width:48px;height:48px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem">🔒</div>
         <h3 style="font-family:'Bebas Neue';font-size:1.4rem;color:var(--white);margin-bottom:.5rem">Secure & Private</h3>
-        <p style="color:var(--muted2);font-size:.82rem;line-height:1.8">Firebase-powered auth with Google Sign-In. Your data is yours. No ads, no data selling, ever.</p>
+        <p style="color:var(--muted2);font-size:.82rem;line-height:1.8">Supabase-powered auth with Google Sign-In. Your data is yours. No ads, no data selling, ever.</p>
       </div>
       <div class="card card-glow reveal" style="padding:2rem">
         <div style="width:48px;height:48px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem">🏆</div>
@@ -5100,13 +5100,13 @@ body::before {
 
             <!-- Bio -->
             <p class="dev-back-bio">
-              Passionate builder of <strong>production-grade web apps</strong> that merge beautiful UI with real-world impact. Created <strong>Becoming Me</strong> to bring science-backed fitness to every Indian — gym or home, no excuses. Loves React, Firebase &amp; turning ideas into polished digital experiences.
+              Passionate builder of <strong>production-grade web apps</strong> that merge beautiful UI with real-world impact. Created <strong>Becoming Me</strong> to bring science-backed fitness to every Indian — gym or home, no excuses. Loves React, Supabase &amp; turning ideas into polished digital experiences.
             </p>
 
             <!-- Skill chips -->
             <div class="dev-back-skills">
               <span class="dev-back-skill">React</span>
-              <span class="dev-back-skill">Firebase</span>
+              <span class="dev-back-skill">Supabase</span>
               <span class="dev-back-skill">Node.js</span>
               <span class="dev-back-skill">JavaScript</span>
               <span class="dev-back-skill">UI / UX</span>
@@ -5229,7 +5229,7 @@ body::before {
           <span style="color:var(--muted2);font-size:.82rem">Made with ♥ in India</span>
           <span style="color:var(--muted2);font-size:.82rem">v2.0 — Production</span>
           <span style="color:var(--muted);font-size:.75rem">PWA Ready</span>
-          <span style="color:var(--muted);font-size:.75rem">Firebase Powered</span>
+          <span style="color:var(--muted);font-size:.75rem">Supabase Powered</span>
         </div>
       </div>
     </div>
@@ -5708,51 +5708,43 @@ body::before {
   </div>
 </div>
 
-<!-- ═══════════════ FIREBASE + FIRESTORE — FULL SYSTEM ═══════════════ -->
+<!-- ═══════════════ SUPABASE AUTH + METADATA — FULL SYSTEM ═══════════════ -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import {
-    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-    onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup,
-    setPersistence, browserLocalPersistence
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import {
-    getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot,
-    collection, query, orderBy, limit, serverTimestamp, getDocs, increment, addDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { supabase, getBecomingMeMetadata, upsertBecomingMeMetadata } from "./supabase.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD8nNo-gclDL5-1Ck128I998Di0hWb6qa4",
-    authDomain: "becoming-me-e96f1.firebaseapp.com",
-    projectId: "becoming-me-e96f1",
-    storageBucket: "becoming-me-e96f1.firebasestorage.app",
-    messagingSenderId: "4596861260",
-    appId: "1:4596861260:web:148f77de4e46b058dc67e9"
+  // ── Expose auth-compatible globals for existing UI code ──
+  window.auth = { currentUser: null };
+  window.supabase = supabase;
+
+  window.createUserWithEmailAndPassword = async (_auth, email, password) => {
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if (error) throw error;
+    return { user: data.user };
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
-  setPersistence(auth, browserLocalPersistence);
+  window.signInWithEmailAndPassword = async (_auth, email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return { user: data.user };
+  };
 
-  // ── Expose essentials globally ──
-  window.auth = auth; window.db = db;
-  window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-  window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-  window.signOutUser = signOut;
+  window.signOutUser = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+  };
 
   // ── XP helpers ──
   const XP_PER_EXERCISE = 10;
-  const XP_PER_SESSION  = 50;
-  const XP_PER_LEVEL    = 100;
-  window.xpToLevel = xp => Math.floor((xp||0) / XP_PER_LEVEL);
-  window.xpInLevel  = xp => (xp||0) % XP_PER_LEVEL;
+  const XP_PER_SESSION = 50;
+  const XP_PER_LEVEL = 100;
+  window.xpToLevel = (xp) => Math.floor((xp || 0) / XP_PER_LEVEL);
+  window.xpInLevel = (xp) => (xp || 0) % XP_PER_LEVEL;
 
-  // ── Default user document (all zeros) ──
+  // ── Default user data stored in Supabase Auth metadata ──
   const defaultUser = (authUser) => ({
-    name: authUser.displayName || 'User',
-    email: authUser.email || '',
-    photo: null,
+    name: authUser?.user_metadata?.name || authUser?.user_metadata?.full_name || "User",
+    email: authUser?.email || "",
+    photo: authUser?.user_metadata?.avatar_url || null,
     xp: 0, level: 0,
     streak: 0, bestStreak: 0,
     sessions: 0,
@@ -5761,185 +5753,215 @@ body::before {
     weekWorkouts: 0, monthSessions: 0,
     lastWorkoutDate: null,
     dailyGoalExercises: 0,
-    history: [],          // [{date,exercises,xp,calories}]
-    createdAt: serverTimestamp(),
-    lastLogin: serverTimestamp(),
+    history: [],
+    createdAt: Date.now(),
+    lastLogin: Date.now(),
   });
 
-  // ── Today's date key (YYYY-MM-DD) ──
-  window.todayKey = () => new Date().toISOString().slice(0,10);
+  window.todayKey = () => new Date().toISOString().slice(0, 10);
 
-  // ── Streak logic (call after completing a workout) ──
   function calcStreak(ud) {
     const today = todayKey();
     const last = ud.lastWorkoutDate;
     if (!last) return { streak: 1, lastWorkoutDate: today };
-    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today }; // same day
-    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-    const yKey = yesterday.toISOString().slice(0,10);
+    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today };
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yKey = yesterday.toISOString().slice(0, 10);
     if (last === yKey) {
-      return { streak: (ud.streak||0) + 1, lastWorkoutDate: today };
+      return { streak: (ud.streak || 0) + 1, lastWorkoutDate: today };
     }
-    // Missed a day — reset
     return { streak: 1, lastWorkoutDate: today };
   }
 
-  // ── Load or create Firestore user doc ──
-  async function loadUserData(authUser) {
-    const ref = doc(db, 'users', authUser.uid);
+  async function persistUserData(partialData) {
     try {
-      const snap = await getDoc(ref);
-      let data;
-      if (snap.exists()) {
-        data = snap.data();
-        await updateDoc(ref, { lastLogin: serverTimestamp() });
-      } else {
-        data = defaultUser(authUser);
-        await setDoc(ref, data);
-      }
-      data.name  = data.name  || authUser.displayName || 'User';
-      data.email = data.email || authUser.email || '';
+      const merged = {
+        ...(window.userData || {}),
+        ...partialData,
+        lastLogin: Date.now(),
+      };
+      const updatedUser = await upsertBecomingMeMetadata(merged);
+      window.userData = getBecomingMeMetadata(updatedUser) || merged;
+      localStorage.setItem(
+        "bm_user",
+        JSON.stringify({
+          name: window.userData.name,
+          email: window.userData.email,
+          photo: window.userData.photo || null,
+        })
+      );
+      return window.userData;
+    } catch (error) {
+      console.error("Supabase metadata save error:", error);
+      throw error;
+    }
+  }
+
+  async function loadUserData(authUser) {
+    try {
+      const meta = getBecomingMeMetadata(authUser);
+      const base = defaultUser(authUser);
+      const data = { ...base, ...(meta || {}) };
+      data.name = data.name || authUser?.user_metadata?.full_name || "User";
+      data.email = data.email || authUser?.email || "";
+      data.photo = data.photo || authUser?.user_metadata?.avatar_url || null;
       window.userData = data;
-      window.userUID  = authUser.uid;
-      localStorage.setItem('bm_user', JSON.stringify({ name:data.name, email:data.email, photo:data.photo||null }));
+      window.userUID = authUser.id;
+      await persistUserData(data);
       return data;
-    } catch(e) {
-      console.error('Firestore load error:', e);
-      const cached = JSON.parse(localStorage.getItem('bm_user')||'{}');
+    } catch (error) {
+      console.error("Supabase load error:", error);
+      const cached = JSON.parse(localStorage.getItem("bm_user") || "{}");
       window.userData = { ...defaultUser(authUser), ...cached };
-      window.userUID  = authUser.uid;
+      window.userUID = authUser.id;
       return window.userData;
     }
   }
 
-  // ── Real-time listener (onSnapshot) ──
-  let _unsubSnap = null;
-  function attachRealtimeListener(uid) {
-    if (_unsubSnap) _unsubSnap();
-    _unsubSnap = onSnapshot(doc(db,'users',uid), snap => {
-      if (!snap.exists()) return;
-      window.userData = snap.data();
-      window.userData.name  = window.userData.name  || 'User';
-      window.userData.email = window.userData.email || '';
-      // Live-update profile if open
-      const active = document.querySelector('.page.active');
-      if (active?.id === 'page-profile') initProfile();
-      // Live-update daily goals bar
-      renderDailyGoals(window.userData);
-      // Live-update XP bar in nav
-      renderXPBar(window.userData);
-    });
-  }
-
-  // ── Core stat updater (idempotent-safe with debounce) ──
+  // ── Core stat updater (debounced metadata writes) ──
   let _pendingUpdates = {};
   let _updateTimer = null;
   window.queueStatUpdate = function(updates) {
     Object.assign(_pendingUpdates, updates);
     clearTimeout(_updateTimer);
     _updateTimer = setTimeout(async () => {
-      if (!window.userUID) { _pendingUpdates={}; return; }
+      if (!window.userUID) {
+        _pendingUpdates = {};
+        return;
+      }
       const batch = { ..._pendingUpdates };
       _pendingUpdates = {};
       try {
-        window.userData = { ...(window.userData||{}), ...batch };
-        await updateDoc(doc(db,'users',window.userUID), batch);
-      } catch(e) { console.error('stat update error:', e); }
+        window.userData = { ...(window.userData || {}), ...batch };
+        await persistUserData(window.userData);
+      } catch (error) {
+        console.error("stat update error:", error);
+      }
     }, 300);
   };
 
-  // ── Award XP (with level-up celebration) ──
   window.awardXP = function(amount) {
     if (!window.userUID) return;
     const ud = window.userData || {};
-    const prevLevel = xpToLevel(ud.xp||0);
-    const newXP = (ud.xp||0) + amount;
+    const prevLevel = xpToLevel(ud.xp || 0);
+    const newXP = (ud.xp || 0) + amount;
     const newLevel = xpToLevel(newXP);
     window.queueStatUpdate({ xp: newXP, level: newLevel });
     if (newLevel > prevLevel) {
       setTimeout(() => showLevelUp(newLevel), 400);
     }
-    renderXPBar({ ...(window.userData||{}), xp: newXP, level: newLevel });
+    renderXPBar({ ...(window.userData || {}), xp: newXP, level: newLevel });
   };
 
-  // ── Complete a workout session (streak + XP + history) ──
   window.completeWorkoutSession = function(exercisesDone, estimatedCals) {
     if (!window.userUID) return;
     const ud = window.userData || {};
     const streakData = calcStreak(ud);
-    const bestStreak = Math.max(streakData.streak, ud.bestStreak||0);
-    const history = (ud.history||[]).slice(-29); // keep 30 entries
-    history.push({ date: todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals||0 });
+    const bestStreak = Math.max(streakData.streak, ud.bestStreak || 0);
+    const history = (ud.history || []).slice(-29);
+    history.push({ date: todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals || 0 });
     window.queueStatUpdate({
-      sessions: (ud.sessions||0)+1,
-      exercisesCompleted: (ud.exercisesCompleted||0) + exercisesDone,
-      caloriesBurned: (ud.caloriesBurned||0) + (estimatedCals||0),
-      weekWorkouts: (ud.weekWorkouts||0)+1,
-      monthSessions: (ud.monthSessions||0)+1,
-      dailyGoalExercises: (ud.dailyGoalExercises||0) + exercisesDone,
+      sessions: (ud.sessions || 0) + 1,
+      exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
+      caloriesBurned: (ud.caloriesBurned || 0) + (estimatedCals || 0),
+      weekWorkouts: (ud.weekWorkouts || 0) + 1,
+      monthSessions: (ud.monthSessions || 0) + 1,
+      dailyGoalExercises: (ud.dailyGoalExercises || 0) + exercisesDone,
       streak: streakData.streak,
       bestStreak,
       lastWorkoutDate: streakData.lastWorkoutDate,
       history,
     });
     window.awardXP(XP_PER_SESSION + exercisesDone * XP_PER_EXERCISE);
-    checkAndFireAchievements({ ...(ud), sessions:(ud.sessions||0)+1, streak:streakData.streak, exercisesCompleted:(ud.exercisesCompleted||0)+exercisesDone });
+    checkAndFireAchievements({
+      ...ud,
+      sessions: (ud.sessions || 0) + 1,
+      streak: streakData.streak,
+      exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
+    });
   };
 
   window.saveUserField = async function(field, value) {
     if (!window.userUID) return;
-    window.userData = window.userData||{};
+    window.userData = window.userData || {};
     window.userData[field] = value;
-    try { await updateDoc(doc(db,'users',window.userUID), { [field]:value }); }
-    catch(e) { console.error('saveUserField:',e); }
-  };
-
-  // ── Leaderboard — top 10 by XP ──
-  window.loadLeaderboard = async function() {
     try {
-      const q = query(collection(db,'users'), orderBy('xp','desc'), limit(10));
-      const snaps = await getDocs(q);
-      return snaps.docs.map((d,i) => ({ rank:i+1, ...d.data(), uid:d.id }));
-    } catch(e) { console.error('leaderboard error:',e); return []; }
+      await persistUserData(window.userData);
+    } catch (error) {
+      console.error("saveUserField error:", error);
+    }
   };
 
-  // ── Auth state ──
+  // Metadata-only fallback leaderboard (single-user data availability)
+  window.loadLeaderboard = async function() {
+    const ud = window.userData;
+    if (!ud || !window.userUID) return [];
+    return [{ rank: 1, uid: window.userUID, ...ud }];
+  };
+
   let _firstAuthCheck = true;
-  onAuthStateChanged(auth, async (user) => {
-    const btn = document.getElementById('authNavBtn');
+  supabase.auth.onAuthStateChange(async (_event, session) => {
+    const user = session?.user || null;
+    window.auth.currentUser = user;
+    const btn = document.getElementById("authNavBtn");
+
     if (user) {
       await loadUserData(user);
-      attachRealtimeListener(user.uid);
-      if (btn) { btn.textContent='Logout'; btn.onclick=logout; }
-      const active = document.querySelector('.page.active');
-      // Only auto-redirect on first load if on login page (or no page active)
+      if (btn) {
+        btn.textContent = "Logout";
+        btn.onclick = logout;
+      }
+      const active = document.querySelector(".page.active");
       if (_firstAuthCheck) {
-        if (!active || active.id==='page-login') showPage('home');
-        else if (active.id==='page-profile') initProfile();
+        if (!active || active.id === "page-login") showPage("home");
+        else if (active.id === "page-profile") initProfile();
       } else {
-        // Mid-session: was on login page, redirect to profile
-        if (active && active.id==='page-login') showPage('profile');
-        else if (active && active.id==='page-profile') initProfile();
+        if (active && active.id === "page-login") showPage("profile");
+        else if (active && active.id === "page-profile") initProfile();
       }
       _firstAuthCheck = false;
       renderXPBar(window.userData);
       renderDailyGoals(window.userData);
     } else {
       _firstAuthCheck = false;
-      if (_unsubSnap) { _unsubSnap(); _unsubSnap=null; }
-      window.userData=null; window.userUID=null;
-      if (btn) { btn.textContent='Get Started →'; btn.onclick=()=>showPage('login'); }
+      window.userData = null;
+      window.userUID = null;
+      if (btn) {
+        btn.textContent = "Get Started →";
+        btn.onclick = () => showPage("login");
+      }
       renderXPBar(null);
     }
   });
 
+  // Ensure user is restored after refresh before first interaction
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+  if (sessionError) {
+    console.error("Session restore error:", sessionError);
+  } else if (session?.user) {
+    window.auth.currentUser = session.user;
+    await loadUserData(session.user);
+  }
+
   window.googleLogin = async function() {
     try {
-      const p = new GoogleAuthProvider();
-      p.setCustomParameters({ prompt:'select_account' });
-      await signInWithPopup(auth, p);
-      showToast('🚀 Signed in with Google!');
-    } catch(e) { console.error(e); showToast('Google Sign-In failed ❌'); }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          queryParams: { prompt: "select_account" },
+          redirectTo: window.location.origin + window.location.pathname,
+        },
+      });
+      if (error) throw error;
+      showToast("🚀 Redirecting to Google...");
+    } catch (error) {
+      console.error(error);
+      showToast("Google Sign-In failed ❌");
+    }
   };
 </script>
 
@@ -6481,7 +6503,7 @@ function generatePlan(){
   document.getElementById('workoutPlan').classList.add('visible');
   showToast('⚡ Your personalized plan is ready!');
   setTimeout(() => document.getElementById('workoutPlan').scrollIntoView({behavior:'smooth'}), 300);
-  // Track session generation in Firestore
+  // Track session generation in Supabase metadata
   if(window.updateUserStat && window.auth?.currentUser) {
     window.updateUserStat('sessions', 1);
     window.updateUserStat('weekWorkouts', 1);
@@ -6494,7 +6516,7 @@ function toggleCheck(el){
   const isDone = el.classList.contains('done');
 
   if(isDone && !wasDone){
-    // Exercise just completed — update Firestore
+    // Exercise just completed — update Supabase metadata
     showToast('✅ Exercise complete! Keep going!');
     if(window.updateUserStat) {
       window.updateUserStat('exercisesCompleted', 1);
@@ -6655,10 +6677,10 @@ function checkHydration(goal){
 }
 
 // ══════════════════════════════════
-// PROFILE — Real Firestore data
+// PROFILE — Real user metadata
 // ══════════════════════════════════
 function initProfile(){
-  // Use window.userData (loaded from Firestore) or fall back to localStorage
+  // Use window.userData (loaded from Supabase metadata) or fall back to localStorage
   const ud = window.userData || JSON.parse(localStorage.getItem('bm_user') || '{}');
   const user = window.auth ? window.auth.currentUser : null;
 
@@ -6751,7 +6773,7 @@ function handleAvatarUpload(event){
       avatarEl.style.opacity = '1';
       avatarEl.style.transform = 'scale(1)';
     }, 150);
-    // Persist to Firestore and localStorage
+    // Persist to Supabase metadata and localStorage
     if(window.saveUserField) window.saveUserField('photo', dataUrl);
     const cachedUser = JSON.parse(localStorage.getItem('bm_user') || '{}');
     cachedUser.photo = dataUrl;
@@ -6903,7 +6925,7 @@ function saveProfile(){
   if(!name){ showToast('Please enter a name'); return; }
   // Update in-memory
   if(window.userData) window.userData.name = name;
-  // Sync to Firestore
+  // Sync to Supabase metadata
   if(window.saveUserField) window.saveUserField('name', name);
   // Update localStorage cache
   const cached = JSON.parse(localStorage.getItem('bm_user') || '{}');
@@ -6964,7 +6986,7 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('service-worker.js').then(r=>console.log('SW:',r.scope)).catch(e=>console.log('SW fail:',e)); });
 }
 
-// AUTH STATE CHECK ON LOAD — handled by onAuthStateChanged in Firebase module
+// AUTH STATE CHECK ON LOAD — handled by Supabase auth listener in module
 document.addEventListener('DOMContentLoaded',()=>{
   initLibrary();
   setTimeout(startTerminalTyping, 3000);
