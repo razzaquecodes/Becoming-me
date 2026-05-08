@@ -1,54 +1,69 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
 const SUPABASE_URL = "https://xxwrfugjxnfhsilwzulv.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_KOLnnfY7G7q5l5goYzRzKg_GEBHd8F_";
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    flowType: "pkce",
-    storageKey: "becoming-me-auth",
-  },
-});
-
-const BM_METADATA_KEY = "becoming_me";
-
-export function getBecomingMeMetadata(user) {
-  return user?.user_metadata?.[BM_METADATA_KEY] || null;
+if (!window.supabase || typeof window.supabase.createClient !== "function") {
+  throw new Error("Supabase CDN not loaded. Add the supabase-js CDN script before supabase.js");
 }
 
-export async function upsertBecomingMeMetadata(partialData) {
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError) {
-    throw userError;
-  }
-
-  if (!user) {
-    throw new Error("No authenticated user");
-  }
-
-  const existing = user.user_metadata || {};
-  const existingAppData = existing[BM_METADATA_KEY] || {};
-
-  const merged = {
-    ...existing,
-    [BM_METADATA_KEY]: {
-      ...existingAppData,
-      ...partialData,
+// Create exactly one global client instance.
+if (!window.supabaseClient) {
+  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      flowType: "pkce",
+      storageKey: "becoming-me-auth",
     },
-  };
+  });
+  console.info("[Supabase] Client initialized", { url: SUPABASE_URL });
+}
 
-  const { data, error } = await supabase.auth.updateUser({ data: merged });
-
+async function googleLogin() {
+  console.info("[Supabase OAuth] Start Google OAuth", {
+    origin: window.location.origin,
+    href: window.location.href,
+  });
+  const { error } = await window.supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      queryParams: { prompt: "select_account" },
+      redirectTo: window.location.origin,
+    },
+  });
   if (error) {
+    console.error("[Supabase OAuth] signInWithOAuth error", error);
     throw error;
   }
-
-  return data.user;
+  console.info("[Supabase OAuth] Redirect initiated");
 }
+
+async function getCurrentUser() {
+  const {
+    data: { user },
+    error,
+  } = await window.supabaseClient.auth.getUser();
+  if (error) {
+    console.error("[Supabase Auth] getCurrentUser error", error);
+    throw error;
+  }
+  console.info("[Supabase Auth] getCurrentUser success", {
+    id: user?.id,
+    email: user?.email,
+  });
+  return user;
+}
+
+async function logoutUser() {
+  const { error } = await window.supabaseClient.auth.signOut();
+  if (error) {
+    console.error("[Supabase Auth] logout error", error);
+    throw error;
+  }
+  console.info("[Supabase Auth] logout success");
+  location.reload();
+}
+
+window.googleLogin = googleLogin;
+window.getCurrentUser = getCurrentUser;
+window.logoutUser = logoutUser;

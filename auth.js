@@ -1,24 +1,31 @@
-import { supabase } from "./supabase.js";
+// Browser-global auth helpers for plain HTML/JS usage.
+(function attachAuthHelpers() {
+  const getClient = () => window.supabaseClient;
 
-export async function signup(email, password) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
-  return data;
-}
+  window.signup = async function signup(email, password) {
+    const client = getClient();
+    const { data, error } = await client.auth.signUp({ email, password });
+    if (error) throw error;
+    return data;
+  };
 
-export async function login(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
-}
+  window.login = async function login(email, password) {
+    const client = getClient();
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+  };
 
-export async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
+  window.logout = async function logout() {
+    const client = getClient();
+    const { error } = await client.auth.signOut();
+    if (error) throw error;
+  };
 
-export function listenAuth(callback) {
-  return supabase.auth.onAuthStateChange((_event, session) => {
-    callback(session?.user || null);
-  });
-}
+  window.listenAuth = function listenAuth(callback) {
+    const client = getClient();
+    return client.auth.onAuthStateChange((_event, session) => {
+      callback(session?.user || null);
+    });
+  };
+})();

@@ -5708,13 +5708,34 @@ body::before {
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
+
 <!-- ═══════════════ SUPABASE AUTH + METADATA — FULL SYSTEM ═══════════════ -->
-<script type="module">
-  import { supabase, getBecomingMeMetadata, upsertBecomingMeMetadata } from "./supabase.js";
+<script>
+  const supabase = window.supabaseClient;
+  const oauthDebugPrefix = "[Auth]";
+  const logOAuth = (message, data) => console.info(`${oauthDebugPrefix} ${message}`, data || "");
+  const logOAuthError = (message, error) => console.error(`${oauthDebugPrefix} ${message}`, error || "");
+
+  logOAuth("Page loaded for auth", {
+    href: window.location.href,
+    origin: window.location.origin,
+    search: window.location.search,
+    hash: window.location.hash,
+  });
+
+  const getBecomingMeMetadata = (authUser) => authUser?.user_metadata?.becoming_me || null;
+  const upsertBecomingMeMetadata = async (metadata) => {
+    const { data, error } = await supabase.auth.updateUser({
+      data: { becoming_me: metadata },
+    });
+    if (error) throw error;
+    return data.user;
+  };
 
   // ── Expose auth-compatible globals for existing UI code ──
   window.auth = { currentUser: null };
-  window.supabase = supabase;
 
   window.createUserWithEmailAndPassword = async (_auth, email, password) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
@@ -5900,62 +5921,16 @@ body::before {
     return [{ rank: 1, uid: window.userUID, ...ud }];
   };
 
-  const getOAuthRedirectUrl = () => {
-    try {
-      const url = new URL(window.location.href);
-      url.hash = "";
-      url.search = "";
-      return url.toString();
-    } catch (_error) {
-      return window.location.origin + window.location.pathname;
-    }
-  };
-
-  const cleanOAuthParams = () => {
-    try {
-      const url = new URL(window.location.href);
-      const hadOAuthParams =
-        url.searchParams.has("code") ||
-        url.searchParams.has("error") ||
-        url.searchParams.has("error_description") ||
-        url.hash.includes("access_token") ||
-        url.hash.includes("refresh_token");
-      if (!hadOAuthParams) return;
-      const cleanUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState({}, document.title, cleanUrl);
-    } catch (error) {
-      console.error("OAuth URL cleanup error:", error);
-    }
-  };
-
-  const processOAuthCallback = async () => {
-    const url = new URL(window.location.href);
-    const oauthError =
-      url.searchParams.get("error_description") ||
-      url.searchParams.get("error");
-
-    if (oauthError) {
-      showToast("Google Sign-In failed ❌");
-      console.error("OAuth callback error:", oauthError);
-      cleanOAuthParams();
-      return;
-    }
-
-    const hasCode = url.searchParams.has("code");
-    if (!hasCode) return;
-
-    const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
-    if (error) {
-      console.error("OAuth code exchange error:", error);
-      showToast("Google Sign-In failed ❌");
-      return;
-    }
-
-    cleanOAuthParams();
-  };
-
   let _firstAuthCheck = true;
-  supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!window.__bm_auth_listener_attached) {
+    window.__bm_auth_listener_attached = true;
+    supabase.auth.onAuthStateChange(async (_event, session) => {
+    logOAuth("Auth state changed", {
+      event: _event,
+      hasSession: !!session,
+      userId: session?.user?.id || null,
+      email: session?.user?.email || null,
+    });
     const user = session?.user || null;
     window.auth.currentUser = user;
     const btn = document.getElementById("authNavBtn");
@@ -5987,13 +5962,22 @@ body::before {
       }
       renderXPBar(null);
     }
-  });
+    });
+  } else {
+    logOAuth("Skipped attaching duplicate auth listener");
+  }
 
-  // Ensure OAuth callback is processed, then restore persisted session.
   try {
-    await processOAuthCallback();
+    const url = new URL(window.location.href);
+    const oauthError = url.searchParams.get("error") || url.searchParams.get("error_description");
+    if (oauthError) {
+      logOAuthError("OAuth provider returned an error", oauthError);
+      showToast("Google Sign-In failed ❌");
+    } else {
+      logOAuth("OAuth callback reached", { href: window.location.href });
+    }
   } catch (error) {
-    console.error("OAuth callback processing error:", error);
+    logOAuthError("OAuth callback parse error", error);
   }
 
   try {
@@ -6002,31 +5986,22 @@ body::before {
       error: sessionError,
     } = await supabase.auth.getSession();
     if (sessionError) {
-      console.error("Session restore error:", sessionError);
+      logOAuthError("Session restore error", sessionError);
     } else if (session?.user) {
+      logOAuth("Session restored", {
+        userId: session.user.id,
+        email: session.user.email,
+      });
       window.auth.currentUser = session.user;
       await loadUserData(session.user);
+    } else {
+      logOAuth("No active session found after callback");
     }
   } catch (error) {
-    console.error("Session restore runtime error:", error);
+    logOAuthError("Session restore runtime error", error);
   }
 
-  window.googleLogin = async function() {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          queryParams: { prompt: "select_account" },
-          redirectTo: getOAuthRedirectUrl(),
-        },
-      });
-      if (error) throw error;
-      showToast("🚀 Redirecting to Google...");
-    } catch (error) {
-      console.error(error);
-      showToast("Google Sign-In failed ❌");
-    }
-  };
+  // Use global googleLogin from supabase.js (single source of truth).
 </script>
 
 <script>

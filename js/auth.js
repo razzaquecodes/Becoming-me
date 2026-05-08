@@ -1,24 +1,25 @@
-import { supabase } from "../supabase.js";
+// Legacy module replaced with browser-global helpers.
+(function attachJsAuthHelpers() {
+  if (window.signup && window.login && window.logout && window.listenAuth) return;
+  const client = () => window.supabaseClient;
 
-export async function signup(email, password) {
-  const { data, error } = await supabase.auth.signUp({ email, password });
-  if (error) throw error;
-  return data;
-}
+  window.signup = async (email, password) => {
+    const { data, error } = await client().auth.signUp({ email, password });
+    if (error) throw error;
+    return data;
+  };
 
-export async function login(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
-}
+  window.login = async (email, password) => {
+    const { data, error } = await client().auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    return data;
+  };
 
-export async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
-}
+  window.logout = async () => {
+    const { error } = await client().auth.signOut();
+    if (error) throw error;
+  };
 
-export function listenAuth(callback) {
-  return supabase.auth.onAuthStateChange((_event, session) => {
-    callback(session?.user || null);
-  });
-}
+  window.listenAuth = (callback) =>
+    client().auth.onAuthStateChange((_event, session) => callback(session?.user || null));
+})();

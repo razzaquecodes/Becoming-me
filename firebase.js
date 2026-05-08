@@ -1,28 +1,10 @@
-import { supabase } from "./supabase.js";
-
-export const auth = { currentUser: null };
-export const db = null;
-
-const listenerSet = new Set();
-
-function notify(user) {
-  auth.currentUser = user;
-  for (const callback of listenerSet) {
-    callback(user);
-  }
-}
-
-supabase.auth.onAuthStateChange((_event, session) => {
-  notify(session?.user || null);
-});
-
-const {
-  data: { session },
-} = await supabase.auth.getSession();
-notify(session?.user || null);
-
-export function onAuthStateChangedCompat(callback) {
-  listenerSet.add(callback);
-  callback(auth.currentUser);
-  return () => listenerSet.delete(callback);
-}
+// Legacy firebase compatibility stub (no Firebase runtime).
+// Auth state is managed centrally in index.html via Supabase.
+(function attachCompatStub() {
+  window.auth = window.auth || { currentUser: null };
+  window.db = null;
+  window.onAuthStateChangedCompat = function onAuthStateChangedCompat(callback) {
+    callback(window.auth.currentUser || null);
+    return () => {};
+  };
+})();
