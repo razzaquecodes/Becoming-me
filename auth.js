@@ -1,27 +1,24 @@
-import { auth } from "./firebase.js";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { supabase } from "./supabase.js";
 
-// SIGNUP
-export function signup(email, password) {
-  return createUserWithEmailAndPassword(auth, email, password);
+export async function signup(email, password) {
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if (error) throw error;
+  return data;
 }
 
-// LOGIN
-export function login(email, password) {
-  return signInWithEmailAndPassword(auth, email, password);
+export async function login(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data;
 }
 
-// LOGOUT
-export function logout() {
-  return signOut(auth);
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
 }
 
-// LISTEN USER
 export function listenAuth(callback) {
-  onAuthStateChanged(auth, callback);
+  return supabase.auth.onAuthStateChange((_event, session) => {
+    callback(session?.user || null);
+  });
 }
