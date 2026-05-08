@@ -5900,6 +5900,60 @@ body::before {
     return [{ rank: 1, uid: window.userUID, ...ud }];
   };
 
+  const getOAuthRedirectUrl = () => {
+    try {
+      const url = new URL(window.location.href);
+      url.hash = "";
+      url.search = "";
+      return url.toString();
+    } catch (_error) {
+      return window.location.origin + window.location.pathname;
+    }
+  };
+
+  const cleanOAuthParams = () => {
+    try {
+      const url = new URL(window.location.href);
+      const hadOAuthParams =
+        url.searchParams.has("code") ||
+        url.searchParams.has("error") ||
+        url.searchParams.has("error_description") ||
+        url.hash.includes("access_token") ||
+        url.hash.includes("refresh_token");
+      if (!hadOAuthParams) return;
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    } catch (error) {
+      console.error("OAuth URL cleanup error:", error);
+    }
+  };
+
+  const processOAuthCallback = async () => {
+    const url = new URL(window.location.href);
+    const oauthError =
+      url.searchParams.get("error_description") ||
+      url.searchParams.get("error");
+
+    if (oauthError) {
+      showToast("Google Sign-In failed ❌");
+      console.error("OAuth callback error:", oauthError);
+      cleanOAuthParams();
+      return;
+    }
+
+    const hasCode = url.searchParams.has("code");
+    if (!hasCode) return;
+
+    const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+    if (error) {
+      console.error("OAuth code exchange error:", error);
+      showToast("Google Sign-In failed ❌");
+      return;
+    }
+
+    cleanOAuthParams();
+  };
+
   let _firstAuthCheck = true;
   supabase.auth.onAuthStateChange(async (_event, session) => {
     const user = session?.user || null;
@@ -5910,7 +5964,7 @@ body::before {
       await loadUserData(user);
       if (btn) {
         btn.textContent = "Logout";
-        btn.onclick = logout;
+        btn.onclick = window.logout;
       }
       const active = document.querySelector(".page.active");
       if (_firstAuthCheck) {
@@ -5935,16 +5989,26 @@ body::before {
     }
   });
 
-  // Ensure user is restored after refresh before first interaction
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-  if (sessionError) {
-    console.error("Session restore error:", sessionError);
-  } else if (session?.user) {
-    window.auth.currentUser = session.user;
-    await loadUserData(session.user);
+  // Ensure OAuth callback is processed, then restore persisted session.
+  try {
+    await processOAuthCallback();
+  } catch (error) {
+    console.error("OAuth callback processing error:", error);
+  }
+
+  try {
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+    if (sessionError) {
+      console.error("Session restore error:", sessionError);
+    } else if (session?.user) {
+      window.auth.currentUser = session.user;
+      await loadUserData(session.user);
+    }
+  } catch (error) {
+    console.error("Session restore runtime error:", error);
   }
 
   window.googleLogin = async function() {
@@ -5953,7 +6017,7 @@ body::before {
         provider: "google",
         options: {
           queryParams: { prompt: "select_account" },
-          redirectTo: window.location.origin + window.location.pathname,
+          redirectTo: getOAuthRedirectUrl(),
         },
       });
       if (error) throw error;
