@@ -37,7 +37,7 @@ const gymWorkouts=[
       {n:'Cat-Cow Stretch',d:'Breathe deeply',r:'2 × 10'},{n:'Hip Flexor Lunge',d:'Hold each side',r:'2 × 45 sec'},
       {n:'Thoracic Rotation',d:'Each side',r:'2 × 10'},{n:'Pigeon Pose',d:'Per side',r:'2 × 60 sec'},
       {n:'Thread the Needle',d:'Each side',r:'2 × 8'},{n:'Ankle Circles',d:'Each direction',r:'2 × 10'},
-      {n:'Doorway Chest Stretch',d:'Hold',r:'3 × 30 sec'},{n:'Child's Pose w/ reach',d:'Hold',r:'3 × 45 sec'},
+      {n:'Doorway Chest Stretch',d:'Hold',r:'3 × 30 sec'},{n:"Child's Pose w/ reach",d:'Hold',r:'3 × 45 sec'},
       {n:'Standing Quad Stretch',d:'Each leg',r:'2 × 30 sec'}]},
   {id:'back-builder',title:'Back Builder',cat:'strength',muscle:'upper',level:'Intermediate',duration:'60 min',kcal:490,img:'https://images.unsplash.com/photo-1598971639058-999e5e9494c0?w=600&q=70',desc:'Dedicated back day — width, thickness, and rear delts all covered.',
     exercises:[
@@ -114,7 +114,7 @@ const homeWorkouts=[
   {id:'h-mobility',title:'Morning Mobility',cat:'mobility',muscle:'core',level:'Beginner',duration:'20 min',kcal:100,img:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=70',desc:'Start your day right. Full-body mobility and gentle movement flow.',
     exercises:[
       {n:'Cat-Cow',d:'Slow breath',r:'2 × 10'},{n:'Hip Circle',d:'Each direction',r:'2 × 10 each'},
-      {n:'World's Greatest Stretch',d:'Each side',r:'2 × 8'},{n:'Pigeon Pose',d:'Per side',r:'2 × 45 sec'},
+      {n:"World's Greatest Stretch",d:'Each side',r:'2 × 8'},{n:'Pigeon Pose',d:'Per side',r:'2 × 45 sec'},
       {n:'Thoracic Rotation',d:'Each side',r:'2 × 10'},{n:'Standing Hamstring Stretch',d:'Hold',r:'3 × 30 sec'},
       {n:'Shoulder Cross-Body Stretch',d:'Hold each side',r:'2 × 30 sec'},{n:'Neck Rolls',d:'Gentle',r:'2 × 5 each'}]},
   {id:'h-upper-strength',title:'Bodyweight Strength Upper',cat:'strength',muscle:'upper',level:'Advanced',duration:'50 min',kcal:360,img:'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&q=70',desc:'Advanced calisthenics upper body — build real strength with no weights.',

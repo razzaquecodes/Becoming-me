@@ -1,4 +1,5 @@
-import { login, signup, listenAuth, logout } from "./auth.js";
+// Legacy helper file kept for browser compatibility.
+// Uses global auth helpers from auth.js (no ES modules).
 
 // ===== PAGE SWITCH =====
 window.showPage = function(name) {
@@ -27,10 +28,10 @@ window.handleAuth = async function(type) {
 
   try {
     if (type === "login") {
-      await login(email, password);
+      await window.login(email, password);
       showToast("Welcome back 🔥");
     } else {
-      await signup(email, password);
+      await window.signup(email, password);
       showToast("Account created 🚀");
     }
 
@@ -42,7 +43,7 @@ window.handleAuth = async function(type) {
 };
 
 // ===== AUTH STATE =====
-listenAuth(user => {
+window.listenAuth(user => {
   if (user) {
     console.log("Logged in:", user.email);
   } else {
@@ -52,7 +53,7 @@ listenAuth(user => {
 
 // ===== LOGOUT BUTTON (optional) =====
 window.logoutUser = function() {
-  logout();
+  window.logout();
   showToast("Logged out");
   showPage("login");
 };

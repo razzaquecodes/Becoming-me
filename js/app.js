@@ -1,5 +1,5 @@
-import { login, signup, listenAuth, logout } from "./auth.js";
-import { getUserProfile, incrementWorkout } from "./db.js";
+// Legacy helper file kept for browser compatibility.
+// Uses global helpers attached to window (no ES modules).
 
 let currentUser = null;
 
@@ -29,10 +29,10 @@ window.handleAuth = async function(type) {
 
   try {
     if (type === "login") {
-      await login(email, password);
+      await window.login(email, password);
       showToast("Welcome back 🔥");
     } else {
-      await signup(email, password);
+      await window.signup(email, password);
       showToast("Account created 🚀");
     }
 
@@ -44,11 +44,11 @@ window.handleAuth = async function(type) {
 };
 
 // ===== AUTH STATE =====
-listenAuth(async (user) => {
+window.listenAuth(async (user) => {
   if (user) {
     currentUser = user;
 
-    const data = await getUserProfile(user.id);
+    const data = await window.getUserProfile(user.id);
 
     if (data) {
       document.querySelector(".profile-name").textContent = data.name;
@@ -66,7 +66,7 @@ listenAuth(async (user) => {
 
 // ===== LOGOUT =====
 window.logoutUser = function() {
-  logout();
+  window.logout();
   showToast("Logged out");
   showPage("login");
 };
@@ -75,7 +75,7 @@ window.logoutUser = function() {
 window.saveWorkout = function() {
   if (!currentUser) return;
 
-  incrementWorkout(currentUser.id);
+  window.incrementWorkout(currentUser.id);
   showToast("Workout saved 💪");
 
   setTimeout(() => location.reload(), 800);

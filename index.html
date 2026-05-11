@@ -5208,7 +5208,7 @@ body::before {
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;flex-wrap:wrap;margin-bottom:2rem">
       <div>
         <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem">
-          <img src="logo.png" alt="BM" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
+          <img src="assets/logo.png" alt="BM" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
           <span style="font-family:'Bebas Neue';font-size:1.4rem;color:var(--white);letter-spacing:.1em">BECOMING<span style="background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ME</span></span>
         </div>
         <p style="color:var(--muted2);font-size:.82rem;line-height:1.8;max-width:280px">Stronger. Better. You. A complete fitness platform built for India, by someone who believes transformation is personal.</p>
@@ -5451,102 +5451,326 @@ body::before {
 
 <!-- ═══════════════ PROFILE PAGE ═══════════════ -->
 <div class="page" id="page-profile">
-  <div style="max-width:1200px;margin:0 auto;padding:5rem 2rem 2rem;position:relative;">
-    <div style="position:absolute;top:0;left:0;right:0;height:300px;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(30,10,60,0.5) 0%,transparent 70%);pointer-events:none;"></div>
-    <div style="position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.3),transparent);"></div>
-    <div style="position:relative;z-index:1;">
-      <div style="display:inline-flex;align-items:center;gap:0.55rem;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);border-radius:100px;padding:0.4rem 1rem;font-size:0.6rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold-xlight);margin-bottom:1rem;backdrop-filter:blur(10px);"><span style="width:5px;height:5px;background:var(--gold);border-radius:50%;box-shadow:0 0 6px rgba(139,92,246,0.6);"></span>Your Profile</div>
-      <h1 style="font-family:'Bebas Neue';font-size:clamp(2.5rem,5vw,4rem);">BECOMING <span>UNSTOPPABLE</span></h1>
+
+  <!-- ══ FLOATING PARTICLE CANVAS ══ -->
+  <canvas id="profileParticles" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.55;"></canvas>
+
+  <!-- ══ CINEMATIC PAGE HERO ══ -->
+  <div class="pr-hero">
+    <div class="pr-hero-grid"></div>
+    <div class="pr-hero-orb pr-hero-orb1"></div>
+    <div class="pr-hero-orb pr-hero-orb2"></div>
+    <div class="pr-hero-inner">
+      <div class="pr-eyebrow">
+        <span class="pr-eyebrow-dot"></span>
+        Operator Profile
+        <span class="pr-eyebrow-badge" id="prLevelBadge">LVL 1</span>
+      </div>
+      <h1 class="pr-hero-title">BECOMING <em>UNSTOPPABLE</em></h1>
+      <p class="pr-hero-sub">Your fitness operating system — live, real-time, legendary.</p>
     </div>
-  </div>
-  <div class="profile-layout">
-    <div class="profile-sidebar">
-      <!-- AVATAR CARD -->
-      <div class="profile-card">
-        <div class="avatar-wrap">
-          <!-- Clickable upload wrapper -->
-          <div class="avatar-upload-wrap" onclick="document.getElementById('avatarFileInput').click()" title="Click to change profile photo">
-            <div class="avatar-ring">
-              <div class="avatar-ring-spinner"></div>
-              <div class="avatar-ring-bg"></div>
-              <div class="avatar-inner" id="avatarEl">U</div>
-            </div>
-            <div class="avatar-upload-overlay">
-              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span>Change Photo</span>
-            </div>
-          </div>
-          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)">
-          <div>
-            <div class="profile-name" id="profileName">User</div>
-            <div class="profile-email" id="profileEmail">—</div>
-            <div class="avatar-upload-hint">Click avatar to upload photo</div>
-          </div>
-          <div class="profile-badge">🔥 Becoming Elite</div>
-        </div>
-        <div class="profile-stats-row">
-          <div class="p-stat"><div class="p-stat-num" id="statStreak">0</div><div class="p-stat-label">Streak</div></div>
-          <div class="p-stat"><div class="p-stat-num" id="statSessions">0</div><div class="p-stat-label">Sessions</div></div>
-          <div class="p-stat"><div class="p-stat-num" id="statExercises">0</div><div class="p-stat-label">Exercises Done</div></div>
-        </div>
+    <!-- XP BAR in hero -->
+    <div class="pr-xp-hero">
+      <div class="pr-xp-hero-labels">
+        <span class="pr-xp-hero-label">XP Progress</span>
+        <span class="pr-xp-hero-val" id="prXPLabel">0 / 500 XP</span>
       </div>
-
-      <!-- METRICS -->
-      <div class="profile-card">
-        <div class="label-tag" style="margin-bottom:1rem;"><span style="width:5px;height:5px;background:var(--gold);border-radius:50%;box-shadow:0 0 6px rgba(139,92,246,0.6);display:inline-block;margin-right:0.4rem;"></span>Body Metrics</div>
-        <div id="metricsBlock">
-          <div class="metrics-row">
-            <div class="metric-box"><div class="metric-val" id="metricWeight">—</div><div class="metric-unit">kg</div><div class="metric-change" id="metricWeightLabel">Log below</div></div>
-            <div class="metric-box"><div class="metric-val" id="metricFat">—</div><div class="metric-unit">% fat</div><div class="metric-change" id="metricFatLabel">Log below</div></div>
-            <div class="metric-box"><div class="metric-val" id="metricBMI">—</div><div class="metric-unit">BMI</div><div class="metric-change" id="metricBMILabel">Calculate</div></div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.8rem">
-            <div class="setup-field"><label>Weight (kg)</label><input type="number" id="logWeight" placeholder="72" min="30" max="250" oninput="updateMetrics()"></div>
-            <div class="setup-field"><label>Height (cm)</label><input type="number" id="logHeight" placeholder="175" min="100" max="250" oninput="updateMetrics()"></div>
-          </div>
-        </div>
-        <div class="progress-wrap" style="margin-top:1rem"><div class="progress-label"><span>Workouts This Week</span><span style="color:var(--gold)" id="progWeekPct">0/5 days</span></div><div class="progress-bar"><div class="progress-fill" id="progWeekBar" style="width:0%"></div></div></div>
-        <div class="progress-wrap"><div class="progress-label"><span>Monthly Sessions</span><span style="color:var(--gold)" id="progMonthPct">0/20 sessions</span></div><div class="progress-bar"><div class="progress-fill" id="progMonthBar" style="width:0%"></div></div></div>
-        <div class="progress-wrap"><div class="progress-label"><span>Total Exercises Done</span><span style="color:var(--gold)" id="progExPct">0 done</span></div><div class="progress-bar"><div class="progress-fill" id="progExBar" style="width:0%"></div></div></div>
-      </div>
-
-      <!-- SETTINGS -->
-      <div class="profile-card">
-        <div class="label-tag" style="margin-bottom:1rem;"><span style="width:5px;height:5px;background:var(--gold);border-radius:50%;box-shadow:0 0 6px rgba(139,92,246,0.6);display:inline-block;margin-right:0.4rem;"></span>Settings</div>
-        <div style="display:flex;flex-direction:column;gap:.7rem">
-          <button class="btn-outline" style="width:100%;padding:.75rem;font-size:.78rem" onclick="openEditModal()">Edit Profile</button>
-          <button class="btn-outline" style="width:100%;padding:.75rem;font-size:.78rem">Notifications</button>
-          <button class="btn-outline" style="width:100%;padding:.75rem;font-size:.78rem">Privacy</button>
-          <button class="btn-outline" style="width:100%;padding:.75rem;font-size:.78rem;border-color:rgba(217,64,64,.4);color:#d94040" onclick="logout()">Log Out</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-main">
-      <!-- STREAK -->
-      <div class="profile-card">
-        <div class="label-tag" style="margin-bottom:1.2rem;"><span style="font-size:1rem;margin-right:0.2rem;">🔥</span> 14-Day Activity Streak</div>
-        <div class="streak-grid" id="streakRow"></div>
-      </div>
-
-      <!-- ACHIEVEMENTS -->
-      <div class="profile-card">
-        <div class="label-tag" style="margin-bottom:1.2rem;"><span style="font-size:1rem;margin-right:0.2rem;">🏆</span> Achievements</div>
-        <div class="ach-grid" id="achievementGrid"></div>
-      </div>
-
-      <!-- QUICK ACTIONS -->
-      <div class="profile-card">
-        <div class="label-tag" style="margin-bottom:1.2rem;"><span style="width:5px;height:5px;background:var(--gold);border-radius:50%;box-shadow:0 0 6px rgba(139,92,246,0.6);display:inline-block;margin-right:0.4rem;"></span>Quick Actions</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
-          <button class="btn-primary" onclick="showPage('workout')">Log Workout</button>
-          <button class="btn-primary" onclick="showPage('diet')">Log Meal</button>
-          <button class="btn-outline" onclick="showPage('workout')">Update Plan</button>
-          <button class="btn-outline">View History</button>
-        </div>
+      <div class="pr-xp-hero-track">
+        <div class="pr-xp-hero-fill" id="prXPHeroFill" style="width:0%"></div>
+        <div class="pr-xp-hero-glow" id="prXPHeroGlow" style="left:0%"></div>
       </div>
     </div>
   </div>
+
+  <!-- ══ MAIN GRID ══ -->
+  <div class="pr-grid" style="position:relative;z-index:1;">
+
+    <!-- ════════ LEFT COLUMN ════════ -->
+    <div class="pr-col-left">
+
+      <!-- ── PROFILE CARD (Floating Glass) ── -->
+      <div class="pr-card pr-avatar-card pr-float" id="prAvatarCard">
+        <!-- Animated border ring -->
+        <div class="pr-card-border-ring"></div>
+        <!-- Glow blob -->
+        <div class="pr-card-blob"></div>
+
+        <div class="pr-avatar-section">
+          <!-- Avatar with spinning ring + tilt -->
+          <div class="pr-avatar-outer" onclick="document.getElementById('avatarFileInput').click()" title="Click to change photo">
+            <div class="pr-avatar-ring-track">
+              <div class="pr-avatar-ring-fill"></div>
+            </div>
+            <div class="pr-avatar-glow"></div>
+            <div class="pr-avatar-inner" id="avatarEl">U</div>
+            <div class="pr-avatar-upload-overlay">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+          </div>
+          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)" style="display:none">
+
+          <div class="pr-avatar-info">
+            <div class="pr-name" id="profileName">Loading...</div>
+            <div class="pr-email" id="profileEmail">—</div>
+            <div class="pr-tier-badge">
+              <span class="pr-tier-dot"></span>
+              <span id="prTierLabel">Becoming Elite</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stat pills row -->
+        <div class="pr-stat-pills">
+          <div class="pr-pill">
+            <div class="pr-pill-icon">🔥</div>
+            <div class="pr-pill-num" id="statStreak">0</div>
+            <div class="pr-pill-label">Streak</div>
+          </div>
+          <div class="pr-pill-div"></div>
+          <div class="pr-pill">
+            <div class="pr-pill-icon">⚡</div>
+            <div class="pr-pill-num" id="statSessions">0</div>
+            <div class="pr-pill-label">Sessions</div>
+          </div>
+          <div class="pr-pill-div"></div>
+          <div class="pr-pill">
+            <div class="pr-pill-icon">💪</div>
+            <div class="pr-pill-num" id="statExercises">0</div>
+            <div class="pr-pill-label">Exercises</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BODY METRICS ── -->
+      <div class="pr-card pr-metrics-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">📊</div>
+          <span class="pr-card-title">Body Metrics</span>
+        </div>
+
+        <div class="pr-ring-row">
+          <!-- Animated stat ring: Weight -->
+          <div class="pr-ring-wrap">
+            <svg class="pr-ring-svg" viewBox="0 0 80 80">
+              <circle class="pr-ring-bg" cx="40" cy="40" r="32"/>
+              <circle class="pr-ring-fg pr-ring-weight" cx="40" cy="40" r="32" id="ringWeightCircle"/>
+            </svg>
+            <div class="pr-ring-center">
+              <span class="pr-ring-val" id="metricWeight">—</span>
+              <span class="pr-ring-unit">kg</span>
+            </div>
+            <div class="pr-ring-label">Weight</div>
+          </div>
+          <!-- BMI -->
+          <div class="pr-ring-wrap">
+            <svg class="pr-ring-svg" viewBox="0 0 80 80">
+              <circle class="pr-ring-bg" cx="40" cy="40" r="32"/>
+              <circle class="pr-ring-fg pr-ring-bmi" cx="40" cy="40" r="32" id="ringBMICircle"/>
+            </svg>
+            <div class="pr-ring-center">
+              <span class="pr-ring-val" id="metricBMI">—</span>
+              <span class="pr-ring-unit">BMI</span>
+            </div>
+            <div class="pr-ring-label" id="metricBMILabel">Calculate</div>
+          </div>
+          <!-- Body Fat -->
+          <div class="pr-ring-wrap">
+            <svg class="pr-ring-svg" viewBox="0 0 80 80">
+              <circle class="pr-ring-bg" cx="40" cy="40" r="32"/>
+              <circle class="pr-ring-fg pr-ring-fat" cx="40" cy="40" r="32" id="ringFatCircle"/>
+            </svg>
+            <div class="pr-ring-center">
+              <span class="pr-ring-val" id="metricFat">—</span>
+              <span class="pr-ring-unit">%fat</span>
+            </div>
+            <div class="pr-ring-label">Body Fat</div>
+          </div>
+        </div>
+
+        <!-- Log inputs -->
+        <div class="pr-input-row">
+          <div class="pr-input-group">
+            <label class="pr-input-label">Weight kg</label>
+            <input class="pr-input" type="number" id="logWeight" placeholder="72" min="30" max="250" oninput="updateMetrics()">
+          </div>
+          <div class="pr-input-group">
+            <label class="pr-input-label">Height cm</label>
+            <input class="pr-input" type="number" id="logHeight" placeholder="175" min="100" max="250" oninput="updateMetrics()">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="pr-card pr-settings-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">⚙️</div>
+          <span class="pr-card-title">System Controls</span>
+        </div>
+        <div class="pr-setting-list">
+          <button class="pr-setting-btn" onclick="openEditModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Profile
+          </button>
+          <button class="pr-setting-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Notifications
+          </button>
+          <button class="pr-setting-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Privacy Settings
+          </button>
+          <button class="pr-setting-btn pr-setting-danger" onclick="logout()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Log Out
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /left col -->
+
+    <!-- ════════ RIGHT COLUMN ════════ -->
+    <div class="pr-col-right">
+
+      <!-- ── DAILY GOAL PROGRESS ── -->
+      <div class="pr-card pr-goals-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">🎯</div>
+          <span class="pr-card-title">Daily Goal Progress</span>
+          <div class="pr-card-badge" id="prGoalPct">0%</div>
+        </div>
+        <div class="pr-goals-grid">
+          <div class="pr-goal-item">
+            <div class="pr-goal-label">Workouts This Week</div>
+            <div class="pr-goal-bar-wrap">
+              <div class="pr-goal-bar"><div class="pr-goal-fill pr-goal-purple" id="progWeekBar" style="width:0%"><div class="pr-goal-shimmer"></div></div></div>
+              <span class="pr-goal-val" id="progWeekPct">0/5 days</span>
+            </div>
+          </div>
+          <div class="pr-goal-item">
+            <div class="pr-goal-label">Monthly Sessions</div>
+            <div class="pr-goal-bar-wrap">
+              <div class="pr-goal-bar"><div class="pr-goal-fill pr-goal-blue" id="progMonthBar" style="width:0%"><div class="pr-goal-shimmer"></div></div></div>
+              <span class="pr-goal-val" id="progMonthPct">0/20 sessions</span>
+            </div>
+          </div>
+          <div class="pr-goal-item">
+            <div class="pr-goal-label">Total Exercises Done</div>
+            <div class="pr-goal-bar-wrap">
+              <div class="pr-goal-bar"><div class="pr-goal-fill pr-goal-green" id="progExBar" style="width:0%"><div class="pr-goal-shimmer"></div></div></div>
+              <span class="pr-goal-val" id="progExPct">0 done</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STREAK TRACKER ── -->
+      <div class="pr-card pr-streak-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">🔥</div>
+          <span class="pr-card-title">Consistency Tracker</span>
+          <div class="pr-card-badge pr-streak-badge" id="prStreakBadge">0 Days</div>
+        </div>
+        <!-- Streak heat calendar: 14 days -->
+        <div class="pr-streak-wrap">
+          <div class="pr-streak-grid" id="streakRow"></div>
+          <div class="pr-streak-legend">
+            <span class="pr-streak-legend-dot pr-dot-empty"></span><span>Rest</span>
+            <span class="pr-streak-legend-dot pr-dot-done"></span><span>Done</span>
+            <span class="pr-streak-legend-dot pr-dot-today"></span><span>Today</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ACHIEVEMENTS ── -->
+      <div class="pr-card pr-ach-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">🏆</div>
+          <span class="pr-card-title">Achievements</span>
+          <div class="pr-card-badge" id="prAchCount">0/8</div>
+        </div>
+        <div class="pr-ach-grid" id="achievementGrid"></div>
+      </div>
+
+      <!-- ── QUICK ACTIONS ── -->
+      <div class="pr-card pr-actions-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">⚡</div>
+          <span class="pr-card-title">Quick Actions</span>
+        </div>
+        <div class="pr-actions-grid">
+          <button class="pr-action-btn pr-action-primary" onclick="showPage('workout')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11M3 12h3m15 0h-3M12 3v3m0 15v-3"/></svg>
+            Log Workout
+          </button>
+          <button class="pr-action-btn pr-action-primary" onclick="showPage('diet')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+            Log Meal
+          </button>
+          <button class="pr-action-btn pr-action-outline" onclick="showPage('workout')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Update Plan
+          </button>
+          <button class="pr-action-btn pr-action-outline" onclick="showPage('leaderboard')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 20 18 10"/><polyline points="12 20 12 4"/><polyline points="6 20 6 14"/></svg>
+            View Ranks
+          </button>
+        </div>
+      </div>
+
+      <!-- ── CONNECTED ACCOUNTS / SIGN-IN ── -->
+      <div class="pr-card pr-auth-card" id="prAuthCard">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">🔗</div>
+          <span class="pr-card-title">Connected Accounts</span>
+        </div>
+        <p class="pr-auth-desc">Link your accounts for seamless cross-device access and social achievements.</p>
+        <div class="pr-auth-btns">
+          <!-- Google -->
+          <button class="pr-oauth-btn pr-oauth-google" onclick="googleLogin()">
+            <div class="pr-oauth-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+              </svg>
+            </div>
+            <span class="pr-oauth-label">Continue with Google</span>
+            <div class="pr-oauth-glow"></div>
+          </button>
+          <!-- Apple -->
+          <button class="pr-oauth-btn pr-oauth-apple" onclick="oauthLogin('apple')">
+            <div class="pr-oauth-icon">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            </div>
+            <span class="pr-oauth-label">Continue with Apple</span>
+            <div class="pr-oauth-glow"></div>
+          </button>
+          <!-- GitHub -->
+          <button class="pr-oauth-btn pr-oauth-github" onclick="oauthLogin('github')">
+            <div class="pr-oauth-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </div>
+            <span class="pr-oauth-label">Continue with GitHub</span>
+            <div class="pr-oauth-glow"></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── ACTIVITY TIMELINE ── -->
+      <div class="pr-card pr-timeline-card">
+        <div class="pr-card-header">
+          <div class="pr-card-icon">📅</div>
+          <span class="pr-card-title">Activity Timeline</span>
+        </div>
+        <div class="pr-timeline" id="prTimeline">
+          <!-- Populated by JS -->
+          <div class="pr-timeline-empty">No activity yet — complete your first workout!</div>
+        </div>
+      </div>
+
+    </div><!-- /right col -->
+  </div><!-- /grid -->
 </div>
 
 <!-- ═══════════════ LEADERBOARD PAGE ═══════════════ -->
@@ -5584,113 +5808,328 @@ body::before {
 
 <!-- ═══════════════ LOGIN PAGE (Split Screen) ═══════════════ -->
 <div class="page" id="page-login">
-  <div class="login-split">
-    <!-- LEFT: BRAND PANEL -->
-    <div class="login-left">
-      <div class="login-left-grid"></div>
-      <div class="login-left-glow"></div>
-      <div class="login-brand">
-        <div class="login-brand-logo">BECOMING<span>ME</span></div>
-        <p class="login-brand-tagline">Where ordinary ends and<br>extraordinary begins.</p>
-        <div class="login-features">
-          <div class="login-feature"><div class="login-feature-dot"></div>500+ exercises across all muscle groups</div>
-          <div class="login-feature"><div class="login-feature-dot"></div>Personalized Indian diet & macro plans</div>
-          <div class="login-feature"><div class="login-feature-dot"></div>Real-time progress tracking & streaks</div>
-          <div class="login-feature"><div class="login-feature-dot"></div>Gym & home workout programs</div>
-          <div class="login-feature"><div class="login-feature-dot"></div>No credit card required to start</div>
-        </div>
-        <div class="login-testimonials" style="margin-top:2.5rem">
-          <div class="testimonial">
-            <div class="testimonial-text">Lost 14 kg in 4 months. The Indian diet plans actually fit my lifestyle — dal, sabzi, roti and still hitting macros!</div>
-            <div class="testimonial-author">Rohan Sharma</div>
-            <div class="testimonial-role">Mumbai · Fat Loss Program</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- RIGHT: AUTH FORM -->
-    <div class="login-right">
-      <div class="auth-box">
-        <div class="auth-logo-sm">
-          <div class="logo-text">BECOMING<span>ME</span></div>
-          <p>Your transformation starts here</p>
-        </div>
-        <div class="auth-card">
-          <div class="auth-tabs-wrap">
-            <button class="auth-tab active" onclick="switchAuth('login')">Sign In</button>
-            <button class="auth-tab" onclick="switchAuth('signup')">Create Account</button>
-          </div>
-
-          <!-- LOGIN FORM -->
-          <div class="auth-form active" id="loginForm">
-            <div class="form-grp">
-              <label>Email Address</label>
-              <input type="email" id="loginEmail" placeholder="you@example.com">
-            </div>
-            <div class="form-grp">
-              <label>Password</label>
-              <div class="pass-toggle">
-                <input type="password" id="loginPassword" placeholder="••••••••">
-                <span class="pass-eye" onclick="togglePass('loginPassword',this)">👁</span>
-              </div>
-            </div>
-            <div class="forgot-link"><a href="#">Forgot password?</a></div>
-            <button class="form-submit" onclick="handleAuth('login')">Sign In →</button>
-            <div class="social-divider">or continue with</div>
-            <div class="social-btns">
-              <button class="social-btn" onclick="googleLogin()">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Google
-              </button>
-              <button class="social-btn">⚫ Apple</button>
-            </div>
-          </div>
-
-          <!-- SIGNUP FORM -->
-          <div class="auth-form" id="signupForm">
-            <div class="form-row">
-              <div class="form-grp">
-                <label>First Name</label>
-                <input type="text" id="signupName" placeholder="Rahul">
-              </div>
-              <div class="form-grp">
-                <label>Last Name</label>
-                <input type="text" placeholder="Sharma">
-              </div>
-            </div>
-            <div class="form-grp">
-              <label>Email Address</label>
-              <input type="email" id="signupEmail" placeholder="you@example.com">
-            </div>
-            <div class="form-grp">
-              <label>Password</label>
-              <div class="pass-toggle">
-                <input type="password" id="signupPassword" placeholder="Create a strong password" oninput="checkStrength(this.value)">
-                <span class="pass-eye" onclick="togglePass('signupPassword',this)">👁</span>
-              </div>
-              <div class="strength-bar"><div class="strength-fill" id="strengthFill" style="width:0%"></div></div>
-              <div class="form-hint" id="strengthHint"></div>
-            </div>
-            <div class="form-grp">
-              <label>Confirm Password</label>
-              <input type="password" id="confirmPassword" placeholder="Repeat password">
-            </div>
-            <button class="form-submit" onclick="handleAuth('signup')">Create Account →</button>
-            <div class="social-divider">or sign up with</div>
-            <div class="social-btns">
-              <button class="social-btn" onclick="googleLogin()">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                Google
-              </button>
-              <button class="social-btn">⚫ Apple</button>
-            </div>
-          </div>
-        </div>
-        <div class="auth-footer">By continuing, you agree to our <a href="#">Terms</a> & <a href="#">Privacy Policy</a></div>
-      </div>
-    </div>
+  <!-- Ambient background particles/grid -->
+  <div class="lx-bg">
+    <div class="lx-grid"></div>
+    <div class="lx-orb lx-orb1"></div>
+    <div class="lx-orb lx-orb2"></div>
+    <div class="lx-orb lx-orb3"></div>
+    <!-- Animated noise overlay -->
+    <div class="lx-noise"></div>
   </div>
+
+  <div class="lx-split">
+
+    <!-- ════ LEFT PANEL — Brand Story ════ -->
+    <div class="lx-left">
+      <div class="lx-left-inner">
+
+        <!-- Top logo -->
+        <div class="lx-logo-wrap">
+          <img src="assets/logo.png" alt="BM" class="lx-logo-img"
+            onerror="this.style.display='none'">
+          <div class="lx-logo-text">BECOMING<span>ME</span></div>
+        </div>
+
+        <!-- Hero statement -->
+        <div class="lx-hero-text">
+          <div class="lx-hero-eyebrow">
+            <span class="lx-eyebrow-dot"></span>
+            Fitness Operating System
+          </div>
+          <h1 class="lx-hero-title">Your era<br><em>starts now.</em></h1>
+          <p class="lx-hero-sub">Science-backed training. Real Indian nutrition.<br>Gamified progress that keeps you coming back.</p>
+        </div>
+
+        <!-- Feature list — icon + text -->
+        <div class="lx-features">
+          <div class="lx-feat">
+            <div class="lx-feat-icon">⚡</div>
+            <div>
+              <div class="lx-feat-title">500+ Exercises</div>
+              <div class="lx-feat-desc">Gym & home programs for every goal</div>
+            </div>
+          </div>
+          <div class="lx-feat">
+            <div class="lx-feat-icon">🍛</div>
+            <div>
+              <div class="lx-feat-title">Indian Diet Plans</div>
+              <div class="lx-feat-desc">Real macros for dal, roti, paneer & more</div>
+            </div>
+          </div>
+          <div class="lx-feat">
+            <div class="lx-feat-icon">🏆</div>
+            <div>
+              <div class="lx-feat-title">XP & Achievements</div>
+              <div class="lx-feat-desc">Level up as you grind — like a game</div>
+            </div>
+          </div>
+          <div class="lx-feat">
+            <div class="lx-feat-icon">🔥</div>
+            <div>
+              <div class="lx-feat-title">Streak Tracking</div>
+              <div class="lx-feat-desc">Build unstoppable daily habits</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial rotator -->
+        <div class="lx-testimonial-wrap">
+          <div class="lx-testimonial-card" id="lxTestimonial">
+            <div class="lx-quote-mark">"</div>
+            <p class="lx-t-text">Lost 14 kg in 4 months. The Indian diet plans fit my lifestyle — dal, sabzi, roti and still hitting macros!</p>
+            <div class="lx-t-author">
+              <div class="lx-t-avatar">R</div>
+              <div>
+                <div class="lx-t-name">Rohan Sharma</div>
+                <div class="lx-t-role">Mumbai · Fat Loss Program</div>
+              </div>
+            </div>
+          </div>
+          <div class="lx-t-dots">
+            <span class="lx-t-dot active"></span>
+            <span class="lx-t-dot"></span>
+            <span class="lx-t-dot"></span>
+          </div>
+        </div>
+
+        <!-- Stats strip -->
+        <div class="lx-stats-strip">
+          <div class="lx-stat-item">
+            <div class="lx-stat-num">10K+</div>
+            <div class="lx-stat-label">Athletes</div>
+          </div>
+          <div class="lx-stat-div"></div>
+          <div class="lx-stat-item">
+            <div class="lx-stat-num">500+</div>
+            <div class="lx-stat-label">Exercises</div>
+          </div>
+          <div class="lx-stat-div"></div>
+          <div class="lx-stat-item">
+            <div class="lx-stat-num">100%</div>
+            <div class="lx-stat-label">Free Forever</div>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /left -->
+
+    <!-- ════ RIGHT PANEL — Auth Form ════ -->
+    <div class="lx-right">
+      <div class="lx-form-container">
+
+        <!-- Mobile-only logo -->
+        <div class="lx-mobile-brand">
+          <div class="lx-logo-text">BECOMING<span>ME</span></div>
+          <p class="lx-mobile-sub">Your transformation starts here</p>
+        </div>
+
+        <!-- Glassmorphism card -->
+        <div class="lx-card">
+          <!-- Top gradient line -->
+          <div class="lx-card-topline"></div>
+
+          <!-- Tab switcher -->
+          <div class="lx-tabs">
+            <button class="lx-tab active" id="lxTabLogin" onclick="lxSwitchTab('login')">
+              Sign In
+            </button>
+            <button class="lx-tab" id="lxTabSignup" onclick="lxSwitchTab('signup')">
+              Create Account
+            </button>
+            <!-- Sliding indicator -->
+            <div class="lx-tab-indicator" id="lxTabIndicator"></div>
+          </div>
+
+          <!-- ── LOGIN FORM ── -->
+          <div class="lx-form active" id="loginForm">
+
+            <!-- Social OAuth grid (primary — shown first) -->
+            <div class="lx-oauth-grid">
+              <!-- Google -->
+              <button class="lx-oauth-btn lx-google" onclick="googleLogin()">
+                <span class="lx-oauth-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                </span>
+                <span class="lx-oauth-label">Google</span>
+              </button>
+
+              <!-- Apple -->
+              <button class="lx-oauth-btn lx-apple" onclick="oauthLogin('apple')">
+                <span class="lx-oauth-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                  </svg>
+                </span>
+                <span class="lx-oauth-label">Apple</span>
+              </button>
+
+              <!-- GitHub -->
+              <button class="lx-oauth-btn lx-github" onclick="oauthLogin('github')">
+                <span class="lx-oauth-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  </svg>
+                </span>
+                <span class="lx-oauth-label">GitHub</span>
+              </button>
+
+              <!-- Twitter / X -->
+              <button class="lx-oauth-btn lx-twitter" onclick="oauthLogin('twitter')">
+                <span class="lx-oauth-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </span>
+                <span class="lx-oauth-label">X / Twitter</span>
+              </button>
+            </div>
+
+            <!-- Divider -->
+            <div class="lx-divider"><span>or sign in with email</span></div>
+
+            <!-- Email / Password fields -->
+            <div class="lx-field-group">
+              <label class="lx-label">Email Address</label>
+              <div class="lx-input-wrap">
+                <svg class="lx-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input class="lx-input" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+              </div>
+            </div>
+
+            <div class="lx-field-group">
+              <div class="lx-label-row">
+                <label class="lx-label">Password</label>
+                <a href="#" class="lx-forgot">Forgot password?</a>
+              </div>
+              <div class="lx-input-wrap">
+                <svg class="lx-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input class="lx-input" type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+                <button class="lx-eye" type="button" onclick="lxTogglePass('loginPassword',this)" aria-label="Show password">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <button class="lx-submit" onclick="handleAuth('login')">
+              <span>Sign In</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <div class="lx-submit-glow"></div>
+            </button>
+
+            <p class="lx-switch-text">No account? <button class="lx-switch-link" onclick="lxSwitchTab('signup')">Create one free →</button></p>
+          </div>
+
+          <!-- ── SIGNUP FORM ── -->
+          <div class="lx-form" id="signupForm">
+
+            <!-- OAuth grid for signup too -->
+            <div class="lx-oauth-grid">
+              <button class="lx-oauth-btn lx-google" onclick="googleLogin()">
+                <span class="lx-oauth-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                  </svg>
+                </span>
+                <span class="lx-oauth-label">Google</span>
+              </button>
+              <button class="lx-oauth-btn lx-apple" onclick="oauthLogin('apple')">
+                <span class="lx-oauth-icon">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                </span>
+                <span class="lx-oauth-label">Apple</span>
+              </button>
+              <button class="lx-oauth-btn lx-github" onclick="oauthLogin('github')">
+                <span class="lx-oauth-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </span>
+                <span class="lx-oauth-label">GitHub</span>
+              </button>
+              <button class="lx-oauth-btn lx-twitter" onclick="oauthLogin('twitter')">
+                <span class="lx-oauth-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </span>
+                <span class="lx-oauth-label">X / Twitter</span>
+              </button>
+            </div>
+
+            <div class="lx-divider"><span>or create with email</span></div>
+
+            <div class="lx-name-row">
+              <div class="lx-field-group">
+                <label class="lx-label">First Name</label>
+                <div class="lx-input-wrap">
+                  <input class="lx-input" type="text" id="signupName" placeholder="Rahul">
+                </div>
+              </div>
+              <div class="lx-field-group">
+                <label class="lx-label">Last Name</label>
+                <div class="lx-input-wrap">
+                  <input class="lx-input" type="text" placeholder="Sharma">
+                </div>
+              </div>
+            </div>
+
+            <div class="lx-field-group">
+              <label class="lx-label">Email Address</label>
+              <div class="lx-input-wrap">
+                <svg class="lx-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input class="lx-input" type="email" id="signupEmail" placeholder="you@example.com">
+              </div>
+            </div>
+
+            <div class="lx-field-group">
+              <label class="lx-label">Password</label>
+              <div class="lx-input-wrap">
+                <svg class="lx-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input class="lx-input" type="password" id="signupPassword" placeholder="Create a strong password" oninput="lxCheckStrength(this.value)">
+                <button class="lx-eye" type="button" onclick="lxTogglePass('signupPassword',this)" aria-label="Show password">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <!-- Strength meter -->
+              <div class="lx-strength-wrap">
+                <div class="lx-strength-track">
+                  <div class="lx-strength-fill" id="strengthFill" style="width:0%"></div>
+                </div>
+                <span class="lx-strength-label" id="strengthHint"></span>
+              </div>
+            </div>
+
+            <div class="lx-field-group">
+              <label class="lx-label">Confirm Password</label>
+              <div class="lx-input-wrap">
+                <svg class="lx-input-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/></svg>
+                <input class="lx-input" type="password" id="confirmPassword" placeholder="Repeat password">
+              </div>
+            </div>
+
+            <button class="lx-submit" onclick="handleAuth('signup')">
+              <span>Create Free Account</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              <div class="lx-submit-glow"></div>
+            </button>
+
+            <p class="lx-switch-text">Already have an account? <button class="lx-switch-link" onclick="lxSwitchTab('login')">Sign in →</button></p>
+          </div>
+
+        </div><!-- /lx-card -->
+
+        <p class="lx-legal">By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.<br>Becoming Me is 100% free — no credit card ever.</p>
+
+      </div>
+    </div><!-- /right -->
+
+  </div><!-- /split -->
 </div>
 
 <!-- EDIT PROFILE MODAL -->
@@ -5708,159 +6147,245 @@ body::before {
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase.js"></script>
+<script src="./auth.js"></script>
+<script src="./js/script.js"></script>
+
 <!-- ═══════════════ SUPABASE AUTH + METADATA — FULL SYSTEM ═══════════════ -->
-<script type="module">
-  import { supabase, getBecomingMeMetadata, upsertBecomingMeMetadata } from "./supabase.js";
+<script>
+(function initBecomingMeAuthRuntime() {
+  "use strict";
 
-  // ── Expose auth-compatible globals for existing UI code ──
-  window.auth = { currentUser: null };
-  window.supabase = supabase;
+  var bmSupabaseClient = window.supabaseClient;
+  var XP_PER_EXERCISE = 10;
+  var XP_PER_SESSION = 50;
+  var XP_PER_LEVEL = 100;
+  var pendingUpdates = {};
+  var updateTimer = null;
+  var firstAuthCheck = true;
 
-  window.createUserWithEmailAndPassword = async (_auth, email, password) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-    return { user: data.user };
-  };
+  function logAuth(message, data) {
+    console.info("[Auth] " + message, data || "");
+  }
 
-  window.signInWithEmailAndPassword = async (_auth, email, password) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    return { user: data.user };
-  };
+  function logAuthError(message, error) {
+    console.error("[Auth] " + message, error || "");
+  }
 
-  window.signOutUser = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-  };
+  function authToast(message) {
+    if (typeof window.showToast === "function") window.showToast(message);
+    else console.info(message);
+  }
 
-  // ── XP helpers ──
-  const XP_PER_EXERCISE = 10;
-  const XP_PER_SESSION = 50;
-  const XP_PER_LEVEL = 100;
-  window.xpToLevel = (xp) => Math.floor((xp || 0) / XP_PER_LEVEL);
-  window.xpInLevel = (xp) => (xp || 0) % XP_PER_LEVEL;
+  function authShowPage(name) {
+    if (typeof window.showPage === "function") window.showPage(name);
+    else window.__bm_pending_page = name;
+  }
 
-  // ── Default user data stored in Supabase Auth metadata ──
-  const defaultUser = (authUser) => ({
-    name: authUser?.user_metadata?.name || authUser?.user_metadata?.full_name || "User",
-    email: authUser?.email || "",
-    photo: authUser?.user_metadata?.avatar_url || null,
-    xp: 0, level: 0,
-    streak: 0, bestStreak: 0,
-    sessions: 0,
-    exercisesCompleted: 0,
-    caloriesBurned: 0,
-    weekWorkouts: 0, monthSessions: 0,
-    lastWorkoutDate: null,
-    dailyGoalExercises: 0,
-    history: [],
-    createdAt: Date.now(),
-    lastLogin: Date.now(),
+  function authCall(fnName, arg) {
+    if (typeof window[fnName] === "function") window[fnName](arg);
+  }
+
+  function getMetadata(authUser) {
+    return authUser && authUser.user_metadata && authUser.user_metadata.becoming_me
+      ? authUser.user_metadata.becoming_me
+      : null;
+  }
+
+  function defaultUser(authUser) {
+    var metadata = authUser && authUser.user_metadata ? authUser.user_metadata : {};
+    return {
+      name: metadata.name || metadata.full_name || "User",
+      email: authUser && authUser.email ? authUser.email : "",
+      photo: metadata.avatar_url || null,
+      xp: 0,
+      level: 0,
+      streak: 0,
+      bestStreak: 0,
+      sessions: 0,
+      exercisesCompleted: 0,
+      caloriesBurned: 0,
+      weekWorkouts: 0,
+      monthSessions: 0,
+      lastWorkoutDate: null,
+      dailyGoalExercises: 0,
+      history: [],
+      createdAt: Date.now(),
+      lastLogin: Date.now(),
+    };
+  }
+
+  function mergeObjects(base, patch) {
+    return Object.assign({}, base || {}, patch || {});
+  }
+
+  window.__bm_auth_ready = false;
+  window.auth = window.auth || { currentUser: null };
+  window.xpToLevel = function(xp) { return Math.floor((xp || 0) / XP_PER_LEVEL); };
+  window.xpInLevel = function(xp) { return (xp || 0) % XP_PER_LEVEL; };
+  window.todayKey = function() { return new Date().toISOString().slice(0, 10); };
+
+  if (!bmSupabaseClient || !bmSupabaseClient.auth) {
+    logAuthError("Supabase client missing. Check script order: CDN -> supabase.js -> auth.js -> script.js.");
+    authToast("Auth not ready yet, try again");
+    return;
+  }
+
+  logAuth("Page loaded for auth", {
+    href: window.location.href,
+    origin: window.location.origin,
+    search: window.location.search,
+    hash: window.location.hash,
   });
 
-  window.todayKey = () => new Date().toISOString().slice(0, 10);
-
-  function calcStreak(ud) {
-    const today = todayKey();
-    const last = ud.lastWorkoutDate;
-    if (!last) return { streak: 1, lastWorkoutDate: today };
-    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today };
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yKey = yesterday.toISOString().slice(0, 10);
-    if (last === yKey) {
-      return { streak: (ud.streak || 0) + 1, lastWorkoutDate: today };
-    }
-    return { streak: 1, lastWorkoutDate: today };
+  async function upsertMetadata(metadata) {
+    var result = await bmSupabaseClient.auth.updateUser({
+      data: { becoming_me: metadata },
+    });
+    if (result.error) throw result.error;
+    return result.data ? result.data.user : null;
   }
+
+  window.createUserWithEmailAndPassword = async function(_auth, email, password, profile) {
+    profile = profile || {};
+    logAuth("Email signup start", { email: email });
+    var result = await bmSupabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          name: profile.name || undefined,
+          full_name: profile.name || undefined,
+        },
+      },
+    });
+    if (result.error) {
+      logAuthError("Email signup error", result.error);
+      throw result.error;
+    }
+    logAuth("Email signup complete", { userId: result.data && result.data.user ? result.data.user.id : null });
+    return { user: result.data ? result.data.user : null };
+  };
+
+  window.signInWithEmailAndPassword = async function(_auth, email, password) {
+    logAuth("Email login start", { email: email });
+    var result = await bmSupabaseClient.auth.signInWithPassword({ email: email, password: password });
+    if (result.error) {
+      logAuthError("Email login error", result.error);
+      throw result.error;
+    }
+    logAuth("Email login complete", { userId: result.data && result.data.user ? result.data.user.id : null });
+    return { user: result.data ? result.data.user : null };
+  };
+
+  window.signOutUser = async function() {
+    logAuth("Logout start");
+    var result = await bmSupabaseClient.auth.signOut();
+    if (result.error) {
+      logAuthError("Logout error", result.error);
+      throw result.error;
+    }
+    logAuth("Logout complete");
+  };
 
   async function persistUserData(partialData) {
     try {
-      const merged = {
-        ...(window.userData || {}),
-        ...partialData,
-        lastLogin: Date.now(),
-      };
-      const updatedUser = await upsertBecomingMeMetadata(merged);
-      window.userData = getBecomingMeMetadata(updatedUser) || merged;
-      localStorage.setItem(
-        "bm_user",
-        JSON.stringify({
-          name: window.userData.name,
-          email: window.userData.email,
-          photo: window.userData.photo || null,
-        })
-      );
+      var merged = mergeObjects(window.userData || {}, partialData || {});
+      merged.lastLogin = Date.now();
+      var updatedUser = await upsertMetadata(merged);
+      window.userData = getMetadata(updatedUser) || merged;
+      localStorage.setItem("bm_user", JSON.stringify({
+        name: window.userData.name,
+        email: window.userData.email,
+        photo: window.userData.photo || null,
+      }));
       return window.userData;
     } catch (error) {
-      console.error("Supabase metadata save error:", error);
+      logAuthError("Supabase metadata save error", error);
       throw error;
     }
   }
 
   async function loadUserData(authUser) {
     try {
-      const meta = getBecomingMeMetadata(authUser);
-      const base = defaultUser(authUser);
-      const data = { ...base, ...(meta || {}) };
-      data.name = data.name || authUser?.user_metadata?.full_name || "User";
-      data.email = data.email || authUser?.email || "";
-      data.photo = data.photo || authUser?.user_metadata?.avatar_url || null;
+      var meta = getMetadata(authUser);
+      var data = mergeObjects(defaultUser(authUser), meta || {});
+      var userMetadata = authUser && authUser.user_metadata ? authUser.user_metadata : {};
+      data.name = data.name || userMetadata.full_name || "User";
+      data.email = data.email || (authUser && authUser.email ? authUser.email : "");
+      data.photo = data.photo || userMetadata.avatar_url || null;
       window.userData = data;
       window.userUID = authUser.id;
       await persistUserData(data);
       return data;
     } catch (error) {
-      console.error("Supabase load error:", error);
-      const cached = JSON.parse(localStorage.getItem("bm_user") || "{}");
-      window.userData = { ...defaultUser(authUser), ...cached };
+      logAuthError("Supabase load error", error);
+      var cached = JSON.parse(localStorage.getItem("bm_user") || "{}");
+      window.userData = mergeObjects(defaultUser(authUser), cached);
       window.userUID = authUser.id;
       return window.userData;
     }
   }
 
-  // ── Core stat updater (debounced metadata writes) ──
-  let _pendingUpdates = {};
-  let _updateTimer = null;
+  function calcStreak(ud) {
+    var today = window.todayKey();
+    var last = ud.lastWorkoutDate;
+    var yesterday;
+    var yKey;
+    if (!last) return { streak: 1, lastWorkoutDate: today };
+    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today };
+    yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yKey = yesterday.toISOString().slice(0, 10);
+    if (last === yKey) return { streak: (ud.streak || 0) + 1, lastWorkoutDate: today };
+    return { streak: 1, lastWorkoutDate: today };
+  }
+
   window.queueStatUpdate = function(updates) {
-    Object.assign(_pendingUpdates, updates);
-    clearTimeout(_updateTimer);
-    _updateTimer = setTimeout(async () => {
+    Object.assign(pendingUpdates, updates || {});
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(async function() {
+      var batch;
       if (!window.userUID) {
-        _pendingUpdates = {};
+        pendingUpdates = {};
         return;
       }
-      const batch = { ..._pendingUpdates };
-      _pendingUpdates = {};
+      batch = mergeObjects({}, pendingUpdates);
+      pendingUpdates = {};
       try {
-        window.userData = { ...(window.userData || {}), ...batch };
+        window.userData = mergeObjects(window.userData || {}, batch);
         await persistUserData(window.userData);
       } catch (error) {
-        console.error("stat update error:", error);
+        logAuthError("stat update error", error);
       }
     }, 300);
   };
 
   window.awardXP = function(amount) {
+    var ud;
+    var prevLevel;
+    var newXP;
+    var newLevel;
     if (!window.userUID) return;
-    const ud = window.userData || {};
-    const prevLevel = xpToLevel(ud.xp || 0);
-    const newXP = (ud.xp || 0) + amount;
-    const newLevel = xpToLevel(newXP);
+    ud = window.userData || {};
+    prevLevel = window.xpToLevel(ud.xp || 0);
+    newXP = (ud.xp || 0) + amount;
+    newLevel = window.xpToLevel(newXP);
     window.queueStatUpdate({ xp: newXP, level: newLevel });
-    if (newLevel > prevLevel) {
-      setTimeout(() => showLevelUp(newLevel), 400);
-    }
-    renderXPBar({ ...(window.userData || {}), xp: newXP, level: newLevel });
+    if (newLevel > prevLevel) setTimeout(function() { authCall("showLevelUp", newLevel); }, 400);
+    authCall("renderXPBar", mergeObjects(window.userData || {}, { xp: newXP, level: newLevel }));
   };
 
   window.completeWorkoutSession = function(exercisesDone, estimatedCals) {
+    var ud;
+    var streakData;
+    var history;
     if (!window.userUID) return;
-    const ud = window.userData || {};
-    const streakData = calcStreak(ud);
-    const bestStreak = Math.max(streakData.streak, ud.bestStreak || 0);
-    const history = (ud.history || []).slice(-29);
-    history.push({ date: todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals || 0 });
+    ud = window.userData || {};
+    streakData = calcStreak(ud);
+    history = (ud.history || []).slice(-29);
+    history.push({ date: window.todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals || 0 });
     window.queueStatUpdate({
       sessions: (ud.sessions || 0) + 1,
       exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
@@ -5869,17 +6394,16 @@ body::before {
       monthSessions: (ud.monthSessions || 0) + 1,
       dailyGoalExercises: (ud.dailyGoalExercises || 0) + exercisesDone,
       streak: streakData.streak,
-      bestStreak,
+      bestStreak: Math.max(streakData.streak, ud.bestStreak || 0),
       lastWorkoutDate: streakData.lastWorkoutDate,
-      history,
+      history: history,
     });
     window.awardXP(XP_PER_SESSION + exercisesDone * XP_PER_EXERCISE);
-    checkAndFireAchievements({
-      ...ud,
+    authCall("checkAndFireAchievements", mergeObjects(ud, {
       sessions: (ud.sessions || 0) + 1,
       streak: streakData.streak,
       exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
-    });
+    }));
   };
 
   window.saveUserField = async function(field, value) {
@@ -5889,80 +6413,112 @@ body::before {
     try {
       await persistUserData(window.userData);
     } catch (error) {
-      console.error("saveUserField error:", error);
+      logAuthError("saveUserField error", error);
     }
   };
 
-  // Metadata-only fallback leaderboard (single-user data availability)
   window.loadLeaderboard = async function() {
-    const ud = window.userData;
+    var ud = window.userData;
     if (!ud || !window.userUID) return [];
-    return [{ rank: 1, uid: window.userUID, ...ud }];
+    return [mergeObjects({ rank: 1, uid: window.userUID }, ud)];
   };
 
-  let _firstAuthCheck = true;
-  supabase.auth.onAuthStateChange(async (_event, session) => {
-    const user = session?.user || null;
+  async function handleAuthUser(user, source) {
     window.auth.currentUser = user;
-    const btn = document.getElementById("authNavBtn");
-
     if (user) {
       await loadUserData(user);
-      if (btn) {
-        btn.textContent = "Logout";
-        btn.onclick = logout;
-      }
-      const active = document.querySelector(".page.active");
-      if (_firstAuthCheck) {
-        if (!active || active.id === "page-login") showPage("home");
-        else if (active.id === "page-profile") initProfile();
-      } else {
-        if (active && active.id === "page-login") showPage("profile");
-        else if (active && active.id === "page-profile") initProfile();
-      }
-      _firstAuthCheck = false;
-      renderXPBar(window.userData);
-      renderDailyGoals(window.userData);
-    } else {
-      _firstAuthCheck = false;
-      window.userData = null;
-      window.userUID = null;
-      if (btn) {
-        btn.textContent = "Get Started →";
-        btn.onclick = () => showPage("login");
-      }
-      renderXPBar(null);
+      logAuth("User data loaded", { source: source, userId: user.id, email: user.email });
+      authCall("renderXPBar", window.userData);
+      authCall("renderDailyGoals", window.userData);
     }
-  });
-
-  // Ensure user is restored after refresh before first interaction
-  const {
-    data: { session },
-    error: sessionError,
-  } = await supabase.auth.getSession();
-  if (sessionError) {
-    console.error("Session restore error:", sessionError);
-  } else if (session?.user) {
-    window.auth.currentUser = session.user;
-    await loadUserData(session.user);
   }
 
-  window.googleLogin = async function() {
+  async function restoreSession() {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          queryParams: { prompt: "select_account" },
-          redirectTo: window.location.origin + window.location.pathname,
-        },
-      });
-      if (error) throw error;
-      showToast("🚀 Redirecting to Google...");
-    } catch (error) {
-      console.error(error);
-      showToast("Google Sign-In failed ❌");
+      logAuth("Session restore start");
+      var sessionResult = await bmSupabaseClient.auth.getSession();
+      var sessionError = sessionResult.error;
+      var session = sessionResult.data && sessionResult.data.session ? sessionResult.data.session : null;
+      if (sessionError) {
+        logAuthError("Session restore error", sessionError);
+      } else if (session && session.user) {
+        logAuth("Session restored", { userId: session.user.id, email: session.user.email });
+        await handleAuthUser(session.user, "restore");
+      } else {
+        logAuth("No active session found");
+      }
+    } catch (err) {
+      logAuthError("Session restore runtime error", err);
     }
-  };
+  }
+
+  async function initAuth() {
+    logAuth("Auth ready - initialising listener and session restore");
+
+    if (!window.__bm_auth_listener_attached) {
+      window.__bm_auth_listener_attached = true;
+      bmSupabaseClient.auth.onAuthStateChange(async function(event, session) {
+        var user = session && session.user ? session.user : null;
+        var btn = document.getElementById("authNavBtn");
+        var active;
+        logAuth("Auth state changed", {
+          event: event,
+          hasSession: !!session,
+          userId: user ? user.id : null,
+          email: user ? user.email : null,
+        });
+        window.auth.currentUser = user;
+        if (user) {
+          await loadUserData(user);
+          if (btn) {
+            btn.textContent = "Logout";
+            btn.onclick = function() { if (typeof window.logout === "function") window.logout(); };
+          }
+          active = document.querySelector(".page.active");
+          if (firstAuthCheck) {
+            if (!active || active.id === "page-login") authShowPage("home");
+            else if (active.id === "page-profile") authCall("initProfile");
+          } else {
+            if (active && active.id === "page-login") authShowPage("profile");
+            else if (active && active.id === "page-profile") authCall("initProfile");
+          }
+          authCall("renderXPBar", window.userData);
+          authCall("renderDailyGoals", window.userData);
+        } else {
+          window.userData = null;
+          window.userUID = null;
+          if (btn) {
+            btn.textContent = "Get Started →";
+            btn.onclick = function() { authShowPage("login"); };
+          }
+          authCall("renderXPBar", null);
+        }
+        firstAuthCheck = false;
+      });
+    } else {
+      logAuth("Skipped attaching duplicate auth listener");
+    }
+
+    try {
+      var url = new URL(window.location.href);
+      var oauthError = url.searchParams.get("error") || url.searchParams.get("error_description");
+      if (oauthError) {
+        logAuthError("OAuth provider returned an error", oauthError);
+        authToast("Google Sign-In failed ❌");
+      } else {
+        logAuth("OAuth callback check passed", { href: window.location.href });
+      }
+    } catch (err) {
+      logAuthError("OAuth callback parse error", err);
+    }
+
+    await restoreSession();
+    window.__bm_auth_ready = true;
+    logAuth("Auth init complete");
+  }
+
+  initAuth();
+})();
 </script>
 
 <script>
@@ -6012,6 +6568,7 @@ document.addEventListener('click', e => {
 
 // ══════ PAGE NAV ══════
 function showPage(name){
+  window.__bm_pending_page = null;
   // Auth guard
   const user = window.auth ? window.auth.currentUser : null;
   const protectedPages = ['profile'];
@@ -6057,6 +6614,7 @@ function showPage(name){
   if(name==='workout')     initLibrary();
   if(name==='leaderboard') initLeaderboardPage();
 }
+if(window.__bm_pending_page) showPage(window.__bm_pending_page);
 
 // ══════ TOAST ══════
 function showToast(msg){
@@ -6091,8 +6649,10 @@ function startCounters(){
 
 // ══════ BODY METRICS ══════
 function updateMetrics(){
-  const w = parseFloat(document.getElementById('logWeight')?.value)||0;
-  const h = parseFloat(document.getElementById('logHeight')?.value)||0;
+  const weightInputEl = document.getElementById('logWeight');
+  const heightInputEl = document.getElementById('logHeight');
+  const w = parseFloat(weightInputEl ? weightInputEl.value : '')||0;
+  const h = parseFloat(heightInputEl ? heightInputEl.value : '')||0;
   const wEl = document.getElementById('metricWeight');
   const bmiEl = document.getElementById('metricBMI');
   const bmiLabel = document.getElementById('metricBMILabel');
@@ -6307,7 +6867,8 @@ function setLibFilter(muscle, btn){
   currentLibFilter = muscle;
   document.querySelectorAll('.lib-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  buildLibrary(muscle, document.getElementById('libSearch')?.value || '');
+  const searchEl = document.getElementById('libSearch');
+  buildLibrary(muscle, searchEl ? searchEl.value : '');
 }
 
 function filterLib(){
@@ -6457,7 +7018,9 @@ function generatePlan(){
   const intensity = document.getElementById('intensitySelect').value;
 
   const planGroup = (goal==='fat'||goal==='endurance') ? 'fat' : 'muscle';
-  const planData = PLANS[currentPlan]?.[planGroup]?.[level] || PLANS[currentPlan]?.muscle?.beginner;
+  const currentPlanData = PLANS[currentPlan] || {};
+  const planData = (currentPlanData[planGroup] && currentPlanData[planGroup][level]) ||
+    (currentPlanData.muscle && currentPlanData.muscle.beginner);
 
   document.getElementById('planTitle').textContent = planData.title;
   document.getElementById('planDesc').textContent = planData.desc;
@@ -6504,7 +7067,7 @@ function generatePlan(){
   showToast('⚡ Your personalized plan is ready!');
   setTimeout(() => document.getElementById('workoutPlan').scrollIntoView({behavior:'smooth'}), 300);
   // Track session generation in Supabase metadata
-  if(window.updateUserStat && window.auth?.currentUser) {
+  if(window.updateUserStat && window.auth && window.auth.currentUser) {
     window.updateUserStat('sessions', 1);
     window.updateUserStat('weekWorkouts', 1);
   }
@@ -6587,7 +7150,8 @@ function initDiet(){
 }
 
 function getCurrentIndianMeals(){
-  const goal = document.getElementById('dietGoal')?.value || 'maintain';
+  const dietGoalEl = document.getElementById('dietGoal');
+  const goal = (dietGoalEl && dietGoalEl.value) || 'maintain';
   return indianMeals[goal] || indianMeals.maintain;
 }
 
@@ -6618,12 +7182,18 @@ function buildMealPlanSection(id, meals){
 }
 
 function calcMacros(){
-  const w = +document.getElementById('weightInput')?.value||70;
-  const h = +document.getElementById('heightInput')?.value||175;
-  const a = +document.getElementById('ageInput')?.value||25;
-  const gender = document.getElementById('genderSelect')?.value||'male';
-  const goal = document.getElementById('dietGoal')?.value||'maintain';
-  const act = +document.getElementById('activityLevel')?.value||1.55;
+  const weightEl = document.getElementById('weightInput');
+  const heightEl = document.getElementById('heightInput');
+  const ageEl = document.getElementById('ageInput');
+  const genderEl = document.getElementById('genderSelect');
+  const dietGoalEl = document.getElementById('dietGoal');
+  const activityEl = document.getElementById('activityLevel');
+  const w = +(weightEl ? weightEl.value : 0)||70;
+  const h = +(heightEl ? heightEl.value : 0)||175;
+  const a = +(ageEl ? ageEl.value : 0)||25;
+  const gender = (genderEl && genderEl.value)||'male';
+  const goal = (dietGoalEl && dietGoalEl.value)||'maintain';
+  const act = +(activityEl ? activityEl.value : 0)||1.55;
   let bmr = gender==='male' ? (10*w+6.25*h-5*a+5) : (10*w+6.25*h-5*a-161);
   let tdee = Math.round(bmr*act);
   if(goal==='cut') tdee = Math.round(tdee*0.82);
@@ -6660,7 +7230,8 @@ function buildWaterGlasses(){
   const c = document.getElementById('waterGlasses');
   if(!c) return;
   c.innerHTML = '';
-  const w = +document.getElementById('weightInput')?.value||70;
+  const weightEl = document.getElementById('weightInput');
+  const w = +(weightEl ? weightEl.value : 0)||70;
   const count = Math.max(6, Math.round(w*0.033/0.25));
   for(let i=0;i<count;i++){
     const g = document.createElement('div');
@@ -6694,8 +7265,8 @@ function initProfile(){
   // Name & email
   const nameEl = document.getElementById('profileName');
   const emailEl = document.getElementById('profileEmail');
-  if(nameEl) nameEl.textContent = ud.name || user?.displayName || 'User';
-  if(emailEl) emailEl.textContent = ud.email || user?.email || '';
+  if(nameEl) nameEl.textContent = ud.name || (user && user.displayName) || 'User';
+  if(emailEl) emailEl.textContent = ud.email || (user && user.email) || '';
 
   // Avatar
   const avatarEl = document.getElementById('avatarEl');
@@ -6854,7 +7425,7 @@ function handleAuth(type){
     if(!name||!email||!password){ showToast('Please fill all fields'); return; }
     if(password!==confirm){ showToast('Passwords do not match ❌'); return; }
     if(!window.createUserWithEmailAndPassword){ showToast('Auth not ready yet, try again'); return; }
-    window.createUserWithEmailAndPassword(window.auth, email, password)
+    window.createUserWithEmailAndPassword(window.auth, email, password, { name })
       .then(() => {
         showToast('🎉 Welcome to Becoming Me!');
         // onAuthStateChanged handles the rest
@@ -6874,8 +7445,8 @@ function handleAuth(type){
 }
 
 function logout(){
-  if(!window.signOutUser || !window.auth) { showToast('Auth not ready'); return; }
-  window.signOutUser(window.auth).then(()=>{
+  if(!window.signOutUser) { showToast('Auth not ready'); return; }
+  window.signOutUser().then(()=>{
     window.userData = null;
     window.userUID = null;
     localStorage.removeItem('bm_user');
@@ -6935,7 +7506,7 @@ function saveProfile(){
   const nameEl = document.getElementById('profileName');
   if(nameEl) nameEl.textContent = name;
   const avatarEl = document.getElementById('avatarEl');
-  if(avatarEl && !window.userData?.photo && !cached.photo){
+  if(avatarEl && !(window.userData && window.userData.photo) && !cached.photo){
     avatarEl.textContent = name.charAt(0).toUpperCase();
   }
   closeEditModal();
@@ -6986,12 +7557,13 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('service-worker.js').then(r=>console.log('SW:',r.scope)).catch(e=>console.log('SW fail:',e)); });
 }
 
-// AUTH STATE CHECK ON LOAD — handled by Supabase auth listener in module
+// AUTH STATE CHECK ON LOAD — handled by Supabase auth listener
 document.addEventListener('DOMContentLoaded',()=>{
   initLibrary();
   setTimeout(startTerminalTyping, 3000);
   initCalorieScanner();
-  cycleTerminal();
+  // Disabled to prevent unrelated runtime crashes during auth initialisation.
+  // cycleTerminal();
   // Restore bottom nav state for home page on fresh load
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   const homeBtn = document.querySelector('.bnav-btn[data-page="home"]');
@@ -7604,6 +8176,1389 @@ window.addEventListener('resize', function(){
 
 })();
 
+</script>
+
+<style id="profile-redesign-css">
+/* ═══════════════════════════════════════════════════════════════
+   PROFILE REDESIGN — premium · futuristic · gamified · cinematic
+   profile.css — all classes prefixed pr- to avoid conflicts
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── KEYFRAMES ── */
+@keyframes prFadeUp   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+@keyframes prFadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes prFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes prPulseGlow{ 0%,100%{opacity:.5;transform:scale(.95)} 50%{opacity:1;transform:scale(1.08)} }
+@keyframes prSpin     { to{transform:rotate(360deg)} }
+@keyframes prShimmer  { 0%{transform:translateX(-200%)} 100%{transform:translateX(200%)} }
+@keyframes prRingFill { from{stroke-dashoffset:201} }
+@keyframes prBorderRot{ to{transform:rotate(360deg)} }
+@keyframes prBlobMove { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-20px) scale(1.1)} 66%{transform:translate(-20px,15px) scale(.9)} }
+@keyframes prAchIn    { from{opacity:0;transform:scale(.7) rotate(-8deg)} 60%{transform:scale(1.1) rotate(2deg)} to{opacity:1;transform:scale(1) rotate(0)} }
+@keyframes prDotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+@keyframes prSlideRight{ from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+
+/* ── PAGE LAYOUT ── */
+#page-profile {
+  background: var(--black);
+  min-height: 100vh;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom,0px));
+}
+
+/* ── CINEMATIC HERO ── */
+.pr-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 2rem 2rem;
+  background:
+    radial-gradient(ellipse 100% 100% at 50% -10%, rgba(40,10,80,.7) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(91,33,182,.1) 0%, transparent 60%);
+  border-bottom: 1px solid rgba(139,92,246,.12);
+  text-align: center;
+}
+.pr-hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(139,92,246,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 100% at 50% 0%, black 30%, transparent 100%);
+}
+.pr-hero-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+  animation: prFloat 8s ease-in-out infinite;
+}
+.pr-hero-orb1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(91,33,182,.22) 0%, transparent 70%);
+  top: -100px; left: 50%; transform: translateX(-50%);
+}
+.pr-hero-orb2 {
+  width: 250px; height: 250px;
+  background: radial-gradient(circle, rgba(139,92,246,.15) 0%, transparent 70%);
+  top: 20px; right: 10%; animation-delay: 3.5s;
+}
+.pr-hero-inner { position: relative; z-index: 1; }
+.pr-eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.28);
+  border-radius: 100px; padding: .4rem 1.1rem;
+  font-size: .58rem; letter-spacing: .3em; text-transform: uppercase; color: var(--gold-xlight);
+  margin-bottom: 1rem; backdrop-filter: blur(12px); animation: prFadeIn .6s ease both;
+}
+.pr-eyebrow-dot {
+  width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+  box-shadow: 0 0 8px rgba(139,92,246,.7); animation: prDotPulse 2s ease-in-out infinite;
+}
+.pr-eyebrow-badge {
+  background: var(--gold); color: var(--black); font-family: 'Bebas Neue';
+  font-size: .75rem; letter-spacing: .1em; padding: .1rem .55rem; border-radius: 100px;
+}
+.pr-hero-title {
+  font-family: 'Bebas Neue'; font-size: clamp(2.8rem,7vw,5.5rem);
+  color: var(--white); letter-spacing: .06em; line-height: .9;
+  animation: prFadeUp .7s .1s ease both;
+  filter: drop-shadow(0 4px 30px rgba(139,92,246,.25));
+}
+.pr-hero-title em {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  font-style: normal;
+}
+.pr-hero-sub {
+  color: rgba(160,150,200,.75); font-size: .88rem; margin-top: .7rem;
+  animation: prFadeUp .7s .2s ease both; font-family: 'Playfair Display'; font-style: italic;
+}
+
+/* ── XP HERO BAR ── */
+.pr-xp-hero {
+  max-width: 520px; margin: 1.8rem auto 0; animation: prFadeUp .7s .35s ease both; position: relative; z-index: 1;
+}
+.pr-xp-hero-labels { display: flex; justify-content: space-between; margin-bottom: .45rem; }
+.pr-xp-hero-label { font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.pr-xp-hero-val { font-size: .7rem; color: var(--gold); font-weight: 600; }
+.pr-xp-hero-track {
+  height: 6px; background: rgba(255,255,255,.06); border-radius: 100px; overflow: visible; position: relative;
+}
+.pr-xp-hero-fill {
+  height: 100%; border-radius: 100px; transition: width 1.4s cubic-bezier(.4,0,.2,1);
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+  position: relative; overflow: hidden;
+}
+.pr-xp-hero-fill::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+  animation: prShimmer 2s ease infinite;
+}
+.pr-xp-hero-glow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(167,139,250,.9) 0%, transparent 70%);
+  transition: left 1.4s cubic-bezier(.4,0,.2,1);
+  filter: blur(4px);
+}
+
+/* ── MAIN GRID ── */
+.pr-grid {
+  display: grid; grid-template-columns: 340px 1fr;
+  gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+@media (max-width: 960px) {
+  .pr-grid { grid-template-columns: 1fr; }
+}
+.pr-col-left, .pr-col-right { display: flex; flex-direction: column; gap: 1.2rem; }
+
+/* ── BASE CARD ── */
+.pr-card {
+  background: rgba(14,12,24,.78);
+  border: 1px solid rgba(139,92,246,.18);
+  border-radius: 20px;
+  padding: 1.6rem;
+  backdrop-filter: blur(28px) saturate(1.8);
+  -webkit-backdrop-filter: blur(28px) saturate(1.8);
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  position: relative; overflow: hidden;
+  transition: border-color .3s, box-shadow .3s, transform .3s;
+  animation: prFadeUp .6s ease both;
+}
+.pr-card:nth-child(1){ animation-delay: .05s }
+.pr-card:nth-child(2){ animation-delay: .12s }
+.pr-card:nth-child(3){ animation-delay: .19s }
+.pr-card:nth-child(4){ animation-delay: .26s }
+.pr-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(139,92,246,.5), transparent);
+  opacity: 0; transition: opacity .35s;
+}
+.pr-card:hover::before { opacity: 1; }
+.pr-card:hover {
+  border-color: rgba(139,92,246,.35);
+  box-shadow: 0 0 48px rgba(139,92,246,.1), 0 20px 60px rgba(0,0,0,.45);
+}
+
+/* ── CARD HEADER ── */
+.pr-card-header {
+  display: flex; align-items: center; gap: .6rem; margin-bottom: 1.3rem;
+}
+.pr-card-icon { font-size: 1rem; }
+.pr-card-title {
+  font-size: .68rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--gold-xlight); font-weight: 600; flex: 1;
+}
+.pr-card-badge {
+  background: rgba(139,92,246,.12); border: 1px solid rgba(139,92,246,.25);
+  color: var(--gold); font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+  padding: .2rem .7rem; border-radius: 100px;
+}
+
+/* ── AVATAR CARD ── */
+.pr-avatar-card { padding: 2rem; }
+
+/* Animated border ring */
+.pr-card-border-ring {
+  position: absolute; inset: -1px; border-radius: 21px; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent 0%, rgba(139,92,246,.4) 25%, rgba(167,139,250,.6) 50%, rgba(139,92,246,.4) 75%, transparent 100%);
+  animation: prBorderRot 4s linear infinite;
+  opacity: 0; transition: opacity .4s;
+  mask: linear-gradient(black,black) content-box, linear-gradient(black,black);
+  mask-composite: exclude; padding: 1.5px;
+  -webkit-mask: linear-gradient(black,black) content-box, linear-gradient(black,black);
+  -webkit-mask-composite: destination-out;
+}
+.pr-avatar-card:hover .pr-card-border-ring { opacity: 1; }
+
+/* Glow blob */
+.pr-card-blob {
+  position: absolute; width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(91,33,182,.2) 0%, transparent 70%);
+  filter: blur(40px); top: -40px; right: -40px; pointer-events: none;
+  animation: prBlobMove 7s ease-in-out infinite;
+}
+
+/* Float animation */
+.pr-float { animation: prFadeUp .6s ease both, prFloat 6s 1s ease-in-out infinite; }
+
+.pr-avatar-section { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 1.6rem; }
+
+/* ── AVATAR RING ── */
+.pr-avatar-outer {
+  width: 100px; height: 100px; position: relative; cursor: pointer; flex-shrink: 0;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.pr-avatar-outer:hover { transform: scale(1.06); }
+.pr-avatar-outer:hover .pr-avatar-inner { box-shadow: 0 0 40px rgba(139,92,246,.6); }
+.pr-avatar-ring-track {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--gold-dark) 0deg, var(--gold) 90deg, var(--gold-light) 180deg, transparent 240deg, var(--gold-dark) 360deg);
+  animation: prSpin 3s linear infinite; padding: 3px;
+}
+.pr-avatar-ring-fill {
+  width: 100%; height: 100%; border-radius: 50%; background: rgba(14,12,24,.9);
+}
+.pr-avatar-glow {
+  position: absolute; inset: -8px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,.3) 0%, transparent 65%);
+  animation: prPulseGlow 3s ease-in-out infinite; pointer-events: none;
+}
+.pr-avatar-inner {
+  position: absolute; inset: 3px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue'; font-size: 2.4rem; color: var(--black);
+  z-index: 1; transition: box-shadow .3s, transform .3s; overflow: hidden;
+}
+.pr-avatar-upload-overlay {
+  position: absolute; inset: 3px; border-radius: 50%;
+  background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center;
+  color: var(--white); z-index: 2; opacity: 0; transition: opacity .3s;
+}
+.pr-avatar-outer:hover .pr-avatar-upload-overlay { opacity: 1; }
+
+.pr-avatar-info { flex: 1; min-width: 0; }
+.pr-name {
+  font-family: 'Bebas Neue'; font-size: 1.7rem; color: var(--white);
+  letter-spacing: .04em; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pr-email { color: var(--muted2); font-size: .78rem; margin: .3rem 0 .6rem; }
+.pr-tier-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  background: linear-gradient(135deg,rgba(139,92,246,.15),rgba(91,33,182,.08));
+  border: 1px solid rgba(139,92,246,.3); border-radius: 100px;
+  padding: .28rem .85rem; font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); position: relative; overflow: hidden;
+}
+.pr-tier-badge::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  animation: prShimmer 3s ease-in-out infinite;
+}
+.pr-tier-dot {
+  width: 5px; height: 5px; background: var(--gold); border-radius: 50%;
+  box-shadow: 0 0 6px rgba(139,92,246,.8); animation: prDotPulse 2s ease-in-out infinite;
+}
+
+/* ── STAT PILLS ── */
+.pr-stat-pills {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,.25); border: 1px solid rgba(139,92,246,.12);
+  border-radius: 14px; padding: .9rem 0;
+}
+.pr-pill { flex: 1; text-align: center; }
+.pr-pill-icon { font-size: 1rem; margin-bottom: .25rem; }
+.pr-pill-num {
+  font-family: 'Bebas Neue'; font-size: 1.8rem;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1; transition: all .3s;
+}
+.pr-pill-label { font-size: .55rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: .2rem; }
+.pr-pill-div { width: 1px; height: 36px; background: rgba(139,92,246,.15); }
+
+/* ── RING METRICS ── */
+.pr-ring-row { display: flex; justify-content: space-around; margin: 0 0 1.4rem; }
+.pr-ring-wrap { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.pr-ring-svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.pr-ring-bg { fill: none; stroke: rgba(139,92,246,.1); stroke-width: 6; }
+.pr-ring-fg {
+  fill: none; stroke-width: 6; stroke-linecap: round;
+  stroke-dasharray: 201; stroke-dashoffset: 201;
+  transition: stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1);
+}
+.pr-ring-weight { stroke: var(--gold); }
+.pr-ring-bmi { stroke: #60a5fa; }
+.pr-ring-fat { stroke: #f472b6; }
+.pr-ring-center {
+  position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  inset: 0;
+}
+.pr-ring-wrap { position: relative; }
+.pr-ring-svg-wrap { position: relative; width: 80px; height: 80px; }
+.pr-ring-val { font-family: 'Bebas Neue'; font-size: 1.15rem; color: var(--white); line-height: 1; }
+.pr-ring-unit { font-size: .5rem; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+.pr-ring-label { font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted2); }
+
+/* ── INPUT ROW ── */
+.pr-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.pr-input-group {}
+.pr-input-label {
+  display: block; font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(139,92,246,.8); margin-bottom: .4rem;
+}
+.pr-input {
+  width: 100%; background: rgba(8,6,18,.9); border: 1px solid rgba(139,92,246,.22);
+  border-radius: 10px; color: var(--white); padding: .7rem .9rem;
+  font-family: 'DM Sans'; font-size: .88rem; transition: all .25s;
+  backdrop-filter: blur(10px);
+}
+.pr-input:focus { outline: none; border-color: rgba(139,92,246,.55); box-shadow: 0 0 0 3px rgba(139,92,246,.1); }
+.pr-input::placeholder { color: var(--muted); }
+
+/* ── SETTINGS ── */
+.pr-setting-list { display: flex; flex-direction: column; gap: .55rem; }
+.pr-setting-btn {
+  width: 100%; display: flex; align-items: center; gap: .65rem;
+  background: rgba(0,0,0,.2); border: 1px solid rgba(139,92,246,.14);
+  border-radius: 12px; padding: .8rem 1rem; color: var(--text);
+  font-family: 'DM Sans'; font-size: .82rem; cursor: pointer;
+  transition: all .25s; text-align: left; min-height: 44px;
+}
+.pr-setting-btn:hover {
+  border-color: rgba(139,92,246,.35); background: rgba(139,92,246,.08);
+  color: var(--white); transform: translateX(4px);
+}
+.pr-setting-btn svg { color: var(--gold); flex-shrink: 0; }
+.pr-setting-danger { border-color: rgba(217,64,64,.2) !important; }
+.pr-setting-danger:hover { border-color: rgba(217,64,64,.5) !important; background: rgba(217,64,64,.08) !important; color: #f87171 !important; }
+.pr-setting-danger svg { color: #f87171; }
+
+/* ── GOAL PROGRESS BARS ── */
+.pr-goals-grid { display: flex; flex-direction: column; gap: 1rem; }
+.pr-goal-item {}
+.pr-goal-label { font-size: .7rem; color: var(--muted2); margin-bottom: .5rem; }
+.pr-goal-bar-wrap { display: flex; align-items: center; gap: .8rem; }
+.pr-goal-bar { flex: 1; height: 6px; background: rgba(255,255,255,.06); border-radius: 100px; overflow: hidden; position: relative; }
+.pr-goal-fill {
+  height: 100%; border-radius: 100px;
+  transition: width 1.4s cubic-bezier(.4,0,.2,1);
+  position: relative; overflow: hidden;
+}
+.pr-goal-purple { background: linear-gradient(90deg, var(--gold-dark), var(--gold)); }
+.pr-goal-blue   { background: linear-gradient(90deg, #1d4ed8, #60a5fa); }
+.pr-goal-green  { background: linear-gradient(90deg, #065f46, #4ade80); }
+.pr-goal-shimmer {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+  animation: prShimmer 2.5s ease infinite;
+}
+.pr-goal-val { font-size: .68rem; color: var(--gold); white-space: nowrap; font-weight: 600; min-width: 80px; text-align: right; }
+
+/* ── STREAK ── */
+.pr-streak-badge { background: rgba(255,100,50,.1); border-color: rgba(255,100,50,.3); color: #fb923c; }
+.pr-streak-wrap { }
+.pr-streak-grid {
+  display: grid; grid-template-columns: repeat(14,1fr); gap: 5px;
+  margin-bottom: .8rem;
+}
+.pr-streak-day {
+  aspect-ratio: 1; border-radius: 6px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; font-size: .45rem;
+  letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  background: rgba(255,255,255,.04); border: 1px solid transparent;
+  transition: transform .25s; cursor: default;
+}
+.pr-streak-day:hover { transform: scale(1.15); }
+.pr-streak-day.done {
+  background: rgba(139,92,246,.22); border-color: rgba(139,92,246,.4);
+  color: var(--gold); animation: prAchIn .4s ease both;
+}
+.pr-streak-day.today {
+  border-color: var(--gold); color: var(--white);
+  background: rgba(139,92,246,.14); box-shadow: 0 0 14px rgba(139,92,246,.3);
+}
+.pr-streak-legend {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: .6rem; color: var(--muted);
+}
+.pr-streak-legend-dot { width: 8px; height: 8px; border-radius: 3px; }
+.pr-dot-empty  { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); }
+.pr-dot-done   { background: rgba(139,92,246,.4); border: 1px solid rgba(139,92,246,.6); }
+.pr-dot-today  { background: rgba(139,92,246,.2); border: 1px solid var(--gold); }
+
+/* ── ACHIEVEMENTS ── */
+.pr-ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+@media (max-width: 600px) { .pr-ach-grid { grid-template-columns: 1fr; } }
+.pr-ach-item {
+  background: rgba(8,6,18,.6); border: 1px solid rgba(139,92,246,.14);
+  border-radius: 14px; padding: .9rem; display: flex; align-items: center; gap: .75rem;
+  transition: all .3s cubic-bezier(.34,1.3,.64,1);
+  animation: prFadeUp .5s ease both;
+  backdrop-filter: blur(12px);
+}
+.pr-ach-item.unlocked {
+  border-color: rgba(139,92,246,.35);
+  background: linear-gradient(135deg,rgba(139,92,246,.1),rgba(91,33,182,.06));
+}
+.pr-ach-item:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 32px rgba(0,0,0,.4);
+  border-color: rgba(139,92,246,.45);
+}
+.pr-ach-item.unlocked:hover { box-shadow: 0 10px 32px rgba(139,92,246,.2); }
+.pr-ach-icon {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--surface); border: 1px solid rgba(139,92,246,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0; transition: all .3s;
+}
+.pr-ach-item.unlocked .pr-ach-icon {
+  background: rgba(139,92,246,.18); border-color: rgba(139,92,246,.4);
+  animation: prFloat 3s ease-in-out infinite;
+  box-shadow: 0 0 16px rgba(139,92,246,.25);
+}
+.pr-ach-item:hover .pr-ach-icon { transform: rotate(15deg) scale(1.15); }
+.pr-ach-title { font-weight: 600; font-size: .8rem; color: var(--white); line-height: 1.2; }
+.pr-ach-desc  { font-size: .68rem; color: var(--muted); margin: .15rem 0; }
+.pr-ach-status { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+.pr-ach-item:not(.unlocked) .pr-ach-title { color: var(--muted); }
+.pr-ach-item:not(.unlocked) .pr-ach-status { color: var(--muted2); }
+
+/* ── QUICK ACTIONS ── */
+.pr-actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.pr-action-btn {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  padding: .9rem; border-radius: 12px; font-family: 'DM Sans'; font-weight: 600;
+  font-size: .78rem; cursor: pointer; transition: all .25s; min-height: 48px; border: none;
+  position: relative; overflow: hidden;
+}
+.pr-action-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);
+  transform: translateX(-100%); transition: transform .5s;
+}
+.pr-action-btn:hover::after { transform: translateX(100%); }
+.pr-action-primary {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--black);
+}
+.pr-action-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(139,92,246,.35); }
+.pr-action-outline {
+  background: transparent; border: 1px solid rgba(139,92,246,.3); color: var(--text);
+}
+.pr-action-outline:hover { border-color: var(--gold); color: var(--white); background: rgba(139,92,246,.08); transform: translateY(-2px); }
+
+/* ── OAUTH BUTTONS ── */
+.pr-auth-desc { font-size: .78rem; color: var(--muted2); margin-bottom: 1.2rem; line-height: 1.6; }
+.pr-auth-btns { display: flex; flex-direction: column; gap: .7rem; }
+.pr-oauth-btn {
+  width: 100%; display: flex; align-items: center; gap: .9rem; padding: .9rem 1.2rem;
+  border-radius: 14px; cursor: pointer; transition: all .3s cubic-bezier(.34,1.2,.64,1);
+  font-family: 'DM Sans'; font-size: .85rem; font-weight: 500;
+  border: 1px solid rgba(139,92,246,.2); min-height: 50px;
+  position: relative; overflow: hidden; text-align: left;
+  backdrop-filter: blur(12px);
+}
+.pr-oauth-icon {
+  width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+.pr-oauth-label { flex: 1; font-weight: 500; }
+.pr-oauth-glow {
+  position: absolute; inset: 0; opacity: 0; transition: opacity .3s;
+  pointer-events: none;
+}
+.pr-oauth-btn:hover .pr-oauth-icon { transform: scale(1.15) rotate(-5deg); }
+.pr-oauth-btn:hover .pr-oauth-glow { opacity: 1; }
+.pr-oauth-btn:hover { transform: translateY(-2px); }
+
+/* Google */
+.pr-oauth-google { background: rgba(66,133,244,.08); color: var(--white); border-color: rgba(66,133,244,.25); }
+.pr-oauth-google .pr-oauth-icon { background: rgba(66,133,244,.12); }
+.pr-oauth-google .pr-oauth-glow { background: radial-gradient(circle at 30% 50%, rgba(66,133,244,.1) 0%, transparent 60%); }
+.pr-oauth-google:hover { border-color: rgba(66,133,244,.5); box-shadow: 0 8px 30px rgba(66,133,244,.2); }
+/* Apple */
+.pr-oauth-apple { background: rgba(255,255,255,.05); color: var(--white); border-color: rgba(255,255,255,.12); }
+.pr-oauth-apple .pr-oauth-icon { background: rgba(255,255,255,.08); }
+.pr-oauth-apple .pr-oauth-glow { background: radial-gradient(circle at 30% 50%, rgba(255,255,255,.07) 0%, transparent 60%); }
+.pr-oauth-apple:hover { border-color: rgba(255,255,255,.28); box-shadow: 0 8px 30px rgba(255,255,255,.08); }
+/* GitHub */
+.pr-oauth-github { background: rgba(88,96,105,.1); color: var(--white); border-color: rgba(88,96,105,.25); }
+.pr-oauth-github .pr-oauth-icon { background: rgba(88,96,105,.15); }
+.pr-oauth-github .pr-oauth-glow { background: radial-gradient(circle at 30% 50%, rgba(88,96,105,.15) 0%, transparent 60%); }
+.pr-oauth-github:hover { border-color: rgba(88,96,105,.5); box-shadow: 0 8px 30px rgba(88,96,105,.2); }
+
+/* ── ACTIVITY TIMELINE ── */
+.pr-timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+.pr-timeline::before {
+  content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, rgba(139,92,246,.4), transparent);
+}
+.pr-tl-item {
+  display: flex; align-items: flex-start; gap: .9rem; padding: .75rem 0;
+  animation: prSlideRight .4s ease both;
+}
+.pr-tl-dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(139,92,246,.15); border: 1.5px solid rgba(139,92,246,.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; flex-shrink: 0; position: relative; z-index: 1;
+}
+.pr-tl-dot.done { background: rgba(139,92,246,.25); border-color: var(--gold); box-shadow: 0 0 10px rgba(139,92,246,.3); }
+.pr-tl-content { flex: 1; padding-top: .2rem; }
+.pr-tl-title { font-size: .82rem; color: var(--white); font-weight: 500; }
+.pr-tl-time  { font-size: .65rem; color: var(--muted); margin-top: .15rem; }
+.pr-tl-xp { font-size: .62rem; color: var(--gold); font-weight: 600; margin-top: .1rem; }
+.pr-timeline-empty { color: var(--muted); font-size: .82rem; padding: 1rem 0; text-align: center; }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 680px) {
+  .pr-hero { padding: 4.5rem 1.2rem 1.8rem; }
+  .pr-grid { padding: 1.2rem 1rem 5rem; gap: 1rem; }
+  .pr-card { padding: 1.3rem; border-radius: 16px; }
+  .pr-streak-grid { grid-template-columns: repeat(14,1fr); gap: 3px; }
+  .pr-ach-grid { grid-template-columns: 1fr; }
+  .pr-actions-grid { grid-template-columns: 1fr 1fr; }
+  .pr-avatar-section { flex-direction: column; text-align: center; }
+  .pr-avatar-info { display: flex; flex-direction: column; align-items: center; }
+  .pr-ring-row { gap: 0; justify-content: space-evenly; }
+  .pr-stat-pills { }
+}
+@media (max-width: 375px) {
+  .pr-stat-pills { flex-direction: column; gap: .6rem; }
+  .pr-pill-div { width: 80%; height: 1px; }
+  .pr-goal-val { min-width: 60px; font-size: .6rem; }
+}
+
+/* ── TILT CARD EFFECT (applied via JS) ── */
+.pr-card.tilt-card { transform-style: preserve-3d; }
+
+/* ── PARTICLE CANVAS ── */
+#profileParticles { display: none; }
+#page-profile.active #profileParticles { display: block; }
+</style>
+
+<script id="profile-redesign-js">
+/* ═══════════════════════════════════════════════════════
+   profile.js — Premium Profile Page Interactions
+   ═══════════════════════════════════════════════════════ */
+
+(function() {
+'use strict';
+
+/* ─ XP helper ─ */
+function xpToLevel(xp) { return Math.max(1, Math.floor(Math.sqrt(xp / 100)) + 1); }
+function xpForLevel(lvl) { return Math.pow(lvl - 1, 2) * 100; }
+function xpForNextLevel(lvl) { return Math.pow(lvl, 2) * 100; }
+
+/* ─ Animated number counter ─ */
+function animNum(id, target, suffix) {
+  suffix = suffix || '';
+  var el = document.getElementById(id);
+  if (!el) return;
+  var start = 0, dur = 1200;
+  var startTime = null;
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var p = Math.min((ts - startTime) / dur, 1);
+    el.textContent = Math.round(ease(p) * target) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target + suffix;
+  }
+  requestAnimationFrame(step);
+}
+
+/* ─ Render XP bar in hero ─ */
+function renderXPHero(ud) {
+  if (!ud) return;
+  var xp = ud.xp || 0;
+  var lvl = xpToLevel(xp);
+  var xpBase = xpForLevel(lvl);
+  var xpNext = xpForNextLevel(lvl);
+  var pct = Math.min(((xp - xpBase) / (xpNext - xpBase)) * 100, 100);
+
+  var fill = document.getElementById('prXPHeroFill');
+  var glow = document.getElementById('prXPHeroGlow');
+  var label = document.getElementById('prXPLabel');
+  var badge = document.getElementById('prLevelBadge');
+  var tierLabel = document.getElementById('prTierLabel');
+
+  if (badge) badge.textContent = 'LVL ' + lvl;
+  if (label) label.textContent = xp.toLocaleString() + ' / ' + xpNext.toLocaleString() + ' XP';
+
+  // Tier label based on level
+  var tiers = ['Beginner','Rookie','Athlete','Warrior','Champion','Elite','Legend','God-Tier'];
+  var tierIdx = Math.min(Math.floor((lvl - 1) / 3), tiers.length - 1);
+  if (tierLabel) tierLabel.textContent = '🔥 ' + tiers[tierIdx];
+
+  setTimeout(function() {
+    if (fill) fill.style.width = pct + '%';
+    if (glow) glow.style.left = Math.max(0, pct - 1) + '%';
+  }, 300);
+}
+
+/* ─ Streak grid ─ */
+function buildPrStreak(ud) {
+  var c = document.getElementById('streakRow');
+  if (!c) return;
+  c.innerHTML = '';
+  var streak = (ud && ud.streak) || 0;
+  var labels = ['M','T','W','T','F','S','S','M','T','W','T','F','S','T'];
+  var today = 13;
+  for (var i = 0; i < 14; i++) {
+    var daysAgo = today - i;
+    var done = streak > 0 && daysAgo < streak;
+    var isToday = i === today;
+    var d = document.createElement('div');
+    d.className = 'pr-streak-day streak-day ' + (isToday ? 'today' : done ? 'done' : '');
+    d.style.animationDelay = (i * 0.04) + 's';
+    var sym = isToday ? '●' : done ? '✦' : '○';
+    d.innerHTML = '<span style="font-size:.75rem;line-height:1">' + sym + '</span><span>' + labels[i] + '</span>';
+    c.appendChild(d);
+  }
+  // Streak badge
+  var badge = document.getElementById('prStreakBadge');
+  if (badge) badge.textContent = streak + ' Day' + (streak !== 1 ? 's' : '');
+}
+
+/* ─ Achievements ─ */
+var achDefs = [
+  {icon:'🔥',title:'7-Day Streak',desc:'7 consecutive days',key:'streak',threshold:7},
+  {icon:'⚡',title:'First Session',desc:'Completed first workout',key:'sessions',threshold:1},
+  {icon:'💪',title:'10 Sessions',desc:'10 total sessions',key:'sessions',threshold:10},
+  {icon:'🏆',title:'Century Club',desc:'100 total sessions',key:'sessions',threshold:100},
+  {icon:'🎯',title:'Exercise Machine',desc:'50 exercises done',key:'exercisesCompleted',threshold:50},
+  {icon:'🌅',title:'Dedicated',desc:'25 exercises done',key:'exercisesCompleted',threshold:25},
+  {icon:'🔱',title:'Elite Status',desc:'30-day unbroken streak',key:'streak',threshold:30},
+  {icon:'🧘',title:'Consistent',desc:'5 sessions done',key:'sessions',threshold:5},
+];
+
+function buildPrAchievements(ud) {
+  var grid = document.getElementById('achievementGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  var unlockCount = 0;
+  achDefs.forEach(function(a, idx) {
+    var val = (ud && ud[a.key]) || 0;
+    var unlocked = val >= a.threshold;
+    if (unlocked) unlockCount++;
+    var el = document.createElement('div');
+    el.className = 'pr-ach-item ach-item' + (unlocked ? ' unlocked' : '');
+    el.style.animationDelay = (idx * 0.06) + 's';
+    el.innerHTML =
+      '<div class="pr-ach-icon ach-icon-wrap">' + a.icon + '</div>' +
+      '<div>' +
+        '<div class="pr-ach-title ach-title">' + a.title + '</div>' +
+        '<div class="pr-ach-desc ach-desc">' + a.desc + '</div>' +
+        '<div class="pr-ach-status ach-status">' +
+          (unlocked ? '✦ Unlocked' : '🔒 ' + val + '/' + a.threshold) +
+        '</div>' +
+      '</div>';
+    grid.appendChild(el);
+  });
+  var countEl = document.getElementById('prAchCount');
+  if (countEl) countEl.textContent = unlockCount + '/' + achDefs.length;
+}
+
+/* ─ SVG Ring helper ─ */
+function setRing(id, pct) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var circumference = 201;
+  setTimeout(function() {
+    el.style.strokeDashoffset = circumference - (circumference * Math.min(pct / 100, 1));
+  }, 400);
+}
+
+/* ─ Activity Timeline ─ */
+function buildTimeline(ud) {
+  var container = document.getElementById('prTimeline');
+  if (!container) return;
+  var history = (ud && ud.history) || [];
+  if (!history.length) {
+    container.innerHTML = '<div class="pr-timeline-empty">No activity yet — complete your first workout!</div>';
+    return;
+  }
+  container.innerHTML = '';
+  var recent = history.slice(-5).reverse();
+  recent.forEach(function(item, idx) {
+    var d = document.createElement('div');
+    d.className = 'pr-tl-item';
+    d.style.animationDelay = (idx * 0.08) + 's';
+    var dateStr = item.date ? new Date(item.date).toLocaleDateString('en-IN', {month:'short',day:'numeric'}) : 'Recent';
+    d.innerHTML =
+      '<div class="pr-tl-dot done">💪</div>' +
+      '<div class="pr-tl-content">' +
+        '<div class="pr-tl-title">Workout Session — ' + (item.exercises || 0) + ' exercises</div>' +
+        '<div class="pr-tl-time">' + dateStr + '</div>' +
+        '<div class="pr-tl-xp">+' + (item.xp || 0) + ' XP earned</div>' +
+      '</div>';
+    container.appendChild(d);
+  });
+}
+
+/* ─ Tilt Effect on Avatar Card ─ */
+function initTilt() {
+  if (!window.matchMedia('(hover:hover)').matches || window.innerWidth <= 768) return;
+  var card = document.getElementById('prAvatarCard');
+  if (!card) return;
+  card.addEventListener('mousemove', function(e) {
+    var rect = card.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / rect.width - 0.5;
+    var y = (e.clientY - rect.top) / rect.height - 0.5;
+    card.style.transform = 'perspective(700px) rotateX(' + (-y * 8) + 'deg) rotateY(' + (x * 8) + 'deg) translateY(-6px) scale(1.02)';
+  });
+  card.addEventListener('mouseleave', function() {
+    card.style.transition = 'transform 0.6s cubic-bezier(0.34,1.3,0.64,1), border-color .3s, box-shadow .3s';
+    card.style.transform = '';
+    setTimeout(function() { card.style.transition = ''; }, 600);
+  });
+}
+
+/* ─ Magnetic buttons ─ */
+function initMagnetic() {
+  if (!window.matchMedia('(hover:hover)').matches) return;
+  document.querySelectorAll('.pr-oauth-btn, .pr-action-primary').forEach(function(btn) {
+    btn.addEventListener('mousemove', function(e) {
+      var rect = btn.getBoundingClientRect();
+      var x = e.clientX - rect.left - rect.width / 2;
+      var y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = 'translate(' + (x * 0.1) + 'px, ' + (y * 0.1) + 'px) translateY(-2px)';
+    });
+    btn.addEventListener('mouseleave', function() {
+      btn.style.transform = '';
+    });
+  });
+}
+
+/* ─ Floating Particles ─ */
+function initParticles() {
+  var canvas = document.getElementById('profileParticles');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H;
+  var particles = [];
+  var N = window.innerWidth < 768 ? 28 : 55;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  for (var i = 0; i < N; i++) {
+    particles.push({
+      x: Math.random() * 1000,
+      y: Math.random() * 1000,
+      r: Math.random() * 1.8 + .4,
+      vx: (Math.random() - .5) * .35,
+      vy: (Math.random() - .5) * .35,
+      o: Math.random() * .5 + .1,
+      pulse: Math.random() * Math.PI * 2,
+    });
+  }
+
+  var running = false;
+  function loop() {
+    if (!document.getElementById('page-profile').classList.contains('active')) {
+      running = false; return;
+    }
+    ctx.clearRect(0, 0, W, H);
+    particles.forEach(function(p) {
+      p.x += p.vx; p.y += p.vy;
+      p.pulse += 0.015;
+      if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+      var alpha = p.o * (0.7 + 0.3 * Math.sin(p.pulse));
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(139,92,246,' + alpha + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(loop);
+  }
+
+  /* Start particles only when profile page is active */
+  var observer = new MutationObserver(function() {
+    var active = document.getElementById('page-profile').classList.contains('active');
+    if (active && !running) { running = true; loop(); }
+  });
+  observer.observe(document.getElementById('page-profile'), { attributes: true, attributeFilter: ['class'] });
+}
+
+/* ─ Main initProfile override ─ */
+var _origInitProfile = window.initProfile;
+window.initProfile = function() {
+  // Call original if exists (updates avatarEl, profileName, profileEmail, basic DOM)
+  if (typeof _origInitProfile === 'function') _origInitProfile();
+
+  var ud = window.userData || JSON.parse(localStorage.getItem('bm_user') || '{}');
+
+  /* XP / Level hero */
+  renderXPHero(ud);
+
+  /* Streak */
+  buildPrStreak(ud);
+
+  /* Achievements */
+  buildPrAchievements(ud);
+
+  /* Activity timeline */
+  buildTimeline(ud);
+
+  /* Goal pct summary badge */
+  var weekWorkouts = Math.min(ud.weekWorkouts || 0, 5);
+  var weekPct = Math.round((weekWorkouts / 5) * 100);
+  var goalPctEl = document.getElementById('prGoalPct');
+  if (goalPctEl) goalPctEl.textContent = weekPct + '%';
+
+  /* Progress bars (originals still targeted) */
+  var monthSessions = ud.sessions || 0;
+  var exercises = ud.exercisesCompleted || 0;
+  setTimeout(function() {
+    var wb = document.getElementById('progWeekBar');
+    var mb = document.getElementById('progMonthBar');
+    var eb = document.getElementById('progExBar');
+    var wp = document.getElementById('progWeekPct');
+    var mp = document.getElementById('progMonthPct');
+    var ep = document.getElementById('progExPct');
+    if (wb) wb.style.width = weekPct + '%';
+    if (mb) mb.style.width = Math.min(Math.round((monthSessions/20)*100),100) + '%';
+    if (eb) eb.style.width = Math.min(Math.round((exercises/50)*100),100) + '%';
+    if (wp) wp.textContent = weekWorkouts + '/5 days';
+    if (mp) mp.textContent = monthSessions + '/20 sessions';
+    if (ep) ep.textContent = exercises + ' done';
+  }, 250);
+
+  /* SVG rings */
+  var weight = ud.weight || 0;
+  var height = ud.height || 0;
+  if (weight > 0) {
+    var weightPct = Math.min(((weight - 40) / 110) * 100, 100);
+    setRing('ringWeightCircle', weightPct);
+    document.getElementById('metricWeight').textContent = weight;
+  }
+  if (weight > 0 && height > 0) {
+    var bmi = (weight / Math.pow(height/100, 2)).toFixed(1);
+    document.getElementById('metricBMI').textContent = bmi;
+    var bmiLabel = document.getElementById('metricBMILabel');
+    if (bmiLabel) bmiLabel.textContent = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : 'Obese';
+    var bmiPct = Math.min(((bmi - 10) / 30) * 100, 100);
+    setRing('ringBMICircle', bmiPct);
+  }
+
+  /* Animate stat pills */
+  var streak = ud.streak || 0;
+  var sessions = ud.sessions || 0;
+  animNum('statStreak', streak);
+  animNum('statSessions', sessions);
+  animNum('statExercises', exercises);
+
+  /* Tilt + magnetic (re-init safely) */
+  setTimeout(initTilt, 100);
+  setTimeout(initMagnetic, 150);
+};
+
+/* ─ Init particles once DOM ready ─ */
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initParticles);
+} else {
+  initParticles();
+}
+
+})();
+</script>
+
+<style id="login-redesign-css">
+/* ════════════════════════════════════════════════════════════
+   LOGIN PAGE REDESIGN — premium · cinematic · glassmorphism
+   All classes prefixed lx- (login-experience)
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Keyframes ── */
+@keyframes lxFadeUp   { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lxFadeIn   { from{opacity:0} to{opacity:1} }
+@keyframes lxOrbFloat { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-25px) scale(1.08)} 66%{transform:translate(-30px,20px) scale(.94)} }
+@keyframes lxDotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.55)} }
+@keyframes lxShimmer  { 0%{transform:translateX(-200%)} 100%{transform:translateX(200%)} }
+@keyframes lxPulse    { 0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(.96)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)} }
+@keyframes lxSpin     { to{transform:rotate(360deg)} }
+@keyframes lxBorderGlow { 0%,100%{box-shadow:0 0 20px rgba(139,92,246,.15)} 50%{box-shadow:0 0 40px rgba(139,92,246,.35)} }
+@keyframes lxSlideIn  { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lxNoise    { 0%{transform:translate(0,0)} 10%{transform:translate(-2%,-1%)} 20%{transform:translate(1%,2%)} 30%{transform:translate(-1%,0)} 40%{transform:translate(2%,-2%)} 50%{transform:translate(-2%,1%)} 60%{transform:translate(1%,-1%)} 70%{transform:translate(-1%,2%)} 80%{transform:translate(2%,0)} 90%{transform:translate(0,-2%)} 100%{transform:translate(0,0)} }
+
+/* ── PAGE RESET ── */
+#page-login { background: var(--black); min-height: 100vh; display: none; position: relative; overflow: hidden; }
+#page-login.active { display: flex; align-items: stretch; }
+
+/* ── AMBIENT BACKGROUND ── */
+.lx-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.lx-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(139,92,246,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+  -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent);
+}
+.lx-orb { position: absolute; border-radius: 50%; filter: blur(90px); animation: lxOrbFloat 12s ease-in-out infinite; }
+.lx-orb1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(91,33,182,.18) 0%, transparent 70%); top: -150px; left: -100px; animation-duration: 14s; }
+.lx-orb2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(139,92,246,.12) 0%, transparent 70%); bottom: -80px; right: -60px; animation-delay: 5s; animation-duration: 10s; }
+.lx-orb3 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(167,139,250,.08) 0%, transparent 70%); top: 40%; left: 40%; animation-delay: 3s; animation-duration: 16s; }
+.lx-noise {
+  position: absolute; inset: -50%; width: 200%; height: 200%;
+  opacity: .022;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px;
+  animation: lxNoise 8s steps(1) infinite;
+}
+
+/* ── SPLIT LAYOUT ── */
+.lx-split { display: grid; grid-template-columns: 1fr 1fr; width: 100%; min-height: 100vh; position: relative; z-index: 1; }
+
+/* ── LEFT PANEL ── */
+.lx-left {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(20,6,45,.95) 0%, rgba(10,4,22,.98) 60%, rgba(8,6,14,1) 100%);
+  border-right: 1px solid rgba(139,92,246,.12);
+  display: flex; align-items: center;
+  padding-bottom: calc(68px + env(safe-area-inset-bottom,0px));
+}
+.lx-left::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(91,33,182,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(139,92,246,.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.lx-left-inner {
+  position: relative; z-index: 1; padding: 3.5rem 3rem 3rem; width: 100%;
+  display: flex; flex-direction: column; gap: 2.2rem;
+}
+
+/* ── LOGO ── */
+.lx-logo-wrap { display: flex; align-items: center; gap: .9rem; }
+.lx-logo-img { width: 40px; height: 40px; object-fit: contain; border-radius: 10px; filter: drop-shadow(0 0 12px rgba(139,92,246,.6)); }
+.lx-logo-text {
+  font-family: 'Bebas Neue'; font-size: 1.8rem; color: var(--white); letter-spacing: .1em;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.lx-logo-text span { -webkit-text-fill-color: var(--white); }
+
+/* ── HERO TEXT ── */
+.lx-hero-text { animation: lxFadeUp .8s .1s ease both; }
+.lx-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: .45rem;
+  background: rgba(139,92,246,.08); border: 1px solid rgba(139,92,246,.22);
+  border-radius: 100px; padding: .35rem 1rem; font-size: .58rem;
+  letter-spacing: .28em; text-transform: uppercase; color: var(--gold-xlight);
+  margin-bottom: .9rem; backdrop-filter: blur(10px);
+}
+.lx-eyebrow-dot { width: 5px; height: 5px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 6px rgba(139,92,246,.7); animation: lxDotPulse 2s ease-in-out infinite; }
+.lx-hero-title {
+  font-family: 'Bebas Neue'; font-size: clamp(2.6rem,4.5vw,4rem);
+  color: var(--white); line-height: .92; letter-spacing: .04em;
+  filter: drop-shadow(0 4px 24px rgba(139,92,246,.2));
+}
+.lx-hero-title em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.lx-hero-sub { color: rgba(160,150,200,.75); font-size: .9rem; line-height: 1.75; margin-top: .8rem; font-family: 'Playfair Display'; font-style: italic; }
+
+/* ── FEATURES ── */
+.lx-features { display: flex; flex-direction: column; gap: .85rem; animation: lxFadeUp .8s .2s ease both; }
+.lx-feat {
+  display: flex; align-items: center; gap: .9rem;
+  padding: .8rem 1rem; border-radius: 12px;
+  background: rgba(139,92,246,.05); border: 1px solid rgba(139,92,246,.1);
+  transition: all .28s;
+}
+.lx-feat:hover { background: rgba(139,92,246,.1); border-color: rgba(139,92,246,.25); transform: translateX(4px); }
+.lx-feat-icon { font-size: 1.15rem; width: 36px; text-align: center; flex-shrink: 0; }
+.lx-feat-title { font-size: .82rem; font-weight: 600; color: var(--white); }
+.lx-feat-desc  { font-size: .72rem; color: var(--muted2); margin-top: .1rem; }
+
+/* ── TESTIMONIAL ── */
+.lx-testimonial-wrap { animation: lxFadeUp .8s .3s ease both; }
+.lx-testimonial-card {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(139,92,246,.14);
+  border-radius: 16px; padding: 1.4rem 1.4rem 1.2rem; position: relative;
+  backdrop-filter: blur(12px); transition: all .3s;
+}
+.lx-testimonial-card:hover { border-color: rgba(139,92,246,.28); background: rgba(139,92,246,.06); }
+.lx-quote-mark { font-size: 3.5rem; color: var(--gold); opacity: .2; position: absolute; top: .4rem; left: 1rem; font-family: 'Playfair Display'; line-height: 1; pointer-events: none; }
+.lx-t-text { font-size: .8rem; color: var(--muted2); line-height: 1.8; padding-top: .4rem; }
+.lx-t-author { display: flex; align-items: center; gap: .75rem; margin-top: 1rem; }
+.lx-t-avatar { width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-dark), var(--gold)); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue'; font-size: 1rem; color: var(--black); flex-shrink: 0; }
+.lx-t-name { font-size: .78rem; font-weight: 600; color: var(--white); }
+.lx-t-role { font-size: .65rem; color: var(--gold); }
+.lx-t-dots { display: flex; gap: .4rem; margin-top: .8rem; }
+.lx-t-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(139,92,246,.3); transition: all .3s; }
+.lx-t-dot.active { background: var(--gold); width: 18px; border-radius: 3px; }
+
+/* ── STATS STRIP ── */
+.lx-stats-strip {
+  display: flex; align-items: center; gap: 0;
+  background: rgba(139,92,246,.06); border: 1px solid rgba(139,92,246,.12);
+  border-radius: 14px; padding: 1rem 0;
+  animation: lxFadeUp .8s .35s ease both;
+}
+.lx-stat-item { flex: 1; text-align: center; }
+.lx-stat-num { font-family: 'Bebas Neue'; font-size: 1.6rem; background: linear-gradient(135deg,var(--gold),var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+.lx-stat-label { font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: .2rem; }
+.lx-stat-div { width: 1px; height: 36px; background: rgba(139,92,246,.18); }
+
+/* ── RIGHT PANEL ── */
+.lx-right {
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem 2rem calc(68px + env(safe-area-inset-bottom,0px) + 1.5rem);
+  background: rgba(6,5,14,.6);
+  backdrop-filter: blur(40px);
+}
+.lx-form-container { width: 100%; max-width: 440px; }
+
+/* Mobile brand (hidden on desktop) */
+.lx-mobile-brand { display: none; text-align: center; margin-bottom: 1.5rem; }
+.lx-mobile-sub { font-size: .78rem; color: var(--muted2); margin-top: .3rem; font-family: 'Playfair Display'; font-style: italic; }
+
+/* ── GLASS CARD ── */
+.lx-card {
+  background: rgba(12,10,22,.85);
+  border: 1px solid rgba(139,92,246,.22);
+  border-radius: 24px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 60px rgba(139,92,246,.08), inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter: blur(40px) saturate(1.8);
+  -webkit-backdrop-filter: blur(40px) saturate(1.8);
+  animation: lxBorderGlow 4s ease-in-out infinite;
+}
+.lx-card-topline {
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-dark) 20%, var(--gold) 50%, var(--gold-light) 80%, transparent 100%);
+}
+
+/* ── TABS ── */
+.lx-tabs {
+  display: flex; position: relative;
+  border-bottom: 1px solid rgba(139,92,246,.12);
+  padding: 0 1.8rem;
+}
+.lx-tab {
+  flex: 1; padding: 1.1rem .5rem; font-family: 'DM Sans'; font-size: .75rem;
+  font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  border: none; background: transparent; color: var(--muted); cursor: pointer;
+  transition: color .3s; position: relative; z-index: 1; min-height: 48px;
+}
+.lx-tab.active { color: var(--white); }
+.lx-tab-indicator {
+  position: absolute; bottom: -1px; left: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+  border-radius: 2px; transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 10px rgba(139,92,246,.5);
+}
+
+/* ── FORM BODY ── */
+.lx-form { display: none; padding: 1.6rem 1.8rem 1.8rem; }
+.lx-form.active { display: block; animation: lxSlideIn .35s ease both; }
+
+/* ── OAUTH GRID ── */
+.lx-oauth-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; margin-bottom: 0;
+}
+.lx-oauth-btn {
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  padding: .75rem .8rem; border-radius: 12px; cursor: pointer;
+  font-family: 'DM Sans'; font-size: .78rem; font-weight: 500;
+  border: 1px solid; min-height: 46px; transition: all .28s cubic-bezier(.34,1.2,.64,1);
+  position: relative; overflow: hidden;
+}
+.lx-oauth-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
+  transform: translateX(-200%); transition: transform .5s;
+}
+.lx-oauth-btn:hover::before { transform: translateX(200%); }
+.lx-oauth-btn:hover { transform: translateY(-2px); }
+.lx-oauth-btn:active { transform: scale(.97); }
+.lx-oauth-icon { display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .3s cubic-bezier(.34,1.56,.64,1); }
+.lx-oauth-btn:hover .lx-oauth-icon { transform: scale(1.18) rotate(-4deg); }
+.lx-oauth-label { font-size: .76rem; font-weight: 500; }
+
+/* Google */
+.lx-google { background: rgba(66,133,244,.08); border-color: rgba(66,133,244,.22); color: var(--white); }
+.lx-google:hover { background: rgba(66,133,244,.15); border-color: rgba(66,133,244,.45); box-shadow: 0 8px 28px rgba(66,133,244,.2); }
+/* Apple */
+.lx-apple { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.14); color: var(--white); }
+.lx-apple:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.28); box-shadow: 0 8px 28px rgba(255,255,255,.07); }
+/* GitHub */
+.lx-github { background: rgba(88,96,105,.1); border-color: rgba(88,96,105,.28); color: var(--white); }
+.lx-github:hover { background: rgba(88,96,105,.2); border-color: rgba(88,96,105,.5); box-shadow: 0 8px 28px rgba(30,30,30,.3); }
+/* Twitter/X */
+.lx-twitter { background: rgba(0,0,0,.25); border-color: rgba(255,255,255,.12); color: var(--white); }
+.lx-twitter:hover { background: rgba(0,0,0,.4); border-color: rgba(255,255,255,.25); box-shadow: 0 8px 28px rgba(0,0,0,.35); }
+
+/* ── DIVIDER ── */
+.lx-divider {
+  display: flex; align-items: center; gap: .8rem;
+  margin: 1.2rem 0; color: var(--muted); font-size: .65rem; letter-spacing: .14em; text-transform: uppercase;
+}
+.lx-divider::before, .lx-divider::after { content: ''; flex: 1; height: 1px; background: rgba(139,92,246,.14); }
+
+/* ── FIELD GROUPS ── */
+.lx-field-group { margin-bottom: .9rem; }
+.lx-label { display: block; font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(139,92,246,.8); margin-bottom: .45rem; font-weight: 600; }
+.lx-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: .45rem; }
+.lx-forgot { font-size: .65rem; color: var(--gold); text-decoration: none; transition: color .2s; }
+.lx-forgot:hover { color: var(--gold-light); }
+
+/* ── INPUT ── */
+.lx-input-wrap { position: relative; display: flex; align-items: center; }
+.lx-input-icon { position: absolute; left: .9rem; color: var(--muted); pointer-events: none; flex-shrink: 0; }
+.lx-input {
+  width: 100%; background: rgba(8,6,18,.9); border: 1px solid rgba(139,92,246,.2);
+  border-radius: 12px; color: var(--white); padding: .8rem .9rem .8rem 2.5rem;
+  font-family: 'DM Sans'; font-size: .88rem; transition: all .25s;
+  backdrop-filter: blur(10px); min-height: 46px;
+}
+.lx-input:focus {
+  outline: none; border-color: rgba(139,92,246,.55);
+  box-shadow: 0 0 0 3px rgba(139,92,246,.1), 0 0 20px rgba(139,92,246,.08);
+  background: rgba(10,8,24,.95);
+}
+.lx-input::placeholder { color: var(--muted); }
+/* Input without icon */
+.lx-input-wrap:not(:has(.lx-input-icon)) .lx-input,
+.lx-name-row .lx-input { padding-left: .9rem; }
+
+.lx-eye {
+  position: absolute; right: .8rem; background: transparent; border: none; cursor: pointer;
+  color: var(--muted); display: flex; align-items: center; padding: .3rem; transition: color .2s;
+  min-width: 32px; min-height: 32px; justify-content: center;
+}
+.lx-eye:hover { color: var(--white); }
+
+/* ── NAME ROW ── */
+.lx-name-row { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+
+/* ── STRENGTH METER ── */
+.lx-strength-wrap { display: flex; align-items: center; gap: .7rem; margin-top: .45rem; }
+.lx-strength-track { flex: 1; height: 3px; background: rgba(255,255,255,.08); border-radius: 100px; overflow: hidden; }
+.lx-strength-fill { height: 100%; border-radius: 100px; transition: all .4s; width: 0%; }
+.lx-strength-label { font-size: .6rem; color: var(--muted); min-width: 40px; text-align: right; }
+
+/* ── SUBMIT BUTTON ── */
+.lx-submit {
+  width: 100%; margin-top: .4rem; padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+  color: var(--black); border: none; border-radius: 14px;
+  font-family: 'DM Sans'; font-weight: 700; font-size: .88rem; letter-spacing: .1em;
+  text-transform: uppercase; cursor: pointer; transition: all .3s;
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+  min-height: 52px; position: relative; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(139,92,246,.25);
+}
+.lx-submit::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+  transform: translateX(-200%); transition: transform .5s;
+}
+.lx-submit:hover::before { transform: translateX(200%); }
+.lx-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(139,92,246,.4); }
+.lx-submit:active { transform: scale(.98); }
+.lx-submit-glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 120%, rgba(255,255,255,.15), transparent 60%); pointer-events: none; }
+
+/* ── SWITCH LINK ── */
+.lx-switch-text { text-align: center; font-size: .75rem; color: var(--muted); margin-top: 1rem; }
+.lx-switch-link { background: none; border: none; color: var(--gold); cursor: pointer; font-size: .75rem; font-family: 'DM Sans'; padding: 0; transition: color .2s; }
+.lx-switch-link:hover { color: var(--gold-light); }
+
+/* ── LEGAL ── */
+.lx-legal { text-align: center; font-size: .65rem; color: var(--muted); margin-top: 1.2rem; line-height: 1.7; }
+.lx-legal a { color: rgba(139,92,246,.7); text-decoration: none; transition: color .2s; }
+.lx-legal a:hover { color: var(--gold); }
+
+/* ── MOBILE ── */
+@media (max-width: 860px) {
+  .lx-split { grid-template-columns: 1fr; }
+  .lx-left { display: none; }
+  .lx-right { padding: 1.5rem 1.2rem calc(80px + env(safe-area-inset-bottom,0px) + 1rem); min-height: 100vh; align-items: flex-start; padding-top: 4rem; }
+  .lx-mobile-brand { display: block; }
+  .lx-card { border-radius: 20px; }
+  .lx-form { padding: 1.4rem 1.4rem 1.6rem; }
+  .lx-oauth-grid { grid-template-columns: 1fr 1fr; gap: .6rem; }
+}
+@media (max-width: 400px) {
+  .lx-oauth-grid { grid-template-columns: 1fr; }
+  .lx-name-row { grid-template-columns: 1fr; }
+}
+</style>
+
+<script id="login-redesign-js">
+/* ─ Login page JS ─ */
+(function() {
+'use strict';
+
+/* ── Tab switching ── */
+window.lxSwitchTab = function(tab) {
+  var isLogin = tab === 'login';
+  var tabLogin  = document.getElementById('lxTabLogin');
+  var tabSignup = document.getElementById('lxTabSignup');
+  var indicator = document.getElementById('lxTabIndicator');
+  var formLogin  = document.getElementById('loginForm');
+  var formSignup = document.getElementById('signupForm');
+
+  if (!tabLogin) return;
+
+  tabLogin.classList.toggle('active', isLogin);
+  tabSignup.classList.toggle('active', !isLogin);
+  formLogin.classList.toggle('active', isLogin);
+  formSignup.classList.toggle('active', !isLogin);
+
+  /* Slide the indicator */
+  var tabEl = isLogin ? tabLogin : tabSignup;
+  var tabs = document.querySelector('.lx-tabs');
+  if (indicator && tabs && tabEl) {
+    var tabRect = tabEl.getBoundingClientRect();
+    var tabsRect = tabs.getBoundingClientRect();
+    indicator.style.left = (tabRect.left - tabsRect.left) + 'px';
+    indicator.style.width = tabRect.width + 'px';
+  }
+
+  /* Sync existing switchAuth if present */
+  if (typeof switchAuth === 'function') switchAuth(tab);
+};
+
+/* ── Password toggle ── */
+window.lxTogglePass = function(inputId, btn) {
+  var inp = document.getElementById(inputId);
+  if (!inp) return;
+  var show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.querySelector('svg').style.opacity = show ? '.5' : '1';
+  /* Also sync legacy togglePass */
+  if (typeof togglePass === 'function') togglePass(inputId, {textContent:''});
+};
+
+/* ── Password strength ── */
+window.lxCheckStrength = function(val) {
+  var fill = document.getElementById('strengthFill');
+  var hint = document.getElementById('strengthHint');
+  if (!fill) return;
+  var score = [val.length >= 8, /[A-Z]/.test(val), /[0-9]/.test(val), /[^A-Za-z0-9]/.test(val)].filter(Boolean).length;
+  var colors = ['#ef4444','#f97316','#eab308','#22c55e'];
+  var labels = ['Weak','Fair','Good','Strong'];
+  fill.style.width = (score * 25) + '%';
+  fill.style.background = colors[score-1] || '#ef4444';
+  if (hint) { hint.textContent = score > 0 ? labels[score-1] : ''; hint.style.color = colors[score-1] || '#ef4444'; }
+  /* Sync original checkStrength */
+  if (typeof checkStrength === 'function') checkStrength(val);
+};
+
+/* ── Testimonial rotator ── */
+var testimonials = [
+  { text: 'Lost 14 kg in 4 months. The Indian diet plans fit my lifestyle — dal, sabzi, roti and still hitting macros!', name: 'Rohan Sharma', role: 'Mumbai · Fat Loss Program', avatar: 'R' },
+  { text: 'The home workout plan is insane. No equipment needed and I gained 6 kg of muscle in 5 months!', name: 'Priya Nair', role: 'Bangalore · Muscle Gain', avatar: 'P' },
+  { text: 'Went from 28% body fat to 19% while eating Indian food daily. This app is genuinely elite.', name: 'Arjun Menon', role: 'Chennai · Body Recomp', avatar: 'A' },
+];
+var tIdx = 0;
+function rotateTesti() {
+  tIdx = (tIdx + 1) % testimonials.length;
+  var t = testimonials[tIdx];
+  var textEl = document.querySelector('.lx-t-text');
+  var nameEl = document.querySelector('.lx-t-name');
+  var roleEl = document.querySelector('.lx-t-role');
+  var avatarEl = document.querySelector('.lx-t-avatar');
+  var dots = document.querySelectorAll('.lx-t-dot');
+  if (!textEl) return;
+  /* Fade out */
+  var card = document.getElementById('lxTestimonial');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(6px)';
+  setTimeout(function() {
+    textEl.textContent = t.text;
+    if (nameEl) nameEl.textContent = t.name;
+    if (roleEl) roleEl.textContent = t.role;
+    if (avatarEl) avatarEl.textContent = t.avatar;
+    dots.forEach(function(d, i) { d.classList.toggle('active', i === tIdx); });
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+    card.style.transition = 'opacity .4s ease, transform .4s ease';
+  }, 300);
+  card.style.transition = 'opacity .3s ease, transform .3s ease';
+}
+setInterval(rotateTesti, 5000);
+
+/* ── Init indicator position on page load ── */
+function initIndicator() {
+  var tabLogin  = document.getElementById('lxTabLogin');
+  var indicator = document.getElementById('lxTabIndicator');
+  var tabs = document.querySelector('.lx-tabs');
+  if (!tabLogin || !indicator || !tabs) return;
+  /* Wait for layout */
+  requestAnimationFrame(function() {
+    var tabRect  = tabLogin.getBoundingClientRect();
+    var tabsRect = tabs.getBoundingClientRect();
+    indicator.style.left = (tabRect.left - tabsRect.left) + 'px';
+    indicator.style.width = tabRect.width + 'px';
+  });
+}
+
+/* ── OAuth hover particle effect ── */
+function initOAuthRipple() {
+  document.querySelectorAll('.lx-oauth-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var ripple = document.createElement('span');
+      var rect = btn.getBoundingClientRect();
+      var size = Math.max(rect.width, rect.height) * 1.5;
+      ripple.style.cssText = 'position:absolute;width:' + size + 'px;height:' + size + 'px;border-radius:50%;background:rgba(255,255,255,.12);transform:translate(-50%,-50%) scale(0);left:' + (e.clientX - rect.left) + 'px;top:' + (e.clientY - rect.top) + 'px;animation:lxRipple .5s ease forwards;pointer-events:none;';
+      btn.appendChild(ripple);
+      setTimeout(function() { if (ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 550);
+    });
+  });
+}
+
+/* Add ripple keyframe dynamically */
+(function() {
+  var s = document.createElement('style');
+  s.textContent = '@keyframes lxRipple { to { transform:translate(-50%,-50%) scale(1); opacity:0; } }';
+  document.head.appendChild(s);
+})();
+
+/* ── Magnetic buttons (desktop) ── */
+function initMagneticLogin() {
+  if (!window.matchMedia('(hover:hover)').matches) return;
+  document.querySelectorAll('.lx-submit, .lx-oauth-btn').forEach(function(btn) {
+    btn.addEventListener('mousemove', function(e) {
+      var rect = btn.getBoundingClientRect();
+      var x = (e.clientX - rect.left - rect.width / 2) * 0.08;
+      var y = (e.clientY - rect.top - rect.height / 2) * 0.08;
+      btn.style.transform = 'translate(' + x + 'px,' + y + 'px) translateY(-2px)';
+    });
+    btn.addEventListener('mouseleave', function() { btn.style.transform = ''; });
+  });
+}
+
+/* ── Run on DOMContentLoaded ── */
+function initLoginPage() {
+  initIndicator();
+  initOAuthRipple();
+  initMagneticLogin();
+  /* Stagger feature items */
+  document.querySelectorAll('.lx-feat').forEach(function(f, i) {
+    f.style.opacity = '0';
+    f.style.transform = 'translateX(-12px)';
+    f.style.transition = 'opacity .5s ease, transform .5s cubic-bezier(.34,1.2,.64,1)';
+    setTimeout(function() {
+      f.style.opacity = '1';
+      f.style.transform = 'translateX(0)';
+    }, 200 + i * 80);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLoginPage);
+} else {
+  initLoginPage();
+}
+
+/* Re-init when login page becomes active */
+var _lxObs = new MutationObserver(function() {
+  var pg = document.getElementById('page-login');
+  if (pg && pg.classList.contains('active')) {
+    setTimeout(initIndicator, 50);
+    setTimeout(initMagneticLogin, 80);
+  }
+});
+var pg = document.getElementById('page-login');
+if (pg) _lxObs.observe(pg, { attributes: true, attributeFilter: ['class'] });
+
+})();
 </script>
 </body>
 </html>
