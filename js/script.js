@@ -1,30 +1,37 @@
-let currentUser = null;
-let userData = null;
+// script.js — Legacy UI sync helpers. Passive only — no auth listeners here.
+// Auth state is owned by the inline <script> block in index.html.
+// This file must load AFTER supabase.js and the inline auth block.
+
+var currentUser = null;
+var userData = null;
 
 function safeSet(id, val) {
-  const el = document.getElementById(id);
+  var el = document.getElementById(id);
   if (el) el.innerText = val;
 }
 
 function updateUI() {
   if (!userData) return;
-  safeSet("xp", userData.xp ?? 0);
-  safeSet("streak", userData.streak ?? 0);
-  safeSet("calories", userData.caloriesBurned ?? 0);
-  safeSet("workouts", userData.exercisesCompleted ?? 0);
+  safeSet("xp", userData.xp !== undefined ? userData.xp : 0);
+  safeSet("streak", userData.streak !== undefined ? userData.streak : 0);
+  safeSet("calories", userData.caloriesBurned !== undefined ? userData.caloriesBurned : 0);
+  safeSet("workouts", userData.exercisesCompleted !== undefined ? userData.exercisesCompleted : 0);
 }
 
-// Keep this legacy file passive to avoid duplicate auth listeners.
+// Alias so older onclick="loginWithGoogle()" calls still work.
 window.loginWithGoogle = window.googleLogin;
 
 window.syncLegacyAuthUI = async function syncLegacyAuthUI() {
   try {
-    const user = await window.getCurrentUser();
+    console.info("[script.js] syncLegacyAuthUI called");
+    var user = await window.getCurrentUser();
     currentUser = user || null;
-    userData = currentUser?.user_metadata?.becoming_me || null;
+    userData = currentUser && currentUser.user_metadata && currentUser.user_metadata.becoming_me
+      ? currentUser.user_metadata.becoming_me
+      : null;
     updateUI();
-    console.info("[Auth] Legacy UI sync complete", { userId: currentUser?.id || null });
+    console.info("[script.js] Legacy UI sync complete", { userId: currentUser ? currentUser.id : null });
   } catch (error) {
-    console.error("[Auth] Legacy UI sync failed", error);
+    console.error("[script.js] Legacy UI sync failed", error);
   }
 };
