@@ -1,25 +1,33 @@
 // Legacy module replaced with browser-global helpers.
 (function attachJsAuthHelpers() {
   if (window.signup && window.login && window.logout && window.listenAuth) return;
-  const client = () => window.supabaseClient;
-
-  window.signup = async (email, password) => {
-    const { data, error } = await client().auth.signUp({ email, password });
-    if (error) throw error;
-    return data;
+  var client = function() {
+    if (!window.supabaseClient) {
+      throw new Error("[js/auth.js] window.supabaseClient not found");
+    }
+    return window.supabaseClient;
   };
 
-  window.login = async (email, password) => {
-    const { data, error } = await client().auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    return data;
+  window.signup = async function(email, password) {
+    var result = await client().auth.signUp({ email: email, password: password });
+    if (result.error) throw result.error;
+    return result.data;
   };
 
-  window.logout = async () => {
-    const { error } = await client().auth.signOut();
-    if (error) throw error;
+  window.login = async function(email, password) {
+    var result = await client().auth.signInWithPassword({ email: email, password: password });
+    if (result.error) throw result.error;
+    return result.data;
   };
 
-  window.listenAuth = (callback) =>
-    client().auth.onAuthStateChange((_event, session) => callback(session?.user || null));
+  window.logout = async function() {
+    var result = await client().auth.signOut();
+    if (result.error) throw result.error;
+  };
+
+  window.listenAuth = function(callback) {
+    return client().auth.onAuthStateChange(function(_event, session) {
+      callback(session && session.user ? session.user : null);
+    });
+  };
 })();

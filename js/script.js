@@ -1,6 +1,6 @@
 // script.js — Legacy UI sync helpers. Passive only — no auth listeners here.
 // Auth state is owned by the inline <script> block in index.html.
-// This file must load AFTER supabase.js and the inline auth block.
+// Required order in index.html: Supabase CDN -> supabase.js -> auth.js -> script.js.
 
 var currentUser = null;
 var userData = null;

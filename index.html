@@ -5208,7 +5208,7 @@ body::before {
     <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;flex-wrap:wrap;margin-bottom:2rem">
       <div>
         <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem">
-          <img src="logo.png" alt="BM" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
+          <img src="assets/logo.png" alt="BM" style="width:32px;height:32px;object-fit:contain;border-radius:6px" onerror="this.style.display='none'">
           <span style="font-family:'Bebas Neue';font-size:1.4rem;color:var(--white);letter-spacing:.1em">BECOMING<span style="background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ME</span></span>
         </div>
         <p style="color:var(--muted2);font-size:.82rem;line-height:1.8;max-width:280px">Stronger. Better. You. A complete fitness platform built for India, by someone who believes transformation is personal.</p>
@@ -6149,197 +6149,243 @@ body::before {
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="./supabase.js"></script>
+<script src="./auth.js"></script>
+<script src="./js/script.js"></script>
 
 <!-- ═══════════════ SUPABASE AUTH + METADATA — FULL SYSTEM ═══════════════ -->
 <script>
-  const bmSupabaseClient = window.supabaseClient;
-  const oauthDebugPrefix = "[Auth]";
-  const logOAuth = (message, data) => console.info(`${oauthDebugPrefix} ${message}`, data || "");
-  const logOAuthError = (message, error) => console.error(`${oauthDebugPrefix} ${message}`, error || "");
-  const authToast = (message) => {
+(function initBecomingMeAuthRuntime() {
+  "use strict";
+
+  var bmSupabaseClient = window.supabaseClient;
+  var XP_PER_EXERCISE = 10;
+  var XP_PER_SESSION = 50;
+  var XP_PER_LEVEL = 100;
+  var pendingUpdates = {};
+  var updateTimer = null;
+  var firstAuthCheck = true;
+
+  function logAuth(message, data) {
+    console.info("[Auth] " + message, data || "");
+  }
+
+  function logAuthError(message, error) {
+    console.error("[Auth] " + message, error || "");
+  }
+
+  function authToast(message) {
     if (typeof window.showToast === "function") window.showToast(message);
     else console.info(message);
-  };
-  const authShowPage = (name) => {
+  }
+
+  function authShowPage(name) {
     if (typeof window.showPage === "function") window.showPage(name);
     else window.__bm_pending_page = name;
-  };
-  const authCall = (fnName, ...args) => {
-    if (typeof window[fnName] === "function") window[fnName](...args);
-  };
+  }
 
-  logOAuth("Page loaded for auth", {
+  function authCall(fnName, arg) {
+    if (typeof window[fnName] === "function") window[fnName](arg);
+  }
+
+  function getMetadata(authUser) {
+    return authUser && authUser.user_metadata && authUser.user_metadata.becoming_me
+      ? authUser.user_metadata.becoming_me
+      : null;
+  }
+
+  function defaultUser(authUser) {
+    var metadata = authUser && authUser.user_metadata ? authUser.user_metadata : {};
+    return {
+      name: metadata.name || metadata.full_name || "User",
+      email: authUser && authUser.email ? authUser.email : "",
+      photo: metadata.avatar_url || null,
+      xp: 0,
+      level: 0,
+      streak: 0,
+      bestStreak: 0,
+      sessions: 0,
+      exercisesCompleted: 0,
+      caloriesBurned: 0,
+      weekWorkouts: 0,
+      monthSessions: 0,
+      lastWorkoutDate: null,
+      dailyGoalExercises: 0,
+      history: [],
+      createdAt: Date.now(),
+      lastLogin: Date.now(),
+    };
+  }
+
+  function mergeObjects(base, patch) {
+    return Object.assign({}, base || {}, patch || {});
+  }
+
+  window.__bm_auth_ready = false;
+  window.auth = window.auth || { currentUser: null };
+  window.xpToLevel = function(xp) { return Math.floor((xp || 0) / XP_PER_LEVEL); };
+  window.xpInLevel = function(xp) { return (xp || 0) % XP_PER_LEVEL; };
+  window.todayKey = function() { return new Date().toISOString().slice(0, 10); };
+
+  if (!bmSupabaseClient || !bmSupabaseClient.auth) {
+    logAuthError("Supabase client missing. Check script order: CDN -> supabase.js -> auth.js -> script.js.");
+    authToast("Auth not ready yet, try again");
+    return;
+  }
+
+  logAuth("Page loaded for auth", {
     href: window.location.href,
     origin: window.location.origin,
     search: window.location.search,
     hash: window.location.hash,
   });
 
-  const getBecomingMeMetadata = (authUser) => authUser?.user_metadata?.becoming_me || null;
-  const upsertBecomingMeMetadata = async (metadata) => {
-    const { data, error } = await bmSupabaseClient.auth.updateUser({
+  async function upsertMetadata(metadata) {
+    var result = await bmSupabaseClient.auth.updateUser({
       data: { becoming_me: metadata },
     });
-    if (error) throw error;
-    return data.user;
-  };
-
-  // ── Expose auth-compatible globals for existing UI code ──
-  window.auth = { currentUser: null };
-
-  window.createUserWithEmailAndPassword = async (_auth, email, password, profile = {}) => {
-    const authData = {
-      name: profile.name || undefined,
-      full_name: profile.name || undefined,
-    };
-    const { data, error } = await bmSupabaseClient.auth.signUp({
-      email,
-      password,
-      options: { data: authData },
-    });
-    if (error) throw error;
-    return { user: data.user };
-  };
-
-  window.signInWithEmailAndPassword = async (_auth, email, password) => {
-    const { data, error } = await bmSupabaseClient.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    return { user: data.user };
-  };
-
-  window.signOutUser = async () => {
-    const { error } = await bmSupabaseClient.auth.signOut();
-    if (error) throw error;
-  };
-
-  // ── XP helpers ──
-  const XP_PER_EXERCISE = 10;
-  const XP_PER_SESSION = 50;
-  const XP_PER_LEVEL = 100;
-  window.xpToLevel = (xp) => Math.floor((xp || 0) / XP_PER_LEVEL);
-  window.xpInLevel = (xp) => (xp || 0) % XP_PER_LEVEL;
-
-  // ── Default user data stored in Supabase Auth metadata ──
-  const defaultUser = (authUser) => ({
-    name: authUser?.user_metadata?.name || authUser?.user_metadata?.full_name || "User",
-    email: authUser?.email || "",
-    photo: authUser?.user_metadata?.avatar_url || null,
-    xp: 0, level: 0,
-    streak: 0, bestStreak: 0,
-    sessions: 0,
-    exercisesCompleted: 0,
-    caloriesBurned: 0,
-    weekWorkouts: 0, monthSessions: 0,
-    lastWorkoutDate: null,
-    dailyGoalExercises: 0,
-    history: [],
-    createdAt: Date.now(),
-    lastLogin: Date.now(),
-  });
-
-  window.todayKey = () => new Date().toISOString().slice(0, 10);
-
-  function calcStreak(ud) {
-    const today = todayKey();
-    const last = ud.lastWorkoutDate;
-    if (!last) return { streak: 1, lastWorkoutDate: today };
-    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today };
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yKey = yesterday.toISOString().slice(0, 10);
-    if (last === yKey) {
-      return { streak: (ud.streak || 0) + 1, lastWorkoutDate: today };
-    }
-    return { streak: 1, lastWorkoutDate: today };
+    if (result.error) throw result.error;
+    return result.data ? result.data.user : null;
   }
+
+  window.createUserWithEmailAndPassword = async function(_auth, email, password, profile) {
+    profile = profile || {};
+    logAuth("Email signup start", { email: email });
+    var result = await bmSupabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          name: profile.name || undefined,
+          full_name: profile.name || undefined,
+        },
+      },
+    });
+    if (result.error) {
+      logAuthError("Email signup error", result.error);
+      throw result.error;
+    }
+    logAuth("Email signup complete", { userId: result.data && result.data.user ? result.data.user.id : null });
+    return { user: result.data ? result.data.user : null };
+  };
+
+  window.signInWithEmailAndPassword = async function(_auth, email, password) {
+    logAuth("Email login start", { email: email });
+    var result = await bmSupabaseClient.auth.signInWithPassword({ email: email, password: password });
+    if (result.error) {
+      logAuthError("Email login error", result.error);
+      throw result.error;
+    }
+    logAuth("Email login complete", { userId: result.data && result.data.user ? result.data.user.id : null });
+    return { user: result.data ? result.data.user : null };
+  };
+
+  window.signOutUser = async function() {
+    logAuth("Logout start");
+    var result = await bmSupabaseClient.auth.signOut();
+    if (result.error) {
+      logAuthError("Logout error", result.error);
+      throw result.error;
+    }
+    logAuth("Logout complete");
+  };
 
   async function persistUserData(partialData) {
     try {
-      const merged = {
-        ...(window.userData || {}),
-        ...partialData,
-        lastLogin: Date.now(),
-      };
-      const updatedUser = await upsertBecomingMeMetadata(merged);
-      window.userData = getBecomingMeMetadata(updatedUser) || merged;
-      localStorage.setItem(
-        "bm_user",
-        JSON.stringify({
-          name: window.userData.name,
-          email: window.userData.email,
-          photo: window.userData.photo || null,
-        })
-      );
+      var merged = mergeObjects(window.userData || {}, partialData || {});
+      merged.lastLogin = Date.now();
+      var updatedUser = await upsertMetadata(merged);
+      window.userData = getMetadata(updatedUser) || merged;
+      localStorage.setItem("bm_user", JSON.stringify({
+        name: window.userData.name,
+        email: window.userData.email,
+        photo: window.userData.photo || null,
+      }));
       return window.userData;
     } catch (error) {
-      console.error("Supabase metadata save error:", error);
+      logAuthError("Supabase metadata save error", error);
       throw error;
     }
   }
 
   async function loadUserData(authUser) {
     try {
-      const meta = getBecomingMeMetadata(authUser);
-      const base = defaultUser(authUser);
-      const data = { ...base, ...(meta || {}) };
-      data.name = data.name || authUser?.user_metadata?.full_name || "User";
-      data.email = data.email || authUser?.email || "";
-      data.photo = data.photo || authUser?.user_metadata?.avatar_url || null;
+      var meta = getMetadata(authUser);
+      var data = mergeObjects(defaultUser(authUser), meta || {});
+      var userMetadata = authUser && authUser.user_metadata ? authUser.user_metadata : {};
+      data.name = data.name || userMetadata.full_name || "User";
+      data.email = data.email || (authUser && authUser.email ? authUser.email : "");
+      data.photo = data.photo || userMetadata.avatar_url || null;
       window.userData = data;
       window.userUID = authUser.id;
       await persistUserData(data);
       return data;
     } catch (error) {
-      console.error("Supabase load error:", error);
-      const cached = JSON.parse(localStorage.getItem("bm_user") || "{}");
-      window.userData = { ...defaultUser(authUser), ...cached };
+      logAuthError("Supabase load error", error);
+      var cached = JSON.parse(localStorage.getItem("bm_user") || "{}");
+      window.userData = mergeObjects(defaultUser(authUser), cached);
       window.userUID = authUser.id;
       return window.userData;
     }
   }
 
-  // ── Core stat updater (debounced metadata writes) ──
-  let _pendingUpdates = {};
-  let _updateTimer = null;
+  function calcStreak(ud) {
+    var today = window.todayKey();
+    var last = ud.lastWorkoutDate;
+    var yesterday;
+    var yKey;
+    if (!last) return { streak: 1, lastWorkoutDate: today };
+    if (last === today) return { streak: ud.streak || 1, lastWorkoutDate: today };
+    yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yKey = yesterday.toISOString().slice(0, 10);
+    if (last === yKey) return { streak: (ud.streak || 0) + 1, lastWorkoutDate: today };
+    return { streak: 1, lastWorkoutDate: today };
+  }
+
   window.queueStatUpdate = function(updates) {
-    Object.assign(_pendingUpdates, updates);
-    clearTimeout(_updateTimer);
-    _updateTimer = setTimeout(async () => {
+    Object.assign(pendingUpdates, updates || {});
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(async function() {
+      var batch;
       if (!window.userUID) {
-        _pendingUpdates = {};
+        pendingUpdates = {};
         return;
       }
-      const batch = { ..._pendingUpdates };
-      _pendingUpdates = {};
+      batch = mergeObjects({}, pendingUpdates);
+      pendingUpdates = {};
       try {
-        window.userData = { ...(window.userData || {}), ...batch };
+        window.userData = mergeObjects(window.userData || {}, batch);
         await persistUserData(window.userData);
       } catch (error) {
-        console.error("stat update error:", error);
+        logAuthError("stat update error", error);
       }
     }, 300);
   };
 
   window.awardXP = function(amount) {
+    var ud;
+    var prevLevel;
+    var newXP;
+    var newLevel;
     if (!window.userUID) return;
-    const ud = window.userData || {};
-    const prevLevel = xpToLevel(ud.xp || 0);
-    const newXP = (ud.xp || 0) + amount;
-    const newLevel = xpToLevel(newXP);
+    ud = window.userData || {};
+    prevLevel = window.xpToLevel(ud.xp || 0);
+    newXP = (ud.xp || 0) + amount;
+    newLevel = window.xpToLevel(newXP);
     window.queueStatUpdate({ xp: newXP, level: newLevel });
-    if (newLevel > prevLevel) {
-      setTimeout(() => showLevelUp(newLevel), 400);
-    }
-    renderXPBar({ ...(window.userData || {}), xp: newXP, level: newLevel });
+    if (newLevel > prevLevel) setTimeout(function() { authCall("showLevelUp", newLevel); }, 400);
+    authCall("renderXPBar", mergeObjects(window.userData || {}, { xp: newXP, level: newLevel }));
   };
 
   window.completeWorkoutSession = function(exercisesDone, estimatedCals) {
+    var ud;
+    var streakData;
+    var history;
     if (!window.userUID) return;
-    const ud = window.userData || {};
-    const streakData = calcStreak(ud);
-    const bestStreak = Math.max(streakData.streak, ud.bestStreak || 0);
-    const history = (ud.history || []).slice(-29);
-    history.push({ date: todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals || 0 });
+    ud = window.userData || {};
+    streakData = calcStreak(ud);
+    history = (ud.history || []).slice(-29);
+    history.push({ date: window.todayKey(), exercises: exercisesDone, xp: XP_PER_SESSION, calories: estimatedCals || 0 });
     window.queueStatUpdate({
       sessions: (ud.sessions || 0) + 1,
       exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
@@ -6348,17 +6394,16 @@ body::before {
       monthSessions: (ud.monthSessions || 0) + 1,
       dailyGoalExercises: (ud.dailyGoalExercises || 0) + exercisesDone,
       streak: streakData.streak,
-      bestStreak,
+      bestStreak: Math.max(streakData.streak, ud.bestStreak || 0),
       lastWorkoutDate: streakData.lastWorkoutDate,
-      history,
+      history: history,
     });
     window.awardXP(XP_PER_SESSION + exercisesDone * XP_PER_EXERCISE);
-    checkAndFireAchievements({
-      ...ud,
+    authCall("checkAndFireAchievements", mergeObjects(ud, {
       sessions: (ud.sessions || 0) + 1,
       streak: streakData.streak,
       exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
-    });
+    }));
   };
 
   window.saveUserField = async function(field, value) {
@@ -6368,55 +6413,78 @@ body::before {
     try {
       await persistUserData(window.userData);
     } catch (error) {
-      console.error("saveUserField error:", error);
+      logAuthError("saveUserField error", error);
     }
   };
 
-  // Metadata-only fallback leaderboard (single-user data availability)
   window.loadLeaderboard = async function() {
-    const ud = window.userData;
+    var ud = window.userData;
     if (!ud || !window.userUID) return [];
-    return [{ rank: 1, uid: window.userUID, ...ud }];
+    return [mergeObjects({ rank: 1, uid: window.userUID }, ud)];
   };
 
-  // ── Auth listener + session restore — wrapped in async IIFE (no top-level await) ──
-  (async function initAuth() {
-    logOAuth("Auth ready — initialising listener and session restore");
+  async function handleAuthUser(user, source) {
+    window.auth.currentUser = user;
+    if (user) {
+      await loadUserData(user);
+      logAuth("User data loaded", { source: source, userId: user.id, email: user.email });
+      authCall("renderXPBar", window.userData);
+      authCall("renderDailyGoals", window.userData);
+    }
+  }
 
-    // ── 1. Attach auth state listener ──
-    let _firstAuthCheck = true;
+  async function restoreSession() {
+    try {
+      logAuth("Session restore start");
+      var sessionResult = await bmSupabaseClient.auth.getSession();
+      var sessionError = sessionResult.error;
+      var session = sessionResult.data && sessionResult.data.session ? sessionResult.data.session : null;
+      if (sessionError) {
+        logAuthError("Session restore error", sessionError);
+      } else if (session && session.user) {
+        logAuth("Session restored", { userId: session.user.id, email: session.user.email });
+        await handleAuthUser(session.user, "restore");
+      } else {
+        logAuth("No active session found");
+      }
+    } catch (err) {
+      logAuthError("Session restore runtime error", err);
+    }
+  }
+
+  async function initAuth() {
+    logAuth("Auth ready - initialising listener and session restore");
+
     if (!window.__bm_auth_listener_attached) {
       window.__bm_auth_listener_attached = true;
-      bmSupabaseClient.auth.onAuthStateChange(async function(_event, session) {
-        logOAuth("Auth state changed", {
-          event: _event,
-          hasSession: !!session,
-          userId: (session && session.user) ? session.user.id : null,
-          email:  (session && session.user) ? session.user.email : null,
-        });
-        var user = (session && session.user) ? session.user : null;
-        window.auth.currentUser = user;
+      bmSupabaseClient.auth.onAuthStateChange(async function(event, session) {
+        var user = session && session.user ? session.user : null;
         var btn = document.getElementById("authNavBtn");
-
+        var active;
+        logAuth("Auth state changed", {
+          event: event,
+          hasSession: !!session,
+          userId: user ? user.id : null,
+          email: user ? user.email : null,
+        });
+        window.auth.currentUser = user;
         if (user) {
           await loadUserData(user);
           if (btn) {
             btn.textContent = "Logout";
             btn.onclick = function() { if (typeof window.logout === "function") window.logout(); };
           }
-          var active = document.querySelector(".page.active");
-          if (_firstAuthCheck) {
+          active = document.querySelector(".page.active");
+          if (firstAuthCheck) {
             if (!active || active.id === "page-login") authShowPage("home");
             else if (active.id === "page-profile") authCall("initProfile");
           } else {
             if (active && active.id === "page-login") authShowPage("profile");
             else if (active && active.id === "page-profile") authCall("initProfile");
           }
-          _firstAuthCheck = false;
           authCall("renderXPBar", window.userData);
           authCall("renderDailyGoals", window.userData);
         } else {
-          _firstAuthCheck = false;
           window.userData = null;
           window.userUID = null;
           if (btn) {
@@ -6425,50 +6493,32 @@ body::before {
           }
           authCall("renderXPBar", null);
         }
+        firstAuthCheck = false;
       });
     } else {
-      logOAuth("Skipped attaching duplicate auth listener");
+      logAuth("Skipped attaching duplicate auth listener");
     }
 
-    // ── 2. Check for OAuth error params in URL ──
     try {
       var url = new URL(window.location.href);
       var oauthError = url.searchParams.get("error") || url.searchParams.get("error_description");
       if (oauthError) {
-        logOAuthError("OAuth provider returned an error", oauthError);
+        logAuthError("OAuth provider returned an error", oauthError);
         authToast("Google Sign-In failed ❌");
       } else {
-        logOAuth("OAuth callback check passed", { href: window.location.href });
+        logAuth("OAuth callback check passed", { href: window.location.href });
       }
     } catch (err) {
-      logOAuthError("OAuth callback parse error", err);
+      logAuthError("OAuth callback parse error", err);
     }
 
-    // ── 3. Restore existing session (handles OAuth redirect return) ──
-    try {
-      var sessionResult = await bmSupabaseClient.auth.getSession();
-      var sessionError = sessionResult.error;
-      var session = sessionResult.data && sessionResult.data.session ? sessionResult.data.session : null;
-      if (sessionError) {
-        logOAuthError("Session restore error", sessionError);
-      } else if (session && session.user) {
-        logOAuth("Session restored", {
-          userId: session.user.id,
-          email: session.user.email,
-        });
-        window.auth.currentUser = session.user;
-        await loadUserData(session.user);
-      } else {
-        logOAuth("No active session found");
-      }
-    } catch (err) {
-      logOAuthError("Session restore runtime error", err);
-    }
+    await restoreSession();
+    window.__bm_auth_ready = true;
+    logAuth("Auth init complete");
+  }
 
-    logOAuth("Auth init complete");
-  })();
-
-  // Use global googleLogin from supabase.js (single source of truth).
+  initAuth();
+})();
 </script>
 
 <script>
@@ -6599,8 +6649,10 @@ function startCounters(){
 
 // ══════ BODY METRICS ══════
 function updateMetrics(){
-  const w = parseFloat(document.getElementById('logWeight')?.value)||0;
-  const h = parseFloat(document.getElementById('logHeight')?.value)||0;
+  const weightInputEl = document.getElementById('logWeight');
+  const heightInputEl = document.getElementById('logHeight');
+  const w = parseFloat(weightInputEl ? weightInputEl.value : '')||0;
+  const h = parseFloat(heightInputEl ? heightInputEl.value : '')||0;
   const wEl = document.getElementById('metricWeight');
   const bmiEl = document.getElementById('metricBMI');
   const bmiLabel = document.getElementById('metricBMILabel');
@@ -6815,7 +6867,8 @@ function setLibFilter(muscle, btn){
   currentLibFilter = muscle;
   document.querySelectorAll('.lib-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  buildLibrary(muscle, document.getElementById('libSearch')?.value || '');
+  const searchEl = document.getElementById('libSearch');
+  buildLibrary(muscle, searchEl ? searchEl.value : '');
 }
 
 function filterLib(){
@@ -6965,7 +7018,9 @@ function generatePlan(){
   const intensity = document.getElementById('intensitySelect').value;
 
   const planGroup = (goal==='fat'||goal==='endurance') ? 'fat' : 'muscle';
-  const planData = PLANS[currentPlan]?.[planGroup]?.[level] || PLANS[currentPlan]?.muscle?.beginner;
+  const currentPlanData = PLANS[currentPlan] || {};
+  const planData = (currentPlanData[planGroup] && currentPlanData[planGroup][level]) ||
+    (currentPlanData.muscle && currentPlanData.muscle.beginner);
 
   document.getElementById('planTitle').textContent = planData.title;
   document.getElementById('planDesc').textContent = planData.desc;
@@ -7012,7 +7067,7 @@ function generatePlan(){
   showToast('⚡ Your personalized plan is ready!');
   setTimeout(() => document.getElementById('workoutPlan').scrollIntoView({behavior:'smooth'}), 300);
   // Track session generation in Supabase metadata
-  if(window.updateUserStat && window.auth?.currentUser) {
+  if(window.updateUserStat && window.auth && window.auth.currentUser) {
     window.updateUserStat('sessions', 1);
     window.updateUserStat('weekWorkouts', 1);
   }
@@ -7095,7 +7150,8 @@ function initDiet(){
 }
 
 function getCurrentIndianMeals(){
-  const goal = document.getElementById('dietGoal')?.value || 'maintain';
+  const dietGoalEl = document.getElementById('dietGoal');
+  const goal = (dietGoalEl && dietGoalEl.value) || 'maintain';
   return indianMeals[goal] || indianMeals.maintain;
 }
 
@@ -7126,12 +7182,18 @@ function buildMealPlanSection(id, meals){
 }
 
 function calcMacros(){
-  const w = +document.getElementById('weightInput')?.value||70;
-  const h = +document.getElementById('heightInput')?.value||175;
-  const a = +document.getElementById('ageInput')?.value||25;
-  const gender = document.getElementById('genderSelect')?.value||'male';
-  const goal = document.getElementById('dietGoal')?.value||'maintain';
-  const act = +document.getElementById('activityLevel')?.value||1.55;
+  const weightEl = document.getElementById('weightInput');
+  const heightEl = document.getElementById('heightInput');
+  const ageEl = document.getElementById('ageInput');
+  const genderEl = document.getElementById('genderSelect');
+  const dietGoalEl = document.getElementById('dietGoal');
+  const activityEl = document.getElementById('activityLevel');
+  const w = +(weightEl ? weightEl.value : 0)||70;
+  const h = +(heightEl ? heightEl.value : 0)||175;
+  const a = +(ageEl ? ageEl.value : 0)||25;
+  const gender = (genderEl && genderEl.value)||'male';
+  const goal = (dietGoalEl && dietGoalEl.value)||'maintain';
+  const act = +(activityEl ? activityEl.value : 0)||1.55;
   let bmr = gender==='male' ? (10*w+6.25*h-5*a+5) : (10*w+6.25*h-5*a-161);
   let tdee = Math.round(bmr*act);
   if(goal==='cut') tdee = Math.round(tdee*0.82);
@@ -7168,7 +7230,8 @@ function buildWaterGlasses(){
   const c = document.getElementById('waterGlasses');
   if(!c) return;
   c.innerHTML = '';
-  const w = +document.getElementById('weightInput')?.value||70;
+  const weightEl = document.getElementById('weightInput');
+  const w = +(weightEl ? weightEl.value : 0)||70;
   const count = Math.max(6, Math.round(w*0.033/0.25));
   for(let i=0;i<count;i++){
     const g = document.createElement('div');
@@ -7202,8 +7265,8 @@ function initProfile(){
   // Name & email
   const nameEl = document.getElementById('profileName');
   const emailEl = document.getElementById('profileEmail');
-  if(nameEl) nameEl.textContent = ud.name || user?.displayName || 'User';
-  if(emailEl) emailEl.textContent = ud.email || user?.email || '';
+  if(nameEl) nameEl.textContent = ud.name || (user && user.displayName) || 'User';
+  if(emailEl) emailEl.textContent = ud.email || (user && user.email) || '';
 
   // Avatar
   const avatarEl = document.getElementById('avatarEl');
@@ -7443,7 +7506,7 @@ function saveProfile(){
   const nameEl = document.getElementById('profileName');
   if(nameEl) nameEl.textContent = name;
   const avatarEl = document.getElementById('avatarEl');
-  if(avatarEl && !window.userData?.photo && !cached.photo){
+  if(avatarEl && !(window.userData && window.userData.photo) && !cached.photo){
     avatarEl.textContent = name.charAt(0).toUpperCase();
   }
   closeEditModal();
@@ -7494,12 +7557,13 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('service-worker.js').then(r=>console.log('SW:',r.scope)).catch(e=>console.log('SW fail:',e)); });
 }
 
-// AUTH STATE CHECK ON LOAD — handled by Supabase auth listener in module
+// AUTH STATE CHECK ON LOAD — handled by Supabase auth listener
 document.addEventListener('DOMContentLoaded',()=>{
   initLibrary();
   setTimeout(startTerminalTyping, 3000);
   initCalorieScanner();
-  cycleTerminal();
+  // Disabled to prevent unrelated runtime crashes during auth initialisation.
+  // cycleTerminal();
   // Restore bottom nav state for home page on fresh load
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
   const homeBtn = document.querySelector('.bnav-btn[data-page="home"]');
