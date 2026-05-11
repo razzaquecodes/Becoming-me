@@ -17,8 +17,8 @@ function updateUI() {
   safeSet("workouts", userData.exercisesCompleted !== undefined ? userData.exercisesCompleted : 0);
 }
 
-// Alias so older onclick="loginWithGoogle()" calls still work.
-window.loginWithGoogle = window.googleLogin;
+// Older Google-login aliases are owned by root auth.js. Do not reassign them here;
+// this file loads after auth.js and must not shadow the Firebase implementation.
 
 window.syncLegacyAuthUI = async function syncLegacyAuthUI() {
   try {

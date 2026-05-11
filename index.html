@@ -6221,7 +6221,8 @@ body::before {
   }
 
   window.__bm_auth_ready = false;
-  window.auth = window.firebaseAuth;
+  // App-level auth state container (do NOT alias firebaseAuth: currentUser is readonly there).
+  window.auth = window.auth || { currentUser: null };
   window.xpToLevel = function(xp) { return Math.floor((xp || 0) / XP_PER_LEVEL); };
   window.xpInLevel = function(xp) { return (xp || 0) % XP_PER_LEVEL; };
   window.todayKey = function() { return new Date().toISOString().slice(0, 10); };
@@ -6371,7 +6372,13 @@ body::before {
         userId: user ? user.uid : null,
         email: user ? user.email : null
       });
-      window.auth.currentUser = user;
+      // Clone into plain app object to avoid mutating Firebase Auth user internals.
+      window.auth.currentUser = user ? {
+        uid: user.uid,
+        email: user.email || "",
+        displayName: user.displayName || "",
+        photoURL: user.photoURL || null
+      } : null;
       if (user) {
         await loadUserData(user);
         if (btn) {
