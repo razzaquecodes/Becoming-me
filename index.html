@@ -6173,6 +6173,66 @@ body::before {
     console.error("[Auth] " + message, error || "");
   }
 
+  function cleanOAuthParams() {
+    var url;
+    try {
+      url = new URL(window.location.href);
+      url.searchParams.delete("error");
+      url.searchParams.delete("error_code");
+      url.searchParams.delete("error_description");
+      url.searchParams.delete("state");
+      if (url.hash && /error=|error_description=|access_token=|refresh_token=|code=/.test(url.hash)) {
+        url.hash = "";
+      }
+      window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+    } catch (error) {
+      logAuthError("Could not clean OAuth callback URL", error);
+    }
+  }
+
+  function getOAuthCallbackError() {
+    var url;
+    var hashParams;
+    var rawHash;
+    var error;
+    var description;
+    try {
+      url = new URL(window.location.href);
+      rawHash = url.hash ? url.hash.replace(/^#/, "") : "";
+      hashParams = new URLSearchParams(rawHash);
+      error = url.searchParams.get("error") || hashParams.get("error");
+      description = url.searchParams.get("error_description") || hashParams.get("error_description");
+      if (!error && !description) return null;
+      return {
+        error: error || "oauth_error",
+        description: description || "",
+      };
+    } catch (err) {
+      logAuthError("OAuth callback parse error", err);
+      return null;
+    }
+  }
+
+  function handleOAuthCallbackError(callbackError) {
+    var message;
+    if (!callbackError) return false;
+    message = callbackError.description || callbackError.error;
+    if (callbackError.error === "server_error") {
+      console.info("[Auth] Google OAuth code exchange failed in Supabase/Google configuration", {
+        description: callbackError.description,
+        googleRedirectUriRequired: "https://xxwrfugjxnfhsilwzulv.supabase.co/auth/v1/callback",
+        localRedirectUrlToAllowInSupabase: window.location.origin + window.location.pathname,
+      });
+      authToast("Google Sign-In failed. Check Supabase Google provider settings and redirect URLs.");
+    } else {
+      console.warn("[Auth] OAuth provider returned an error", callbackError);
+      authToast("Google Sign-In failed ❌");
+    }
+    cleanOAuthParams();
+    logAuth("OAuth error handled", { message: message });
+    return true;
+  }
+
   function authToast(message) {
     if (typeof window.showToast === "function") window.showToast(message);
     else console.info(message);
@@ -6499,17 +6559,8 @@ body::before {
       logAuth("Skipped attaching duplicate auth listener");
     }
 
-    try {
-      var url = new URL(window.location.href);
-      var oauthError = url.searchParams.get("error") || url.searchParams.get("error_description");
-      if (oauthError) {
-        logAuthError("OAuth provider returned an error", oauthError);
-        authToast("Google Sign-In failed ❌");
-      } else {
-        logAuth("OAuth callback check passed", { href: window.location.href });
-      }
-    } catch (err) {
-      logAuthError("OAuth callback parse error", err);
+    if (!handleOAuthCallbackError(getOAuthCallbackError())) {
+      logAuth("OAuth callback check passed", { href: window.location.href });
     }
 
     await restoreSession();

@@ -21,7 +21,7 @@
     url = new URL(window.location.href);
     url.search = "";
     url.hash = "";
-    return url.href;
+    return url.origin + url.pathname;
   }
 
   async function startOAuthLogin(provider) {
