@@ -1,6 +1,5 @@
 // script.js — Legacy UI sync helpers. Passive only — no auth listeners here.
 // Auth state is owned by the inline <script> block in index.html.
-// Required order in index.html: Supabase CDN -> supabase.js -> auth.js -> script.js.
 
 var currentUser = null;
 var userData = null;
@@ -18,19 +17,17 @@ function updateUI() {
   safeSet("workouts", userData.exercisesCompleted !== undefined ? userData.exercisesCompleted : 0);
 }
 
-// Alias so older onclick="loginWithGoogle()" calls still work.
-window.loginWithGoogle = window.googleLogin;
+// Older Google-login aliases are owned by root auth.js. Do not reassign them here;
+// this file loads after auth.js and must not shadow the Firebase implementation.
 
 window.syncLegacyAuthUI = async function syncLegacyAuthUI() {
   try {
     console.info("[script.js] syncLegacyAuthUI called");
     var user = await window.getCurrentUser();
     currentUser = user || null;
-    userData = currentUser && currentUser.user_metadata && currentUser.user_metadata.becoming_me
-      ? currentUser.user_metadata.becoming_me
-      : null;
+    userData = currentUser ? await window.getUserProfile(currentUser.uid) : null;
     updateUI();
-    console.info("[script.js] Legacy UI sync complete", { userId: currentUser ? currentUser.id : null });
+    console.info("[script.js] Legacy UI sync complete", { userId: currentUser ? currentUser.uid : null });
   } catch (error) {
     console.error("[script.js] Legacy UI sync failed", error);
   }
