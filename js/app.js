@@ -48,7 +48,7 @@ window.listenAuth(async (user) => {
   if (user) {
     currentUser = user;
 
-    const data = await window.getUserProfile(user.id);
+    const data = await window.getUserProfile(user.uid);
 
     if (data) {
       document.querySelector(".profile-name").textContent = data.name;
@@ -75,7 +75,7 @@ window.logoutUser = function() {
 window.saveWorkout = function() {
   if (!currentUser) return;
 
-  window.incrementWorkout(currentUser.id);
+  window.incrementWorkout(currentUser.uid);
   showToast("Workout saved 💪");
 
   setTimeout(() => location.reload(), 800);

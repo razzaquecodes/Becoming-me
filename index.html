@@ -4886,7 +4886,7 @@ body::before {
                 <span style="color:var(--muted2)">Indian Diet DB</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● ONLINE</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:var(--surface2);border-radius:4px;">
-                <span style="color:var(--muted2)">Supabase Auth</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● LIVE</span>
+                <span style="color:var(--muted2)">Firebase Auth</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● LIVE</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .8rem;background:var(--surface2);border-radius:4px;">
                 <span style="color:var(--muted2)">Progress Tracker</span><span style="color:#4ade80;font-size:.7rem;background:rgba(74,222,128,.1);padding:.2rem .5rem;border-radius:100px">● ACTIVE</span>
@@ -4903,7 +4903,7 @@ body::before {
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">plans::</span> <span style="color:#c4b5fd">gym + home</span> × 3 levels × 4 goals</div>
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">diet::</span> <span style="color:#c4b5fd">Indian + Intl + Veg</span> meal systems</div>
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">macros::</span> <span style="color:#c4b5fd">auto-calculated</span> by body & goal</div>
-              <div style="color:var(--muted2)"><span style="color:var(--gold-light)">auth::</span> <span style="color:#c4b5fd">Supabase</span> + Google OAuth</div>
+              <div style="color:var(--muted2)"><span style="color:var(--gold-light)">auth::</span> <span style="color:#c4b5fd">Firebase</span> + Google OAuth</div>
               <div style="color:var(--muted2)"><span style="color:var(--gold-light)">version::</span> <span style="color:#4ade80">v2.0.0</span> — production</div>
             </div>
           </div>
@@ -4943,7 +4943,7 @@ body::before {
       <div class="card card-glow reveal" style="padding:2rem">
         <div style="width:48px;height:48px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem">🔒</div>
         <h3 style="font-family:'Bebas Neue';font-size:1.4rem;color:var(--white);margin-bottom:.5rem">Secure & Private</h3>
-        <p style="color:var(--muted2);font-size:.82rem;line-height:1.8">Supabase-powered auth with Google Sign-In. Your data is yours. No ads, no data selling, ever.</p>
+        <p style="color:var(--muted2);font-size:.82rem;line-height:1.8">Firebase-powered auth with Google Sign-In. Your data is yours. No ads, no data selling, ever.</p>
       </div>
       <div class="card card-glow reveal" style="padding:2rem">
         <div style="width:48px;height:48px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:1.2rem">🏆</div>
@@ -5100,13 +5100,13 @@ body::before {
 
             <!-- Bio -->
             <p class="dev-back-bio">
-              Passionate builder of <strong>production-grade web apps</strong> that merge beautiful UI with real-world impact. Created <strong>Becoming Me</strong> to bring science-backed fitness to every Indian — gym or home, no excuses. Loves React, Supabase &amp; turning ideas into polished digital experiences.
+              Passionate builder of <strong>production-grade web apps</strong> that merge beautiful UI with real-world impact. Created <strong>Becoming Me</strong> to bring science-backed fitness to every Indian — gym or home, no excuses. Loves React, Firebase &amp; turning ideas into polished digital experiences.
             </p>
 
             <!-- Skill chips -->
             <div class="dev-back-skills">
               <span class="dev-back-skill">React</span>
-              <span class="dev-back-skill">Supabase</span>
+              <span class="dev-back-skill">Firebase</span>
               <span class="dev-back-skill">Node.js</span>
               <span class="dev-back-skill">JavaScript</span>
               <span class="dev-back-skill">UI / UX</span>
@@ -5229,7 +5229,7 @@ body::before {
           <span style="color:var(--muted2);font-size:.82rem">Made with ♥ in India</span>
           <span style="color:var(--muted2);font-size:.82rem">v2.0 — Production</span>
           <span style="color:var(--muted);font-size:.75rem">PWA Ready</span>
-          <span style="color:var(--muted);font-size:.75rem">Supabase Powered</span>
+          <span style="color:var(--muted);font-size:.75rem">Firebase Powered</span>
         </div>
       </div>
     </div>
@@ -6147,17 +6147,20 @@ body::before {
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./supabase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="./firebase.js"></script>
 <script src="./auth.js"></script>
+<script src="./db.js"></script>
 <script src="./js/script.js"></script>
 
-<!-- ═══════════════ SUPABASE AUTH + METADATA — FULL SYSTEM ═══════════════ -->
+<!-- ═══════════════ FIREBASE AUTH + FIRESTORE — FULL SYSTEM ═══════════════ -->
 <script>
-(function initBecomingMeAuthRuntime() {
+(function initBecomingMeFirebaseRuntime() {
   "use strict";
 
-  var bmSupabaseClient = window.supabaseClient;
   var XP_PER_EXERCISE = 10;
   var XP_PER_SESSION = 50;
   var XP_PER_LEVEL = 100;
@@ -6166,71 +6169,11 @@ body::before {
   var firstAuthCheck = true;
 
   function logAuth(message, data) {
-    console.info("[Auth] " + message, data || "");
+    console.info("[Firebase Auth] " + message, data || "");
   }
 
   function logAuthError(message, error) {
-    console.error("[Auth] " + message, error || "");
-  }
-
-  function cleanOAuthParams() {
-    var url;
-    try {
-      url = new URL(window.location.href);
-      url.searchParams.delete("error");
-      url.searchParams.delete("error_code");
-      url.searchParams.delete("error_description");
-      url.searchParams.delete("state");
-      if (url.hash && /error=|error_description=|access_token=|refresh_token=|code=/.test(url.hash)) {
-        url.hash = "";
-      }
-      window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-    } catch (error) {
-      logAuthError("Could not clean OAuth callback URL", error);
-    }
-  }
-
-  function getOAuthCallbackError() {
-    var url;
-    var hashParams;
-    var rawHash;
-    var error;
-    var description;
-    try {
-      url = new URL(window.location.href);
-      rawHash = url.hash ? url.hash.replace(/^#/, "") : "";
-      hashParams = new URLSearchParams(rawHash);
-      error = url.searchParams.get("error") || hashParams.get("error");
-      description = url.searchParams.get("error_description") || hashParams.get("error_description");
-      if (!error && !description) return null;
-      return {
-        error: error || "oauth_error",
-        description: description || "",
-      };
-    } catch (err) {
-      logAuthError("OAuth callback parse error", err);
-      return null;
-    }
-  }
-
-  function handleOAuthCallbackError(callbackError) {
-    var message;
-    if (!callbackError) return false;
-    message = callbackError.description || callbackError.error;
-    if (callbackError.error === "server_error") {
-      console.info("[Auth] Google OAuth code exchange failed in Supabase/Google configuration", {
-        description: callbackError.description,
-        googleRedirectUriRequired: "https://xxwrfugjxnfhsilwzulv.supabase.co/auth/v1/callback",
-        localRedirectUrlToAllowInSupabase: window.location.origin + window.location.pathname,
-      });
-      authToast("Google Sign-In failed. Check Supabase Google provider settings and redirect URLs.");
-    } else {
-      console.warn("[Auth] OAuth provider returned an error", callbackError);
-      authToast("Google Sign-In failed ❌");
-    }
-    cleanOAuthParams();
-    logAuth("OAuth error handled", { message: message });
-    return true;
+    console.error("[Firebase Auth] " + message, error || "");
   }
 
   function authToast(message) {
@@ -6247,18 +6190,15 @@ body::before {
     if (typeof window[fnName] === "function") window[fnName](arg);
   }
 
-  function getMetadata(authUser) {
-    return authUser && authUser.user_metadata && authUser.user_metadata.becoming_me
-      ? authUser.user_metadata.becoming_me
-      : null;
+  function mergeObjects(base, patch) {
+    return Object.assign({}, base || {}, patch || {});
   }
 
   function defaultUser(authUser) {
-    var metadata = authUser && authUser.user_metadata ? authUser.user_metadata : {};
     return {
-      name: metadata.name || metadata.full_name || "User",
-      email: authUser && authUser.email ? authUser.email : "",
-      photo: metadata.avatar_url || null,
+      name: authUser.displayName || (authUser.email ? authUser.email.split("@")[0] : "User"),
+      email: authUser.email || "",
+      photo: authUser.photoURL || null,
       xp: 0,
       level: 0,
       streak: 0,
@@ -6271,119 +6211,45 @@ body::before {
       lastWorkoutDate: null,
       dailyGoalExercises: 0,
       history: [],
+      achievements: [],
+      workoutProgress: {},
+      nutritionProgress: {},
+      profileCustomization: {},
       createdAt: Date.now(),
-      lastLogin: Date.now(),
+      lastLogin: Date.now()
     };
   }
 
-  function mergeObjects(base, patch) {
-    return Object.assign({}, base || {}, patch || {});
-  }
-
   window.__bm_auth_ready = false;
-  window.auth = window.auth || { currentUser: null };
+  window.auth = window.firebaseAuth;
   window.xpToLevel = function(xp) { return Math.floor((xp || 0) / XP_PER_LEVEL); };
   window.xpInLevel = function(xp) { return (xp || 0) % XP_PER_LEVEL; };
   window.todayKey = function() { return new Date().toISOString().slice(0, 10); };
 
-  if (!bmSupabaseClient || !bmSupabaseClient.auth) {
-    logAuthError("Supabase client missing. Check script order: CDN -> supabase.js -> auth.js -> script.js.");
+  if (!window.firebaseAuth || !window.firebaseDb) {
+    logAuthError("Firebase not initialized. Check script order.");
     authToast("Auth not ready yet, try again");
     return;
   }
 
-  logAuth("Page loaded for auth", {
-    href: window.location.href,
-    origin: window.location.origin,
-    search: window.location.search,
-    hash: window.location.hash,
-  });
-
-  async function upsertMetadata(metadata) {
-    var result = await bmSupabaseClient.auth.updateUser({
-      data: { becoming_me: metadata },
-    });
-    if (result.error) throw result.error;
-    return result.data ? result.data.user : null;
-  }
-
-  window.createUserWithEmailAndPassword = async function(_auth, email, password, profile) {
-    profile = profile || {};
-    logAuth("Email signup start", { email: email });
-    var result = await bmSupabaseClient.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        data: {
-          name: profile.name || undefined,
-          full_name: profile.name || undefined,
-        },
-      },
-    });
-    if (result.error) {
-      logAuthError("Email signup error", result.error);
-      throw result.error;
-    }
-    logAuth("Email signup complete", { userId: result.data && result.data.user ? result.data.user.id : null });
-    return { user: result.data ? result.data.user : null };
-  };
-
-  window.signInWithEmailAndPassword = async function(_auth, email, password) {
-    logAuth("Email login start", { email: email });
-    var result = await bmSupabaseClient.auth.signInWithPassword({ email: email, password: password });
-    if (result.error) {
-      logAuthError("Email login error", result.error);
-      throw result.error;
-    }
-    logAuth("Email login complete", { userId: result.data && result.data.user ? result.data.user.id : null });
-    return { user: result.data ? result.data.user : null };
-  };
-
-  window.signOutUser = async function() {
-    logAuth("Logout start");
-    var result = await bmSupabaseClient.auth.signOut();
-    if (result.error) {
-      logAuthError("Logout error", result.error);
-      throw result.error;
-    }
-    logAuth("Logout complete");
-  };
-
-  async function persistUserData(partialData) {
-    try {
-      var merged = mergeObjects(window.userData || {}, partialData || {});
-      merged.lastLogin = Date.now();
-      var updatedUser = await upsertMetadata(merged);
-      window.userData = getMetadata(updatedUser) || merged;
-      localStorage.setItem("bm_user", JSON.stringify({
-        name: window.userData.name,
-        email: window.userData.email,
-        photo: window.userData.photo || null,
-      }));
-      return window.userData;
-    } catch (error) {
-      logAuthError("Supabase metadata save error", error);
-      throw error;
-    }
-  }
+  logAuth("Firebase runtime loaded", { href: window.location.href, origin: window.location.origin });
 
   async function loadUserData(authUser) {
     try {
-      var meta = getMetadata(authUser);
-      var data = mergeObjects(defaultUser(authUser), meta || {});
-      var userMetadata = authUser && authUser.user_metadata ? authUser.user_metadata : {};
-      data.name = data.name || userMetadata.full_name || "User";
-      data.email = data.email || (authUser && authUser.email ? authUser.email : "");
-      data.photo = data.photo || userMetadata.avatar_url || null;
+      var data = await window.ensureUserDoc(authUser);
       window.userData = data;
-      window.userUID = authUser.id;
-      await persistUserData(data);
+      window.userUID = authUser.uid;
+      localStorage.setItem("bm_user", JSON.stringify({
+        name: data.name,
+        email: data.email,
+        photo: data.photo || null
+      }));
       return data;
     } catch (error) {
-      logAuthError("Supabase load error", error);
+      logAuthError("Firestore load error", error);
       var cached = JSON.parse(localStorage.getItem("bm_user") || "{}");
       window.userData = mergeObjects(defaultUser(authUser), cached);
-      window.userUID = authUser.id;
+      window.userUID = authUser.uid;
       return window.userData;
     }
   }
@@ -6415,7 +6281,7 @@ body::before {
       pendingUpdates = {};
       try {
         window.userData = mergeObjects(window.userData || {}, batch);
-        await persistUserData(window.userData);
+        await window.updateUserData(window.userUID, window.userData);
       } catch (error) {
         logAuthError("stat update error", error);
       }
@@ -6456,13 +6322,13 @@ body::before {
       streak: streakData.streak,
       bestStreak: Math.max(streakData.streak, ud.bestStreak || 0),
       lastWorkoutDate: streakData.lastWorkoutDate,
-      history: history,
+      history: history
     });
     window.awardXP(XP_PER_SESSION + exercisesDone * XP_PER_EXERCISE);
     authCall("checkAndFireAchievements", mergeObjects(ud, {
       sessions: (ud.sessions || 0) + 1,
       streak: streakData.streak,
-      exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone,
+      exercisesCompleted: (ud.exercisesCompleted || 0) + exercisesDone
     }));
   };
 
@@ -6471,99 +6337,69 @@ body::before {
     window.userData = window.userData || {};
     window.userData[field] = value;
     try {
-      await persistUserData(window.userData);
+      await window.updateUserData(window.userUID, { [field]: value });
     } catch (error) {
       logAuthError("saveUserField error", error);
     }
   };
 
   window.loadLeaderboard = async function() {
-    var ud = window.userData;
-    if (!ud || !window.userUID) return [];
-    return [mergeObjects({ rank: 1, uid: window.userUID }, ud)];
+    try {
+      var snapshot = await window.firebaseDb.collection("users").orderBy("xp", "desc").limit(10).get();
+      var rank = 1;
+      return snapshot.docs.map(function(docSnap) {
+        return mergeObjects({ rank: rank++, uid: docSnap.id }, docSnap.data());
+      });
+    } catch (error) {
+      logAuthError("leaderboard load error", error);
+      var ud = window.userData;
+      if (!ud || !window.userUID) return [];
+      return [mergeObjects({ rank: 1, uid: window.userUID }, ud)];
+    }
   };
 
-  async function handleAuthUser(user, source) {
-    window.auth.currentUser = user;
-    if (user) {
-      await loadUserData(user);
-      logAuth("User data loaded", { source: source, userId: user.id, email: user.email });
-      authCall("renderXPBar", window.userData);
-      authCall("renderDailyGoals", window.userData);
-    }
-  }
-
-  async function restoreSession() {
-    try {
-      logAuth("Session restore start");
-      var sessionResult = await bmSupabaseClient.auth.getSession();
-      var sessionError = sessionResult.error;
-      var session = sessionResult.data && sessionResult.data.session ? sessionResult.data.session : null;
-      if (sessionError) {
-        logAuthError("Session restore error", sessionError);
-      } else if (session && session.user) {
-        logAuth("Session restored", { userId: session.user.id, email: session.user.email });
-        await handleAuthUser(session.user, "restore");
-      } else {
-        logAuth("No active session found");
-      }
-    } catch (err) {
-      logAuthError("Session restore runtime error", err);
-    }
-  }
-
   async function initAuth() {
-    logAuth("Auth ready - initialising listener and session restore");
+    logAuth("Initialising Firebase auth listener");
+    if (window.__bm_auth_listener_attached) return;
+    window.__bm_auth_listener_attached = true;
 
-    if (!window.__bm_auth_listener_attached) {
-      window.__bm_auth_listener_attached = true;
-      bmSupabaseClient.auth.onAuthStateChange(async function(event, session) {
-        var user = session && session.user ? session.user : null;
-        var btn = document.getElementById("authNavBtn");
-        var active;
-        logAuth("Auth state changed", {
-          event: event,
-          hasSession: !!session,
-          userId: user ? user.id : null,
-          email: user ? user.email : null,
-        });
-        window.auth.currentUser = user;
-        if (user) {
-          await loadUserData(user);
-          if (btn) {
-            btn.textContent = "Logout";
-            btn.onclick = function() { if (typeof window.logout === "function") window.logout(); };
-          }
-          active = document.querySelector(".page.active");
-          if (firstAuthCheck) {
-            if (!active || active.id === "page-login") authShowPage("home");
-            else if (active.id === "page-profile") authCall("initProfile");
-          } else {
-            if (active && active.id === "page-login") authShowPage("profile");
-            else if (active && active.id === "page-profile") authCall("initProfile");
-          }
-          authCall("renderXPBar", window.userData);
-          authCall("renderDailyGoals", window.userData);
-        } else {
-          window.userData = null;
-          window.userUID = null;
-          if (btn) {
-            btn.textContent = "Get Started →";
-            btn.onclick = function() { authShowPage("login"); };
-          }
-          authCall("renderXPBar", null);
-        }
-        firstAuthCheck = false;
+    window.listenAuth(async function(user) {
+      var btn = document.getElementById("authNavBtn");
+      var active;
+      logAuth("Auth state changed", {
+        hasUser: !!user,
+        userId: user ? user.uid : null,
+        email: user ? user.email : null
       });
-    } else {
-      logAuth("Skipped attaching duplicate auth listener");
-    }
+      window.auth.currentUser = user;
+      if (user) {
+        await loadUserData(user);
+        if (btn) {
+          btn.textContent = "Logout";
+          btn.onclick = function() { if (typeof window.logout === "function") window.logout(); };
+        }
+        active = document.querySelector(".page.active");
+        if (firstAuthCheck) {
+          if (!active || active.id === "page-login") authShowPage("home");
+          else if (active.id === "page-profile") authCall("initProfile");
+        } else {
+          if (active && active.id === "page-login") authShowPage("profile");
+          else if (active && active.id === "page-profile") authCall("initProfile");
+        }
+        authCall("renderXPBar", window.userData);
+        authCall("renderDailyGoals", window.userData);
+      } else {
+        window.userData = null;
+        window.userUID = null;
+        if (btn) {
+          btn.textContent = "Get Started →";
+          btn.onclick = function() { authShowPage("login"); };
+        }
+        authCall("renderXPBar", null);
+      }
+      firstAuthCheck = false;
+    });
 
-    if (!handleOAuthCallbackError(getOAuthCallbackError())) {
-      logAuth("OAuth callback check passed", { href: window.location.href });
-    }
-
-    await restoreSession();
     window.__bm_auth_ready = true;
     logAuth("Auth init complete");
   }
@@ -7117,7 +6953,7 @@ function generatePlan(){
   document.getElementById('workoutPlan').classList.add('visible');
   showToast('⚡ Your personalized plan is ready!');
   setTimeout(() => document.getElementById('workoutPlan').scrollIntoView({behavior:'smooth'}), 300);
-  // Track session generation in Supabase metadata
+  // Track session generation in Firestore
   if(window.updateUserStat && window.auth && window.auth.currentUser) {
     window.updateUserStat('sessions', 1);
     window.updateUserStat('weekWorkouts', 1);
@@ -7130,7 +6966,7 @@ function toggleCheck(el){
   const isDone = el.classList.contains('done');
 
   if(isDone && !wasDone){
-    // Exercise just completed — update Supabase metadata
+    // Exercise just completed — update Firestore
     showToast('✅ Exercise complete! Keep going!');
     if(window.updateUserStat) {
       window.updateUserStat('exercisesCompleted', 1);
@@ -7302,7 +7138,7 @@ function checkHydration(goal){
 // PROFILE — Real user metadata
 // ══════════════════════════════════
 function initProfile(){
-  // Use window.userData (loaded from Supabase metadata) or fall back to localStorage
+  // Use window.userData (loaded from Firestore) or fall back to localStorage
   const ud = window.userData || JSON.parse(localStorage.getItem('bm_user') || '{}');
   const user = window.auth ? window.auth.currentUser : null;
 
@@ -7395,7 +7231,7 @@ function handleAvatarUpload(event){
       avatarEl.style.opacity = '1';
       avatarEl.style.transform = 'scale(1)';
     }, 150);
-    // Persist to Supabase metadata and localStorage
+    // Persist to Firestore and localStorage
     if(window.saveUserField) window.saveUserField('photo', dataUrl);
     const cachedUser = JSON.parse(localStorage.getItem('bm_user') || '{}');
     cachedUser.photo = dataUrl;
@@ -7547,7 +7383,7 @@ function saveProfile(){
   if(!name){ showToast('Please enter a name'); return; }
   // Update in-memory
   if(window.userData) window.userData.name = name;
-  // Sync to Supabase metadata
+  // Sync to Firestore
   if(window.saveUserField) window.saveUserField('name', name);
   // Update localStorage cache
   const cached = JSON.parse(localStorage.getItem('bm_user') || '{}');
@@ -7608,7 +7444,7 @@ if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{ navigator.serviceWorker.register('service-worker.js').then(r=>console.log('SW:',r.scope)).catch(e=>console.log('SW fail:',e)); });
 }
 
-// AUTH STATE CHECK ON LOAD — handled by Supabase auth listener
+// AUTH STATE CHECK ON LOAD — handled by Firebase auth listener
 document.addEventListener('DOMContentLoaded',()=>{
   initLibrary();
   setTimeout(startTerminalTyping, 3000);

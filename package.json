@@ -1,8 +1,4 @@
 {
   "name": "becoming-me",
-  "private": true,
-  "dependencies": {
-    "@supabase/ssr": "^0.10.3",
-    "@supabase/supabase-js": "^2.105.3"
-  }
+  "private": true
 }
